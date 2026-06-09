@@ -1,5 +1,6 @@
 import { Fragment, useState, type ReactNode } from 'react';
 import { color, space, text } from '../../tokens';
+import { ChevronRightIcon } from '../../icons/FigureIcons';
 
 export interface DataTableColumn<T> {
   key: string;
@@ -124,14 +125,14 @@ export default function DataTable<T>({
                       <span
                         aria-hidden
                         style={{
-                          display: 'inline-block',
-                          color: color.textTertiary,
+                          display: 'inline-flex',
+                          color: color.textSecondary,
                           transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
                           transition: 'transform 120ms ease',
-                          lineHeight: 1,
+                          lineHeight: 0,
                         }}
                       >
-                        ▶
+                        <ChevronRightIcon size={14} />
                       </span>
                     </td>
                   )}

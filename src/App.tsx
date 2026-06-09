@@ -11,7 +11,7 @@ import { filters } from './mock/data';
 const TITLES: Record<NavKey, string> = {
   overview: 'Overview',
   resource: 'GPU 자원',
-  etc: '그 외',
+  tokens: '추론 토큰',
   gallery: '컴포넌트 갤러리',
   overlay: 'Figma 오버레이',
 };
@@ -133,19 +133,24 @@ function ResourceTopActions() {
 }
 
 export default function App() {
-  const [nav, setNav] = useState<NavKey>('overview');
+  const [nav, setNav] = useState<NavKey>(() => {
+    // ?screen= lets the screenshot harness target a specific screen deterministically.
+    const p = new URLSearchParams(window.location.search).get('screen') as NavKey | null;
+    const valid: NavKey[] = ['overview', 'resource', 'tokens', 'gallery', 'overlay'];
+    return p && valid.includes(p) ? p : 'overview';
+  });
   return (
     <AppShell
       active={nav}
       onNavigate={setNav}
       title={TITLES[nav]}
-      actions={nav === 'resource' ? <ResourceTopActions /> : undefined}
+      actions={nav === 'resource' || nav === 'overview' ? <ResourceTopActions /> : undefined}
     >
       {nav === 'gallery' && <Gallery />}
       {nav === 'overlay' && <OverlayCompare />}
       {nav === 'overview' && <OverviewPage />}
       {nav === 'resource' && <GpuResourcePage />}
-      {nav === 'etc' && <Placeholder title={TITLES[nav]} />}
+      {nav === 'tokens' && <Placeholder title={TITLES[nav]} />}
     </AppShell>
   );
 }

@@ -15,6 +15,8 @@ export interface TrendSeries {
   key: string;
   label: string;
   color: string;
+  /** Render this series as a dashed line (e.g. Slot Util in the Figma design). */
+  dash?: boolean;
 }
 
 export interface TrendChartProps {
@@ -70,6 +72,9 @@ export default function TrendChart({
           tick={tickStyle}
           tickLine={{ stroke: chart.grid }}
           axisLine={{ stroke: chart.grid }}
+          interval="preserveStartEnd"
+          minTickGap={28}
+          tickFormatter={(v) => (typeof v === 'string' ? v.slice(5) : String(v))}
         />
         <YAxis
           tick={tickStyle}
@@ -101,6 +106,7 @@ export default function TrendChart({
               name={s.label}
               stroke={s.color}
               strokeWidth={2}
+              strokeDasharray={s.dash ? '5 4' : undefined}
               fill={`url(#trend-grad-${s.key})`}
               dot={false}
               activeDot={{ r: 3 }}
@@ -113,6 +119,7 @@ export default function TrendChart({
               name={s.label}
               stroke={s.color}
               strokeWidth={2}
+              strokeDasharray={s.dash ? '5 4' : undefined}
               dot={false}
               activeDot={{ r: 3 }}
             />
