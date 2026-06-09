@@ -1,17 +1,22 @@
 import { radius, text } from '../../tokens';
-import { pct, utilColors } from '../../lib/util';
+import { pct, utilColors, type UtilMetric } from '../../lib/util';
 
-/** Threshold-colored utilization pill (good/warn/bad derived from value). */
+/**
+ * Threshold-colored utilization pill. Color depends on the metric, because
+ * GPU Util and Slot Util use different cutoffs (see lib/util.ts).
+ */
 export default function UtilBadge({
   value,
+  metric = 'gpu',
   digits = 1,
   minWidth = 48,
 }: {
   value: number;
+  metric?: UtilMetric;
   digits?: number;
   minWidth?: number;
 }) {
-  const c = utilColors(value);
+  const c = utilColors(value, metric);
   return (
     <span
       style={{

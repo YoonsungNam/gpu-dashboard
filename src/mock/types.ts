@@ -120,3 +120,14 @@ export interface Filters {
   importance: string[];
   is_critical: YN[];
 }
+
+/**
+ * Utilization-over-time for the 사용추이 trend chart.
+ * NOTE: no endpoint sample was provided for this; shape is assumed
+ * (frontend-derived). Adjust when the real util-timeseries endpoint is known.
+ */
+export interface UtilTrendPoint {
+  ts: string; // YYYY-MM-DD
+  gpu_ut: number;
+  slot_ut: number;
+}

@@ -14,6 +14,7 @@ import type {
   ServiceTimeseriesPoint,
   TaskType,
   TopBottomProjects,
+  UtilTrendPoint,
   YN,
 } from './types';
 
@@ -199,3 +200,25 @@ export const filters: Filters = {
   importance: IMPORTANCE,
   is_critical: ['Y', 'N'],
 };
+
+/* ---- util-over-time for 사용추이 (assumed shape; no endpoint sample) ---- */
+function genTrend(seed: number, gpuAvg: number, slotAvg: number): UtilTrendPoint[] {
+  const r = rng(700 + seed);
+  return Array.from({ length: 30 }, (_, d) => {
+    const day = String(d + 1).padStart(2, '0');
+    return {
+      ts: `2026-05-${day}`,
+      gpu_ut: round1(Math.max(0, Math.min(100, gpuAvg + (r() - 0.5) * 22 + Math.sin(d / 5) * 6))),
+      slot_ut: round1(Math.max(0, Math.min(100, slotAvg + (r() - 0.5) * 16 + Math.cos(d / 6) * 5))),
+    };
+  });
+}
+
+export const utilTrendByTask: Record<TaskType, UtilTrendPoint[]> = {
+  추론: genTrend(1, 46.4, 61.2),
+  학습: genTrend(2, 55.3, 82.1),
+};
+
+/** Mean of a numeric field across a trend series (for the chart's stat header). */
+export const trendAvg = (pts: UtilTrendPoint[], key: 'gpu_ut' | 'slot_ut') =>
+  round1(pts.reduce((s, p) => s + p[key], 0) / pts.length);

@@ -9,6 +9,21 @@
 
 ---
 
+## 0. CORRECTIONS (authoritative — override anything below)
+
+Found during the design-conformance review by reading the high-res frames closely:
+
+- **The four utilization metrics are labeled exactly:** `GPU Util` · `GPU Util WH` · `GPU Util AH` · `Slot Util`
+  (NOT "GPU UM/UA/UI/Run UM"). Mapping to API fields: `GPU Util`=`gpu_ut`/`avg_gpu_ut`, `GPU Util WH`=`gpu_ut_working`, `GPU Util AH`=`gpu_ut_nonworking`, `Slot Util`=`slot_ut`/`avg_slot_ut`. Canonical defs live in `src/lib/labels.ts` (`UTIL_METRICS`).
+- **Thresholds are metric-specific** (see `src/lib/util.ts`): `GPU Util` ≥20 good / 10–20 warn / <10 bad; `Slot Util` ≥80 good / 70–80 warn / <70 bad. `UtilBadge` takes a `metric` prop — always pass `'gpu'` or `'slot'`.
+- **Overview §1 hero** = GPU count with label **"GPUs"** (not project count). Cards have a descriptive Korean subtitle.
+- **Overview §3 occupancy table:** `구분` column = plain org/사업부 text (e.g. 'AI 센터', 'System LSI'); final column = **`장 수`** (GPU count), not quota. Table titles carry threshold subtitles ('GPU Util ≥ 66% | H100 기준' etc.).
+- **Overview §4 trend** = `GPU Util` (solid) + `Slot Util` (dashed) on a 0–100% axis, with a `GPU 평균 / Slot 평균` stat header. Data: `utilTrendByTask` in mock (NOT service token totals).
+- **GPU 자원 table columns:** caret · # · 과제 · 사업부 · 용도 · 핵심여부(badge) · 담당자 · 수량(H100기준) · GPU Util · GPU Util WH · GPU Util AH · Slot Util. Tabs: only **추론 / 학습** (추론 default, no 전체). Toolbar also has a green **Live** pill, 기간 dropdown, and an `ⓘ 지표 정의` link. Result count `15/30` left of 다운로드. Page size ≈ 15.
+- **Expanded row (both screens):** `활용 지표` header + 핵심/추론 badges (right) + a lead `N 장 / 수량(H100기준)` tile + 4 metrics each = label + % + green **progress bar**. Sub-table titled **`UNIT 구성`**, columns: Unit · 모델 · 수량(H100기준) · GPU Util · GPU Util WH · GPU Util AH · Slot Util (4 util cells).
+
+---
+
 ## 1. Color system
 
 | Group | Tokens |

@@ -1,25 +1,28 @@
 import { semantic } from '../tokens';
 
+export type UtilMetric = 'gpu' | 'slot';
+
 /**
- * Utilization → severity level.
- * NOTE: thresholds are PLACEHOLDER values (real cutoffs TBD). Change them here
- * only — every threshold-colored cell/badge derives from this one function.
+ * Real threshold cutoffs taken from the Figma legend (metric-SPECIFIC).
+ * GPU Util and Slot Util use DIFFERENT scales. Change them here only — every
+ * threshold-colored cell/badge derives from this.
  */
-export const utilThresholds = {
-  good: 80, // value >= good  -> good (green)
-  warn: 30, // value >= warn  -> warn (amber); below warn -> bad (red)
+export const utilThresholds: Record<UtilMetric, { good: number; warn: number }> = {
+  gpu: { good: 20, warn: 10 }, // GPU Util: ≥20 good · 10–20 warn · <10 bad
+  slot: { good: 80, warn: 70 }, // Slot Util: ≥80 good · 70–80 warn · <70 bad
 };
 
 export type UtilLevel = 'good' | 'warn' | 'bad';
 
-export function utilLevel(value: number): UtilLevel {
-  if (value >= utilThresholds.good) return 'good';
-  if (value >= utilThresholds.warn) return 'warn';
+export function utilLevel(value: number, metric: UtilMetric = 'gpu'): UtilLevel {
+  const t = utilThresholds[metric];
+  if (value >= t.good) return 'good';
+  if (value >= t.warn) return 'warn';
   return 'bad';
 }
 
-export function utilColors(value: number) {
-  return semantic.util[utilLevel(value)];
+export function utilColors(value: number, metric: UtilMetric = 'gpu') {
+  return semantic.util[utilLevel(value, metric)];
 }
 
 export const pct = (n: number, digits = 1) => `${n.toFixed(digits)}%`;
