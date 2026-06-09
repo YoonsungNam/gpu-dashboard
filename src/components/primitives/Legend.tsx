@@ -1,4 +1,4 @@
-import { color, radius, space, text } from '../../tokens';
+import { color, space } from '../../tokens';
 
 /** Horizontal wrapping legend: colored swatch + label per item. */
 export default function Legend({
@@ -26,12 +26,12 @@ export default function Legend({
             style={{
               width: size,
               height: size,
-              borderRadius: radius.cell,
+              borderRadius: 1,
               background: item.color,
               flexShrink: 0,
             }}
           />
-          <span style={{ ...text.tiny, color: color.textSecondary }}>
+          <span style={{ fontSize: 12, lineHeight: '14px', fontWeight: 500, color: color.textTertiary }}>
             {item.label}
           </span>
         </div>

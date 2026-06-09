@@ -21,7 +21,7 @@ export default function TopBar({
         padding: '0 16px',
       }}
     >
-      <div style={{ ...text.cardTitle, color: color.textPrimary }}>{title}</div>
+      <div style={{ ...text.sectionTitle, color: color.textPrimary }}>{title}</div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>{actions}</div>
     </header>
   );

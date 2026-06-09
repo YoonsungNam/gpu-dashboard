@@ -1,5 +1,5 @@
 import { color, radius, space, text } from '../../tokens';
-import { num, pct, utilColors } from '../../lib/util';
+import { num, utilColors } from '../../lib/util';
 import { UTIL_METRICS } from '../../lib/labels';
 import type { ProjectUnit, ProjectUnitInfo, ProjectUnitsResponse, TaskType } from '../../mock/types';
 import DataTable, { type DataTableColumn } from '../primitives/DataTable';
@@ -62,7 +62,9 @@ export default function ExpandedTaskDetail({
           gap: space.md,
         }}
       >
-        <span style={{ ...text.cardTitle }}>활용 지표</span>
+        <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 400, color: color.textSecondary }}>
+          활용 지표
+        </span>
         <div style={{ display: 'flex', alignItems: 'center', gap: space.sm }}>
           {isCritical && <TaskTypeBadge kind="core" />}
           {tasks?.map((t, i) => (
@@ -88,15 +90,18 @@ export default function ExpandedTaskDetail({
             flexDirection: 'column',
             gap: space.xs,
             justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
             padding: space.lg,
             minWidth: 124,
           }}
         >
-          <span style={{ ...text.metricLg }}>{num(lead)} 장</span>
+          <span style={{ ...text.metricLg, color: '#3C444B' }}>{num(lead)} 장</span>
           <span style={{ ...text.caption, color: color.textTertiary }}>수량(H100기준)</span>
         </div>
         {UTIL_METRICS.map((def) => {
           const value = utilOf(info, def.key);
+          const c = utilColors(value, def.metric).text;
           return (
             <div
               key={def.key}
@@ -109,11 +114,17 @@ export default function ExpandedTaskDetail({
                 borderLeft: `1px solid ${color.border}`,
               }}
             >
-              <span style={{ ...text.label, color: color.textSecondary }}>{def.label}</span>
-              <span style={{ ...text.metricLg, color: utilColors(value, def.metric).text }}>
-                {pct(value)}
+              <span style={{ ...text.label, fontWeight: 400, color: color.textTertiary }}>{def.label}</span>
+              <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: space.xs }}>
+                <span style={{ ...text.metricLg, color: c }}>{value.toFixed(1)}</span>
+                <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 400, color: color.textSecondary }}>
+                  %
+                </span>
               </span>
-              <ProgressBar value={value} />
+              {/* Flex-row wrapper gives ProgressBar (flex:1) a proper horizontal context + fixed 6px height. */}
+              <div style={{ display: 'flex' }}>
+                <ProgressBar value={value} height={6} color="#55C961" trackColor={color.border} />
+              </div>
             </div>
           );
         })}
@@ -121,7 +132,17 @@ export default function ExpandedTaskDetail({
 
       {/* UNIT 구성 sub-table */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: space.md }}>
-        <div style={{ ...text.bodyM, fontWeight: 600, marginTop: space.xl }}>UNIT 구성</div>
+        <div
+          style={{
+            fontSize: 14,
+            lineHeight: '20px',
+            fontWeight: 400,
+            color: color.textSecondary,
+            marginTop: space.xl,
+          }}
+        >
+          UNIT 구성
+        </div>
         <DataTable columns={columns} rows={units} rowKey={(u) => u.unit_id} compact />
       </div>
     </div>

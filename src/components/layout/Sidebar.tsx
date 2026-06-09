@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import { color, font, layout, text } from '../../tokens';
-import { OverviewIcon, ResourceIcon, TokensIcon } from '../../icons/NavIcons';
+import { LogoMark, OverviewIcon, ResourceIcon, TokensIcon } from '../../icons/NavIcons';
 
 export type NavKey = 'overview' | 'resource' | 'tokens' | 'gallery' | 'overlay';
 
@@ -37,11 +37,19 @@ export default function Sidebar({
         borderRight: '1px solid rgba(255,255,255,0.2)',
       }}
     >
-      {/* Logo */}
-      <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span
-          style={{ width: 18, height: 18, borderRadius: 4, background: color.accentCyan, display: 'inline-block' }}
-        />
+      {/* Logo header band (56px) + 1px bottom divider (Figma 7001:47212 / Rectangle 12) */}
+      <div
+        style={{
+          height: 56,
+          flexShrink: 0,
+          padding: '0 20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          borderBottom: '1px solid rgba(255,255,255,0.2)',
+        }}
+      >
+        <LogoMark size={22} />
         <span style={{ fontFamily: font.brand, fontWeight: 700, fontSize: 19, color: '#fff' }}>
           GPU Monitor
         </span>
@@ -75,7 +83,7 @@ export default function Sidebar({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: on ? '#fff' : '#9AA6B2',
+                  color: on ? '#fff' : '#C2CAD3',
                 }}
               >
                 <Icon size={16} color="currentColor" />

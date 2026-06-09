@@ -16,27 +16,28 @@ export default function DownloadButton({
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: 4,
-        padding: '6px 12px',
+        gap: 6,
+        height: 28,
+        padding: '0 12px',
         border: `1px solid ${color.borderStrong}`,
-        borderRadius: radius.sm,
+        borderRadius: radius.cell,
         background: color.cardBg,
-        color: color.textSecondary,
-        ...text.label,
+        color: '#3C444B', // Figma 다운로드 label (node I7001:50019;11162:36388)
+        ...text.bodyM,
+        fontWeight: 500,
       }}
     >
-      <svg
-        width={12}
-        height={12}
-        viewBox="0 0 12 12"
-        fill="none"
-        aria-hidden="true"
-        style={{ display: 'block' }}
-      >
+      {/* Green Excel-export glyph (Figma Icon14-Excel_down, fill #3C724B) */}
+      <svg width={14} height={14} viewBox="0 0 14 14" fill="none" aria-hidden="true" style={{ display: 'block' }}>
         <path
-          d="M6 1v6.5M3 5l3 3 3-3M2 10.5h8"
-          stroke="currentColor"
-          strokeWidth={1.2}
+          d="M2.25 2.25a1 1 0 0 1 1-1h4.4L11 4.6V11a1 1 0 0 1-1 1H3.25a1 1 0 0 1-1-1V2.25z"
+          fill="#3C724B"
+        />
+        <path d="M7.5 1.4v3.1a.6.6 0 0 0 .6.6h2.8" fill="#2E5B3B" />
+        <path
+          d="M4.5 5.9 6 7.9 4.5 9.9M7.5 5.9 6 7.9 7.5 9.9"
+          stroke="#FFFFFF"
+          strokeWidth={0.9}
           strokeLinecap="round"
           strokeLinejoin="round"
         />

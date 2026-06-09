@@ -78,6 +78,15 @@ export default function Pagination({
     >
       <button
         type="button"
+        aria-label="First page"
+        disabled={prevDisabled}
+        onClick={() => !prevDisabled && onChange(1)}
+        style={chevronStyle(prevDisabled)}
+      >
+        «
+      </button>
+      <button
+        type="button"
         aria-label="Previous page"
         disabled={prevDisabled}
         onClick={() => !prevDisabled && onChange(page - 1)}
@@ -111,10 +120,11 @@ export default function Pagination({
             onClick={() => !active && onChange(item)}
             style={{
               ...baseBtn,
-              background: active ? color.brand : 'transparent',
-              color: active ? color.white : color.textSecondary,
+              // Figma active page: light-grey #E4E9ED fill + blue #3392D3 text (not solid brand/white).
+              background: active ? color.border : 'transparent',
+              color: active ? '#3392D3' : color.textSecondary,
               cursor: active ? 'default' : 'pointer',
-              fontWeight: active ? 600 : text.label.fontWeight,
+              fontWeight: 500,
             }}
           >
             {item}
@@ -130,6 +140,15 @@ export default function Pagination({
         style={chevronStyle(nextDisabled)}
       >
         ›
+      </button>
+      <button
+        type="button"
+        aria-label="Last page"
+        disabled={nextDisabled}
+        onClick={() => !nextDisabled && onChange(pageCount)}
+        style={chevronStyle(nextDisabled)}
+      >
+        »
       </button>
     </div>
   );

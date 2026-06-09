@@ -65,9 +65,24 @@ export default function GpuResourcePage() {
       key: 'index',
       header: '#',
       width: 36,
-      align: 'right',
+      align: 'center',
+      // Figma # cell: 22×22 #ECF1F5 r2 box, number #565E66 400/11px (nodes line 149-150).
       render: (_r, i) => (
-        <span style={{ ...text.numTiny, color: color.textTertiary }}>
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 22,
+            height: 22,
+            borderRadius: radius.cell,
+            background: '#ECF1F5',
+            fontSize: 11,
+            lineHeight: '13px',
+            fontWeight: 400,
+            color: color.textSecondary,
+          }}
+        >
           {(safePage - 1) * PAGE_SIZE + i + 1}
         </span>
       ),
@@ -82,12 +97,12 @@ export default function GpuResourcePage() {
     {
       key: 'division',
       header: '사업부',
-      render: (r) => <span style={{ color: color.textSecondary }}>{r.division}</span>,
+      render: (r) => <span style={{ color: color.textPrimary }}>{r.division}</span>,
     },
     {
       key: 'purpose',
       header: '용도',
-      render: (r) => <span style={{ color: color.textSecondary }}>{r.purpose}</span>,
+      render: (r) => <span style={{ color: color.textPrimary }}>{r.purpose}</span>,
     },
     {
       key: 'is_critical',
@@ -98,7 +113,7 @@ export default function GpuResourcePage() {
     {
       key: 'user_id',
       header: '담당자',
-      render: (r) => <span style={{ color: color.textSecondary }}>{r.user_id}</span>,
+      render: (r) => <span style={{ color: color.textPrimary }}>{r.user_id}</span>,
     },
     {
       key: 'quota',
@@ -127,20 +142,21 @@ export default function GpuResourcePage() {
   // Bottom legend: two metric-specific scales (good/warn/bad).
   const u = semantic.util;
   const gpuLegend = [
-    { label: '≥20%', lvl: u.good },
-    { label: '10–20%', lvl: u.warn },
-    { label: '<10%', lvl: u.bad },
+    { label: '≥ 20%', lvl: u.good },
+    { label: '10-20%', lvl: u.warn },
+    { label: '< 10%', lvl: u.bad },
   ];
   const slotLegend = [
-    { label: '≥80%', lvl: u.good },
-    { label: '70–80%', lvl: u.warn },
-    { label: '<70%', lvl: u.bad },
+    { label: '≥ 80%', lvl: u.good },
+    { label: '70-80%', lvl: u.warn },
+    { label: '< 70%', lvl: u.bad },
   ];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: space.xl }}>
       {/* Page toolbar: Tabs + Search (left) · result count + 다운로드 (right) */}
       <div
+        id="res-toolbar"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -151,6 +167,7 @@ export default function GpuResourcePage() {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: space.lg }}>
           <Tabs tabs={tabs} active={tab} onChange={(k) => onTab(k as TabKey)} />
+          <span style={{ width: 1, height: 14, background: color.borderStrong }} />
           <SearchInput
             value={query}
             onChange={onQuery}
@@ -167,6 +184,7 @@ export default function GpuResourcePage() {
       </div>
 
       {/* Main expandable data table. */}
+      <div id="res-table">
       <Card padding={0}>
         <DataTable
           columns={columns}
@@ -177,15 +195,17 @@ export default function GpuResourcePage() {
             <ExpandedTaskDetail
               data={getProjectUnits(r.project_id)}
               isCritical={r.is_critical === 'Y'}
-              tasks={r.member_tasks}
+              tasks={[tab]}
             />
           )}
           emptyText="조건에 맞는 과제가 없습니다"
         />
       </Card>
+      </div>
 
       {/* Pagination (centered) + threshold legend pills (right). */}
       <div
+        id="res-footer"
         style={{
           display: 'grid',
           gridTemplateColumns: '1fr auto 1fr',
@@ -198,9 +218,9 @@ export default function GpuResourcePage() {
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
-            gap: space.xs,
-            alignItems: 'flex-end',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: space.xl,
             justifySelf: 'end',
           }}
         >
@@ -222,19 +242,21 @@ function LegendRow({
 }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: space.md }}>
-      <span style={{ ...text.label, color: color.textSecondary, minWidth: 56 }}>{title}</span>
+      <span style={{ fontSize: 12, lineHeight: '14px', fontWeight: 400, color: color.textTertiary }}>
+        {title}
+      </span>
       <div style={{ display: 'flex', alignItems: 'center', gap: space.sm }}>
         {items.map((it) => (
           <span
             key={it.label}
             style={{
               padding: '2px 8px',
-              borderRadius: radius.pill,
+              borderRadius: radius.cell,
               background: it.lvl.bg,
               border: `1px solid ${it.lvl.border}`,
               color: it.lvl.text,
               ...text.tiny,
-              fontWeight: 600,
+              fontWeight: 400,
             }}
           >
             {it.label}

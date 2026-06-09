@@ -146,7 +146,7 @@ export const shadow = {
 
 export const layout = {
   sidebarWidth: 224,
-  topbarHeight: 48,
+  topbarHeight: 56, // Figma top bar height (node 7001:46443, 1696x56)
   contentMaxWidth: 1696, // exact content width from Figma (1920 frame − margins)
   pagePadding: 16,
 } as const;

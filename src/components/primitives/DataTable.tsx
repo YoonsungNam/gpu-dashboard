@@ -60,6 +60,8 @@ export default function DataTable<T>({
                 ...text.label,
                 color: color.textTertiary,
                 padding: `${vPad}px 10px`,
+                background: color.cardBgAlt, // Figma table-header band #F6F8FA
+                borderTop: `1px solid ${color.border}`,
                 borderBottom: `1px solid ${color.border}`,
               }}
             />
@@ -73,6 +75,8 @@ export default function DataTable<T>({
                 ...text.label,
                 color: color.textTertiary,
                 padding: `${vPad}px 10px`,
+                background: color.cardBgAlt, // Figma table-header band #F6F8FA
+                borderTop: `1px solid ${color.border}`,
                 borderBottom: `1px solid ${color.border}`,
                 whiteSpace: 'nowrap',
               }}

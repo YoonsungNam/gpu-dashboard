@@ -12,3 +12,6 @@ dist-ssr
 *.token
 .claude/settings.local.json
 .claude/
+
+# tsc incremental build cache
+*.tsbuildinfo

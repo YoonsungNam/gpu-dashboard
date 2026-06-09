@@ -1,6 +1,10 @@
-import { color, space, text } from '../../tokens';
+import { color, radius, text } from '../../tokens';
 
-/** Horizontal tab row. Active tab uses brand text + 2px brand bottom border. */
+/**
+ * Segmented-control tabs (Figma resource toolbar, node 7001:50021).
+ * Connected pill buttons: active = #E6F1FA fill + #0077C8 text, inactive = white + #3C444B text,
+ * both bordered #CCD1D6.
+ */
 export default function Tabs({
   tabs,
   active,
@@ -11,16 +15,11 @@ export default function Tabs({
   onChange: (k: string) => void;
 }) {
   return (
-    <div
-      role="tablist"
-      style={{
-        display: 'flex',
-        alignItems: 'stretch',
-        borderBottom: `1px solid ${color.border}`,
-      }}
-    >
-      {tabs.map((tab) => {
+    <div role="tablist" style={{ display: 'inline-flex' }}>
+      {tabs.map((tab, i) => {
         const isActive = tab.key === active;
+        const first = i === 0;
+        const last = i === tabs.length - 1;
         return (
           <button
             key={tab.key}
@@ -30,15 +29,21 @@ export default function Tabs({
             onClick={() => onChange(tab.key)}
             style={{
               ...text.bodyM,
+              fontWeight: 500,
               appearance: 'none',
-              background: 'transparent',
-              border: 'none',
               cursor: 'pointer',
-              padding: `${space.md}px ${space.lg}px`,
-              color: isActive ? color.brand : color.textTertiary,
-              borderBottom: `2px solid ${isActive ? color.brand : 'transparent'}`,
-              marginBottom: -1,
+              height: 28,
+              padding: '0 12px',
               whiteSpace: 'nowrap',
+              background: isActive ? '#E6F1FA' : color.cardBg,
+              color: isActive ? '#0077C8' : '#3C444B',
+              border: `1px solid ${color.borderStrong}`,
+              // collapse the shared edge so the group reads as one segmented control
+              borderLeft: first ? `1px solid ${color.borderStrong}` : 'none',
+              borderTopLeftRadius: first ? radius.cell : 0,
+              borderBottomLeftRadius: first ? radius.cell : 0,
+              borderTopRightRadius: last ? radius.cell : 0,
+              borderBottomRightRadius: last ? radius.cell : 0,
             }}
           >
             {tab.count != null ? `${tab.label} (${tab.count})` : tab.label}

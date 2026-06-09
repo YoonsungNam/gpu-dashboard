@@ -168,17 +168,24 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
     kind === 'training'
       ? '시간대와 무관하게 연속 수행되므로, 24시간 전체 기준으로 집계'
       : '시간대별 사용 편차가 크므로, 근무(09~18시), 비근무를 구분하여 집계';
+  // Training runs 24h continuously, so the working/non-working (WH/AH) split does
+  // not apply — Figma shows only GPU Util + Slot Util for 학습 (nodes 7001:46406/46412).
+  const metrics = kind === 'training' ? [GPU_UTIL, SLOT_UTIL] : UTIL_METRICS;
   return (
     <Card title={<TaskCardTitle kind={kind} caption={caption} />} headerStyle={taskHeaderStyle(kind)}>
-      <div style={{ display: 'flex', gap: space.xxl, alignItems: 'center' }}>
-        {/* Left: GPUs (accent, 28px) over Projects (muted, 24px) */}
+      <div style={{ display: 'flex', gap: space.xxl, alignItems: 'stretch' }}>
+        {/* Left: GPUs (accent, 28px) over Projects (muted, 24px) on a #FAFBFC panel (node 46368/46419) */}
         <div
           style={{
             flex: '0 0 auto',
-            minWidth: 120,
+            width: 144,
+            background: '#FAFBFC',
+            borderRadius: radius.sm,
             display: 'flex',
             flexDirection: 'column',
-            gap: space.lg,
+            justifyContent: 'center',
+            gap: space.xl,
+            padding: `${space.lg}px ${space.xl}px`,
           }}
         >
           <div>
@@ -194,22 +201,22 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
             <div style={{ ...text.label, color: color.textMuted, marginTop: 2 }}>Projects</div>
           </div>
         </div>
-        {/* Right: util rows */}
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: space.lg,
-          }}
-        >
-          {UTIL_METRICS.map((def) => (
-            <UtilRow
+        {/* Right: util rows with 1px inter-row dividers (#E4E9ED, nodes 46375/46382/46389) */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 188 }}>
+          {metrics.map((def, i) => (
+            <div
               key={def.key}
-              label={def.label}
-              value={kpiVal(kpi, def.key)}
-              metric={def.metric}
-            />
+              style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                borderBottom: i < metrics.length - 1 ? `1px solid ${color.border}` : undefined,
+              }}
+            >
+              <div style={{ width: '100%' }}>
+                <UtilRow label={def.label} value={kpiVal(kpi, def.key)} metric={def.metric} />
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -222,7 +229,7 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
 /* ------------------------------------------------------------------ */
 
 function HoldingsSection() {
-  const { envRows, modelAggregates, total } = useMemo(() => {
+  const { envRows, modelAggregates, total, maxRowTotal } = useMemo(() => {
     // Stable model ordering by first appearance.
     const models: string[] = [];
     for (const q of quotaByEnvGpu) {
@@ -257,12 +264,15 @@ function HoldingsSection() {
       const share = total > 0 ? (rowTotal / total) * 100 : 0;
       return {
         label: env,
+        rowTotal,
         annotation: `${num(rowTotal)} 장 | 전체 대비 ${share.toFixed(1)}%`,
         segments: models
           .filter((m) => byEnv[env][m])
           .map((m) => ({ key: m, value: byEnv[env][m], color: modelColor[m] })),
       };
     });
+    // Common scale so each bar's filled length encodes absolute magnitude.
+    const maxRowTotal = Math.max(1, ...envRows.map((r) => r.rowTotal));
 
     const modelAggregates = models.map((m) => ({
       model: m,
@@ -271,7 +281,7 @@ function HoldingsSection() {
       share: total > 0 ? ((counts[m] ?? 0) / total) * 100 : 0,
     }));
 
-    return { envRows, modelAggregates, total };
+    return { envRows, modelAggregates, total, maxRowTotal };
   }, []);
 
   const legendItems = modelAggregates.map((m) => ({
@@ -284,95 +294,73 @@ function HoldingsSection() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 260px',
+          gridTemplateColumns: '1fr 302px',
           gap: space.xxl,
           alignItems: 'start',
         }}
       >
-        {/* Left: legend + stacked bars (each with a right-aligned annotation) */}
+        {/* Left: GPU 분포 legend + magnitude bars (env label above each bar) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: space.xl }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: space.sm }}>
-            <span style={{ ...text.label, color: color.textMuted }}>GPU 분포</span>
-            <Legend items={legendItems} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: space.lg }}>
+            <span style={{ fontSize: 12, lineHeight: '14px', fontWeight: 500, color: color.textMuted }}>
+              GPU 분포
+            </span>
+            <Legend items={legendItems} size={12} />
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: space.xl }}>
             {envRows.map((row) => (
-              <div
-                key={row.label}
-                style={{ display: 'flex', alignItems: 'center', gap: space.lg }}
-              >
-                <div style={{ flex: 1 }}>
-                  <StackedBar rows={[row]} showValues />
+              <div key={row.label} style={{ display: 'flex', flexDirection: 'column', gap: space.sm }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 500, color: color.textTitle }}>
+                    {row.label}
+                  </span>
+                  <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 500, color: color.textTertiary }}>
+                    {row.annotation}
+                  </span>
                 </div>
-                <span
-                  style={{
-                    ...text.caption,
-                    color: color.textTertiary,
-                    whiteSpace: 'nowrap',
-                    flex: '0 0 auto',
-                    textAlign: 'right',
-                  }}
-                >
-                  {row.annotation}
-                </span>
+                <StackedBar segments={row.segments} maxTotal={maxRowTotal} />
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right: total + per-model list */}
+        {/* Right: #FAFBFC total panel (node 7001:47398) */}
         <div
           style={{
+            background: '#FAFBFC',
+            borderRadius: radius.sm,
+            padding: space.xl,
             display: 'flex',
             flexDirection: 'column',
             gap: space.lg,
-            borderLeft: `1px solid ${color.border}`,
-            paddingLeft: space.xxl,
           }}
         >
-          <div>
-            <div style={{ ...text.label, color: color.textTertiary }}>GPU 전체</div>
-            <div style={{ ...text.metricTotal, color: color.textPrimary }}>
-              {num(total)} 장
-            </div>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 500, color: color.textMuted }}>
+              전체 GPU
+            </span>
+            <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: space.xs }}>
+              <span style={{ ...text.metricTotal, color: color.textSecondary }}>{num(total)}</span>
+              <span style={{ ...text.bodyM, color: color.textMuted }}>장</span>
+            </span>
           </div>
-          <div style={{ ...text.label, color: color.textMuted }}>모델별 합계</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: space.sm }}>
+          <div style={{ height: 1, background: color.border }} />
+          <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 500, color: color.textMuted }}>
+            모델별 합계
+          </span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: space.md }}>
             {modelAggregates.map((m) => (
-              <div
-                key={m.model}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: space.sm,
-                }}
-              >
+              <div key={m.model} style={{ display: 'flex', alignItems: 'center', gap: space.sm }}>
                 <span
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: 2,
-                    background: m.color,
-                    flexShrink: 0,
-                  }}
+                  style={{ width: 12, height: 12, borderRadius: 1, background: m.color, flexShrink: 0 }}
                 />
+                <span style={{ ...text.bodyM, color: color.textSecondary, flex: 1 }}>{m.model}</span>
+                <span style={{ ...text.body, color: color.textTertiary }}>{pct(m.share)}</span>
                 <span
                   style={{
                     ...text.bodyM,
+                    fontWeight: 500,
                     color: color.textSecondary,
-                    flex: 1,
-                  }}
-                >
-                  {m.model}
-                </span>
-                <span style={{ ...text.caption, color: color.textTertiary }}>
-                  {pct(m.share)}
-                </span>
-                <span
-                  style={{
-                    ...text.bodyM,
-                    fontWeight: 600,
-                    color: color.textPrimary,
                     width: 48,
                     textAlign: 'right',
                   }}
@@ -424,7 +412,7 @@ function makeRankColumns(boxed = false): DataTableColumn<RankedProject>[] {
     },
     {
       key: 'project_name',
-      header: '과제명',
+      header: '과제',
       render: (r) => (
         <span style={{ ...text.bodyM, color: color.textPrimary }}>
           {r.project_name}
@@ -466,12 +454,27 @@ function makeRankColumns(boxed = false): DataTableColumn<RankedProject>[] {
 }
 
 /** Small title (+ inline 건 count) and threshold subtitle above a rank table. */
-function RankTitle({ title, count, subtitle }: { title: string; count: number; subtitle: string }) {
+function RankTitle({
+  title,
+  count,
+  subtitle,
+  countColor = color.brand,
+}: {
+  title: string;
+  count: number;
+  subtitle: string;
+  countColor?: string;
+}) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: space.xxs }}>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: space.sm }}>
-        <span style={{ ...text.bodyM, fontWeight: 600, color: color.textPrimary }}>{title}</span>
-        <span style={{ ...text.label, fontWeight: 600, color: color.brand }}>{count}건</span>
+        <span style={{ fontSize: 16, lineHeight: '20px', fontWeight: 500, color: color.textTitle }}>
+          {title}
+        </span>
+        <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 2 }}>
+          <span style={{ ...text.bodyM, fontWeight: 500, color: countColor }}>{count}</span>
+          <span style={{ ...text.caption, color: color.textSecondary }}>건</span>
+        </span>
         <span style={{ ...text.caption, color: color.textTertiary }}>| H100 기준</span>
       </div>
       <div style={{ ...text.caption, color: color.textTertiary }}>{subtitle}</div>
@@ -482,8 +485,14 @@ function RankTitle({ title, count, subtitle }: { title: string; count: number; s
 function OccupancyColumn({ task }: { task: TaskType }) {
   const kind = taskKind(task);
   const boxedCols = useMemo(() => makeRankColumns(true), []);
-  const plainCols = useMemo(() => makeRankColumns(false), []);
   const projectCount = kpiByTask.find((k) => k.task === task)?.project_count ?? 0;
+  const expandRow = (r: RankedProject) => (
+    <ExpandedTaskDetail
+      data={getProjectUnits(r.project_id)}
+      isCritical={r.is_critical === 'Y'}
+      tasks={[task]}
+    />
+  );
 
   return (
     <Card
@@ -501,6 +510,7 @@ function OccupancyColumn({ task }: { task: TaskType }) {
             title="우수 활용 과제"
             count={topBottomProjects.good.length}
             subtitle="GPU Util ≥ 66%"
+            countColor="#239B2F"
           />
           {/* Expandable rows reproduce the Overview(2) expanded state. */}
           <DataTable
@@ -508,13 +518,7 @@ function OccupancyColumn({ task }: { task: TaskType }) {
             rows={topBottomProjects.good}
             rowKey={(r) => `good-${r.project_id}`}
             compact
-            expandedContent={(r) => (
-              <ExpandedTaskDetail
-                data={getProjectUnits(r.project_id)}
-                isCritical={r.is_critical === 'Y'}
-                tasks={[task]}
-              />
-            )}
+            expandedContent={expandRow}
           />
         </div>
 
@@ -522,13 +526,15 @@ function OccupancyColumn({ task }: { task: TaskType }) {
           <RankTitle
             title="저활용 과제"
             count={topBottomProjects.alert.length}
-            subtitle="모델학습: GPU Util ≤ 30% & Slot Util ≤ 75% · 모델개발: GPU Util ≤ 5% & Slot Util ≤ 75%"
+            subtitle="모델학습: GPU Util ≤ 30% and Slot Util ≤ 75%, 모델개발: GPU Util ≤ 5% and Slot Util ≤ 75%"
+            countColor="#FF695F"
           />
           <DataTable
-            columns={plainCols}
+            columns={boxedCols}
             rows={topBottomProjects.alert}
             rowKey={(r) => `alert-${r.project_id}`}
             compact
+            expandedContent={expandRow}
           />
         </div>
       </div>
@@ -540,42 +546,80 @@ function OccupancyColumn({ task }: { task: TaskType }) {
 /* §4 — GPU 사용추이                                                    */
 /* ------------------------------------------------------------------ */
 
-const trendSeries: TrendSeries[] = [
-  { key: 'gpu_ut', label: GPU_UTIL.label, color: chart.series.primary },
-  { key: 'slot_ut', label: SLOT_UTIL.label, color: chart.series.secondary, dash: true },
-];
+// Figma themes each trend card to one hue, distinguishing the two series by
+// solid (GPU Util) vs dashed (Slot Util): Inference all-cyan #00B3E2 (nodes 47284/47288),
+// Training all-purple #8092DC (nodes 47364/47368).
+const trendColor = (kind: 'inference' | 'training') => (kind === 'training' ? '#8092DC' : '#00B3E2');
+
+const trendSeriesFor = (kind: 'inference' | 'training'): TrendSeries[] => {
+  const c = trendColor(kind);
+  return [
+    { key: 'gpu_ut', label: GPU_UTIL.label, color: c },
+    { key: 'slot_ut', label: SLOT_UTIL.label, color: c, dash: true },
+  ];
+};
+
+/** Trend-card legend: solid-bar marker for GPU Util, dotted-line marker for Slot Util. */
+function TrendLegend({ color: c }: { color: string }) {
+  const dot = <span style={{ width: 3, height: 3, background: c }} />;
+  const item = (label: string, dashed: boolean) => (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: space.sm }}>
+      <span style={{ display: 'inline-flex', width: 13, justifyContent: 'space-between' }}>
+        {dashed ? (
+          <>
+            {dot}
+            {dot}
+            {dot}
+          </>
+        ) : (
+          <span style={{ width: 13, height: 3, background: c }} />
+        )}
+      </span>
+      <span style={{ fontSize: 12, lineHeight: '14px', fontWeight: 500, color: color.textSecondary }}>
+        {label}
+      </span>
+    </span>
+  );
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: space.lg }}>
+      {item(GPU_UTIL.label, false)}
+      {item(SLOT_UTIL.label, true)}
+    </span>
+  );
+}
 
 function TrendSection() {
-  const legendItems = trendSeries.map((s) => ({ label: s.label, color: s.color }));
-
   const renderCard = (task: TaskType) => {
     const kind = taskKind(task);
+    const accent = TASK_ACCENT[kind].title;
+    const series = trendSeriesFor(kind);
     const pts = utilTrendByTask[task];
     const data = pts.map((p) => ({ ts: p.ts, gpu_ut: p.gpu_ut, slot_ut: p.slot_ut }));
     return (
       <Card
         title={<TaskCardTitle kind={kind} />}
         headerStyle={taskHeaderStyle(kind)}
-        headerRight={<Legend items={legendItems} />}
+        headerRight={<TrendLegend color={trendColor(kind)} />}
       >
-        <div
-          style={{
-            ...text.bodyM,
-            fontWeight: 600,
-            color: color.textSecondary,
-            marginBottom: space.md,
-            display: 'flex',
-            gap: space.xl,
-          }}
-        >
-          <span>
-            GPU 평균 <span style={{ color: color.brand }}>{trendAvg(pts, 'gpu_ut')}%</span>
-          </span>
-          <span>
-            Slot 평균 <span style={{ color: color.brand }}>{trendAvg(pts, 'slot_ut')}%</span>
-          </span>
+        <div style={{ marginBottom: space.md, display: 'flex', gap: space.xl }}>
+          {([
+            ['GPU 평균', 'gpu_ut'],
+            ['Slot 평균', 'slot_ut'],
+          ] as const).map(([lbl, key]) => (
+            <span key={key} style={{ display: 'inline-flex', alignItems: 'baseline', gap: space.xs }}>
+              <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 400, color: color.textTertiary }}>
+                {lbl}
+              </span>
+              <span style={{ fontSize: 16, lineHeight: '20px', fontWeight: 500, color: accent }}>
+                {trendAvg(pts, key)}
+              </span>
+              <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 400, color: color.textSecondary }}>
+                %
+              </span>
+            </span>
+          ))}
         </div>
-        <TrendChart data={data} xKey="ts" series={trendSeries} height={180} area />
+        <TrendChart data={data} xKey="ts" series={series} height={180} area />
       </Card>
     );
   };

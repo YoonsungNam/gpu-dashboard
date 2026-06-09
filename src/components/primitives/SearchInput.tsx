@@ -26,7 +26,7 @@ export default function SearchInput({
         aria-hidden="true"
         style={{
           position: 'absolute',
-          left: 8,
+          right: 8, // Figma places the magnifier at the right end of the search box
           top: '50%',
           transform: 'translateY(-50%)',
           pointerEvents: 'none',
@@ -43,7 +43,7 @@ export default function SearchInput({
         style={{
           boxSizing: 'border-box',
           width: width ? '100%' : undefined,
-          padding: '6px 10px 6px 28px',
+          padding: '6px 28px 6px 10px',
           border: `1px solid ${color.border}`,
           borderRadius: radius.sm,
           background: color.cardBg,

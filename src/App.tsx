@@ -55,7 +55,7 @@ function ToolbarSelect({
         alignItems: 'center',
         gap: space.xs,
         ...text.label,
-        color: color.textSecondary,
+        color: '#3C444B', // Figma filter label color (nodes 7001:46448/46459/46470)
       }}
     >
       {label}
@@ -64,11 +64,11 @@ function ToolbarSelect({
         onChange={(e) => onChange(e.target.value)}
         style={{
           border: `1px solid ${color.border}`,
-          borderRadius: radius.sm,
+          borderRadius: radius.cell,
           padding: '4px 8px',
           background: color.cardBg,
-          color: color.textPrimary,
-          ...text.label,
+          color: '#3C444B', // Figma select value color (nodes 7001:46452/46463/46474)
+          ...text.body,
         }}
       >
         {options.map((o) => (
@@ -95,17 +95,18 @@ function ResourceTopActions() {
         style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: space.xs,
-          padding: '2px 10px',
-          borderRadius: radius.pill,
-          background: semantic.util.good.bg,
-          color: semantic.util.good.text,
+          gap: space.xxs,
+          padding: '2px 6px',
+          borderRadius: radius.xl,
+          // Figma Live tag: neutral pill #F2F6F9 + gray #454E56 text, green status dot only.
+          background: '#F2F6F9',
+          color: '#454E56',
           ...text.label,
-          fontWeight: 600,
+          fontWeight: 400,
         }}
       >
         <span
-          style={{ width: 6, height: 6, borderRadius: radius.pill, background: semantic.delta.up }}
+          style={{ width: 8, height: 8, borderRadius: radius.pill, background: semantic.delta.up }}
         />
         Live
       </span>
@@ -127,7 +128,20 @@ function ResourceTopActions() {
         onChange={setCritical}
         options={['전체', ...filters.is_critical]}
       />
-      <span style={{ ...text.label, color: color.brand, cursor: 'pointer' }}>ⓘ 지표 정의</span>
+      <span
+        style={{
+          ...text.bodyM,
+          fontWeight: 500,
+          color: '#565E66', // Figma 지표 정의 ghost-button text (node I7001:46445;11162:48207)
+          cursor: 'pointer',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: space.xs,
+        }}
+      >
+        <span style={{ ...text.label, color: color.textTertiary }}>ⓘ</span>
+        지표 정의
+      </span>
     </div>
   );
 }

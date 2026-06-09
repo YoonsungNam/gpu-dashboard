@@ -5,6 +5,19 @@
  */
 type IconProps = { size?: number; color?: string };
 
+/** Brand 'G' logo mark (Figma node 7001:47219) — a #99A8E3 ring-G + light corner square. */
+export function LogoMark({ size = 22 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 22 22" fill="none">
+      <path
+        d="M11 5C7.68629 5 5 7.68629 5 11C5 14.3137 7.68629 17 11 17C13.6123 17 15.8334 15.3302 16.6572 13H12V8H22V11C22 17.0751 17.0751 22 11 22C4.92487 22 0 17.0751 0 11C0 4.92487 4.92487 0 11 0V5Z"
+        fill="#99A8E3"
+      />
+      <rect x="17" width="5" height="5" fill="#E9EEF2" />
+    </svg>
+  );
+}
+
 export function OverviewIcon({ size = 16, color = 'currentColor' }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
