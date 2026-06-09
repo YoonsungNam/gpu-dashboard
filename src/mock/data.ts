@@ -166,7 +166,7 @@ export const quotaByEnvGpu: QuotaByEnvGpu[] = [
   { environment: 'D1', gpu_model: 'L40S', gpu_count: 224 },
   { environment: 'R&D', gpu_model: 'H100', gpu_count: 256 },
   { environment: 'R&D', gpu_model: 'A800', gpu_count: 165 },
-  { environment: 'R&D', gpu_model: 'L40S', gpu_count: 144 },
+  { environment: 'R&D', gpu_model: 'L40S', gpu_count: 344 },
 ];
 
 /* ---- GET /api/service/summary ---- */

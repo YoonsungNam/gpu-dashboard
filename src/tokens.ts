@@ -14,14 +14,14 @@
 /* ------------------------------------------------------------------ */
 export const color = {
   // Surfaces
-  pageBg: '#F2F6F9', // app content background (cool light gray)
+  pageBg: '#ECF1F5', // app content background (exact, from Figma frame fill)
   cardBg: '#FFFFFF',
   cardBgAlt: '#F6F8FA', // subtle panels / table sub-rows
   rowHover: '#FAFBFC',
 
   // Sidebar (dark navy)
   sidebarBg: '#002035',
-  sidebarItemActive: '#0064A7',
+  sidebarItemActive: '#3392D3',
   sidebarText: '#B9BBBE',
   sidebarTextActive: '#FFFFFF',
 
@@ -32,6 +32,7 @@ export const color = {
 
   // Text
   textPrimary: '#2F363C',
+  textTitle: '#3C444B', // section & card titles (exact, from Figma)
   textSecondary: '#565E66',
   textTertiary: '#767D84',
   textMuted: '#90969D',
@@ -70,9 +71,11 @@ export const semantic = {
 
 /** Categorical palette for GPU-model stacked bars and multi-series charts. */
 export const chart = {
+  // Exact Figma 보유현황 model-segment palette, in legend order
+  // (H100 #0064A7, A100 #008074, then the remaining segment hues from node 7001:47448).
   categorical: [
-    '#00B3E2', '#00C3B1', '#008074', '#66D1EE', '#96D552',
-    '#55C961', '#6978B8', '#5A49A6', '#3A4571', '#3392D3',
+    '#0064A7', '#008074', '#00B3E2', '#96D552', '#6978B8',
+    '#66D1EE', '#3A4571', '#5A49A6', '#00C3B1', '#3392D3',
   ],
   // Tentative — confirm against the two-line 사용추이 chart during build.
   series: { primary: '#00B3E2', secondary: '#5A49A6' },
@@ -142,9 +145,9 @@ export const shadow = {
 } as const;
 
 export const layout = {
-  sidebarWidth: 160,
+  sidebarWidth: 224,
   topbarHeight: 48,
-  contentMaxWidth: 1440,
+  contentMaxWidth: 1696, // exact content width from Figma (1920 frame − margins)
   pagePadding: 16,
 } as const;
 

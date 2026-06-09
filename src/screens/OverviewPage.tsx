@@ -1,16 +1,15 @@
 import { useMemo } from 'react';
-import { chart, color, space, text } from '../tokens';
-import { num, pct, utilColors } from '../lib/util';
+import { chart, color, radius, space, text } from '../tokens';
+import { num, pct, utilLevel } from '../lib/util';
 import { UTIL_METRICS, GPU_UTIL, SLOT_UTIL } from '../lib/labels';
 
 import SectionHeader from '../components/primitives/SectionHeader';
 import Card from '../components/primitives/Card';
-import StatHero from '../components/primitives/StatHero';
 import ProgressBar from '../components/primitives/ProgressBar';
 import UtilBadge from '../components/primitives/UtilBadge';
-import TaskTypeBadge from '../components/primitives/TaskTypeBadge';
 import Legend from '../components/primitives/Legend';
 import DataTable, { type DataTableColumn } from '../components/primitives/DataTable';
+import { TaskIcon } from '../icons/FigureIcons';
 
 import StackedBar from '../components/charts/StackedBar';
 import TrendChart, { type TrendSeries } from '../components/charts/TrendChart';
@@ -31,9 +30,38 @@ import {
 /* Shared helpers                                                      */
 /* ------------------------------------------------------------------ */
 
-/** Map a Korean task label to the TaskTypeBadge kind. */
+/** Map a Korean task label to the task-card accent kind. */
 const taskKind = (task: TaskType): 'inference' | 'training' =>
   task === '학습' ? 'training' : 'inference';
+
+/**
+ * Per-task card accent — exact fills from Figma task-card headers
+ * (header bg #F3FBFD/#F7F8FD, bottom border #E6F7FC/#F2F4FC, title #007492/#5A49A6).
+ */
+const TASK_ACCENT = {
+  inference: { title: '#007492', headerBg: '#F3FBFD', headerBorder: '#E6F7FC' },
+  training: { title: '#5A49A6', headerBg: '#F7F8FD', headerBorder: '#F2F4FC' },
+} as const;
+
+/** Card title: real 20px task icon + colored "Inference / 추론" text (+ optional caption). */
+function TaskCardTitle({ kind, caption }: { kind: 'inference' | 'training'; caption?: string }) {
+  const title = kind === 'training' ? 'Training / 학습' : 'Inference / 추론';
+  return (
+    <span style={{ display: 'flex', alignItems: 'center', gap: space.sm }}>
+      <TaskIcon kind={kind} size={20} />
+      <span style={{ ...text.cardTitle, color: TASK_ACCENT[kind].title }}>{title}</span>
+      {caption && (
+        <span style={{ ...text.caption, color: color.textTitle, marginLeft: space.xs }}>{caption}</span>
+      )}
+    </span>
+  );
+}
+
+/** Tinted header style for a task card — pass to <Card headerStyle>. */
+const taskHeaderStyle = (kind: 'inference' | 'training') => ({
+  background: TASK_ACCENT[kind].headerBg,
+  borderBottomColor: TASK_ACCENT[kind].headerBorder,
+});
 
 /** Two-column grid used by sections 1, 3, 4 (추론 | 학습). */
 function TwoCol({ children }: { children: React.ReactNode }) {
@@ -53,16 +81,18 @@ function TwoCol({ children }: { children: React.ReactNode }) {
 
 /** Section wrapper: SectionHeader + content, with vertical rhythm. */
 function Section({
+  id,
   title,
   caption,
   children,
 }: {
+  id?: string;
   title: string;
   caption?: string;
   children: React.ReactNode;
 }) {
   return (
-    <section style={{ marginBottom: space.xxl + space.lg }}>
+    <section id={id} style={{ marginBottom: space.xxl + space.lg }}>
       <SectionHeader title={title} caption={caption} />
       {children}
     </section>
@@ -84,6 +114,11 @@ function kpiVal(kpi: KpiByTask, key: string): number {
   return map[key] ?? 0;
 }
 
+// Exact bar/value colors from the Figma 활용현황 card (solid bars + colored number;
+// bad = bar #FF8E87 / number #FF4337, per nodes 7001:46388 / 46385).
+const BAR_FILL: Record<string, string> = { good: '#55C961', warn: '#FFC46B', bad: '#FF8E87' };
+const BAR_VALUE: Record<string, string> = { good: '#239B2F', warn: '#D59638', bad: '#FF4337' };
+
 function UtilRow({
   label,
   value,
@@ -93,31 +128,34 @@ function UtilRow({
   value: number;
   metric: 'gpu' | 'slot';
 }) {
-  const c = utilColors(value, metric);
+  const lvl = utilLevel(value, metric);
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: space.lg }}>
       <span
         style={{
-          ...text.label,
-          color: color.textSecondary,
-          width: 80,
-          flex: '0 0 80px',
+          ...text.body,
+          color: color.textTitle,
+          width: 86,
+          flex: '0 0 86px',
         }}
       >
         {label}
       </span>
-      <ProgressBar value={value} color={c.text} />
+      <ProgressBar value={value} color={BAR_FILL[lvl]} trackColor="#E9EEF2" />
       <span
         style={{
-          ...text.bodyM,
-          fontWeight: 600,
-          color: c.text,
-          width: 56,
-          flex: '0 0 56px',
+          flex: '0 0 64px',
           textAlign: 'right',
+          display: 'inline-flex',
+          alignItems: 'baseline',
+          justifyContent: 'flex-end',
+          gap: 1,
         }}
       >
-        {pct(value)}
+        <span style={{ fontSize: 20, lineHeight: '24px', fontWeight: 600, color: BAR_VALUE[lvl] }}>
+          {value.toFixed(1)}
+        </span>
+        <span style={{ ...text.body, color: color.textSecondary }}>%</span>
       </span>
     </div>
   );
@@ -125,26 +163,38 @@ function UtilRow({
 
 function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
   const kind = taskKind(kpi.task);
-  const title = kind === 'training' ? 'Training / 학습' : 'Inference / 추론';
-  const subtitle =
+  const accent = TASK_ACCENT[kind].title;
+  const caption =
     kind === 'training'
       ? '시간대와 무관하게 연속 수행되므로, 24시간 전체 기준으로 집계'
-      : '시간대별 사용 편차가 크므로, 근무(09~18시)/비근무를 구분하여 집계';
+      : '시간대별 사용 편차가 크므로, 근무(09~18시), 비근무를 구분하여 집계';
   return (
-    <Card
-      title={
-        <span style={{ display: 'flex', alignItems: 'baseline', gap: space.md }}>
-          <TaskTypeBadge kind={kind} />
-          <span>{title}</span>
-          <span style={{ ...text.caption, color: color.textTertiary }}>{subtitle}</span>
-        </span>
-      }
-    >
+    <Card title={<TaskCardTitle kind={kind} caption={caption} />} headerStyle={taskHeaderStyle(kind)}>
       <div style={{ display: 'flex', gap: space.xxl, alignItems: 'center' }}>
-        <div style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: space.lg }}>
-          <StatHero value={num(gpuCountByTask[kpi.task] ?? 0)} label="GPUs" />
-          <StatHero value={num(kpi.project_count)} label="Projects" />
+        {/* Left: GPUs (accent, 28px) over Projects (muted, 24px) */}
+        <div
+          style={{
+            flex: '0 0 auto',
+            minWidth: 120,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: space.lg,
+          }}
+        >
+          <div>
+            <div style={{ ...text.metricXl, color: accent }}>
+              {num(gpuCountByTask[kpi.task] ?? 0)}
+            </div>
+            <div style={{ ...text.label, color: color.textMuted, marginTop: 2 }}>GPUs</div>
+          </div>
+          <div>
+            <div style={{ ...text.metricLg, fontWeight: 500, color: color.textMuted }}>
+              {num(kpi.project_count)}
+            </div>
+            <div style={{ ...text.label, color: color.textMuted, marginTop: 2 }}>Projects</div>
+          </div>
         </div>
+        {/* Right: util rows */}
         <div
           style={{
             flex: 1,
@@ -242,7 +292,7 @@ function HoldingsSection() {
         {/* Left: legend + stacked bars (each with a right-aligned annotation) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: space.xl }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: space.sm }}>
-            <span style={{ ...text.label, color: color.textSecondary }}>GPU 분포</span>
+            <span style={{ ...text.label, color: color.textMuted }}>GPU 분포</span>
             <Legend items={legendItems} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg }}>
@@ -286,7 +336,7 @@ function HoldingsSection() {
               {num(total)} 장
             </div>
           </div>
-          <div style={{ ...text.label, color: color.textSecondary }}>모델별 합계</div>
+          <div style={{ ...text.label, color: color.textMuted }}>모델별 합계</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: space.sm }}>
             {modelAggregates.map((m) => (
               <div
@@ -342,16 +392,35 @@ function HoldingsSection() {
 /* §3 — GPU 활용도 점유                                                 */
 /* ------------------------------------------------------------------ */
 
-function makeRankColumns(): DataTableColumn<RankedProject>[] {
+function makeRankColumns(boxed = false): DataTableColumn<RankedProject>[] {
   return [
     {
       key: 'rank',
       header: '#',
-      width: 32,
-      align: 'right',
-      render: (_r, i) => (
-        <span style={{ ...text.numTiny, color: color.textTertiary }}>{i + 1}</span>
-      ),
+      width: 36,
+      align: 'center',
+      // Figma 우수 table uses a neutral 22×22 #F2F6F9 r2 rank box (node 7001:46501);
+      // the 저활용 table uses a plain number.
+      render: (_r, i) =>
+        boxed ? (
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 22,
+              height: 22,
+              borderRadius: radius.cell,
+              background: '#F2F6F9',
+              ...text.numTiny,
+              color: color.textSecondary,
+            }}
+          >
+            {i + 1}
+          </span>
+        ) : (
+          <span style={{ ...text.numTiny, color: color.textTertiary }}>{i + 1}</span>
+        ),
     },
     {
       key: 'project_name',
@@ -412,20 +481,18 @@ function RankTitle({ title, count, subtitle }: { title: string; count: number; s
 
 function OccupancyColumn({ task }: { task: TaskType }) {
   const kind = taskKind(task);
-  const title = kind === 'training' ? 'Training / 학습' : 'Inference / 추론';
-  const columns = useMemo(() => makeRankColumns(), []);
+  const boxedCols = useMemo(() => makeRankColumns(true), []);
+  const plainCols = useMemo(() => makeRankColumns(false), []);
   const projectCount = kpiByTask.find((k) => k.task === task)?.project_count ?? 0;
 
   return (
     <Card
-      title={
-        <span style={{ display: 'flex', alignItems: 'center', gap: space.md }}>
-          <TaskTypeBadge kind={kind} />
-          <span>{title}</span>
-        </span>
-      }
+      title={<TaskCardTitle kind={kind} />}
+      headerStyle={taskHeaderStyle(kind)}
       headerRight={
-        <span style={{ ...text.label, color: color.textSecondary }}>{num(projectCount)} Projects</span>
+        <span style={{ ...text.cardTitle, fontWeight: 500, color: TASK_ACCENT[kind].title }}>
+          {num(projectCount)} Projects
+        </span>
       }
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: space.xl }}>
@@ -437,7 +504,7 @@ function OccupancyColumn({ task }: { task: TaskType }) {
           />
           {/* Expandable rows reproduce the Overview(2) expanded state. */}
           <DataTable
-            columns={columns}
+            columns={boxedCols}
             rows={topBottomProjects.good}
             rowKey={(r) => `good-${r.project_id}`}
             compact
@@ -458,7 +525,7 @@ function OccupancyColumn({ task }: { task: TaskType }) {
             subtitle="모델학습: GPU Util ≤ 30% & Slot Util ≤ 75% · 모델개발: GPU Util ≤ 5% & Slot Util ≤ 75%"
           />
           <DataTable
-            columns={columns}
+            columns={plainCols}
             rows={topBottomProjects.alert}
             rowKey={(r) => `alert-${r.project_id}`}
             compact
@@ -475,7 +542,7 @@ function OccupancyColumn({ task }: { task: TaskType }) {
 
 const trendSeries: TrendSeries[] = [
   { key: 'gpu_ut', label: GPU_UTIL.label, color: chart.series.primary },
-  { key: 'slot_ut', label: SLOT_UTIL.label, color: chart.series.secondary },
+  { key: 'slot_ut', label: SLOT_UTIL.label, color: chart.series.secondary, dash: true },
 ];
 
 function TrendSection() {
@@ -483,17 +550,12 @@ function TrendSection() {
 
   const renderCard = (task: TaskType) => {
     const kind = taskKind(task);
-    const title = kind === 'training' ? 'Training / 학습' : 'Inference / 추론';
     const pts = utilTrendByTask[task];
     const data = pts.map((p) => ({ ts: p.ts, gpu_ut: p.gpu_ut, slot_ut: p.slot_ut }));
     return (
       <Card
-        title={
-          <span style={{ display: 'flex', alignItems: 'center', gap: space.md }}>
-            <TaskTypeBadge kind={kind} />
-            <span>{title}</span>
-          </span>
-        }
+        title={<TaskCardTitle kind={kind} />}
+        headerStyle={taskHeaderStyle(kind)}
         headerRight={<Legend items={legendItems} />}
       >
         <div
@@ -513,7 +575,7 @@ function TrendSection() {
             Slot 평균 <span style={{ color: color.brand }}>{trendAvg(pts, 'slot_ut')}%</span>
           </span>
         </div>
-        <TrendChart data={data} xKey="ts" series={trendSeries} height={180} area={false} />
+        <TrendChart data={data} xKey="ts" series={trendSeries} height={180} area />
       </Card>
     );
   };
@@ -536,25 +598,25 @@ export default function OverviewPage() {
 
   return (
     <div>
-      <Section title="GPU 활용현황" caption="추론 · 학습 과제 GPU 활용 지표">
+      <Section id="sec-util" title="GPU 활용현황" caption="추론 · 학습별 핵심 모니터링 지표">
         <TwoCol>
           <UtilizationCard kpi={inference} />
           <UtilizationCard kpi={training} />
         </TwoCol>
       </Section>
 
-      <Section title="GPU 보유현황" caption="환경별 · GPU 모델별 보유 수량">
+      <Section id="sec-holdings" title="GPU 보유현황" caption="환경별 x 모델별 보유 장수">
         <HoldingsSection />
       </Section>
 
-      <Section title="GPU 활용도 점유" caption="우수 · 저활용 과제 현황">
+      <Section id="sec-occupancy" title="GPU 활용도 점검" caption="우수 저활용 과제 순위">
         <TwoCol>
           <OccupancyColumn task="추론" />
           <OccupancyColumn task="학습" />
         </TwoCol>
       </Section>
 
-      <Section title="GPU 사용추이" caption="최근 30일 GPU Util · Slot Util 추이">
+      <Section id="sec-trend" title="GPU 사용추이" caption="최근 30일 · 추론/학습별 Slot Util · GPU Util">
         <TrendSection />
       </Section>
     </div>

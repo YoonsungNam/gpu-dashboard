@@ -172,6 +172,7 @@ export default function GpuResourcePage() {
           columns={columns}
           rows={pageRows}
           rowKey={(r) => r.project_id}
+          compact
           expandedContent={(r) => (
             <ExpandedTaskDetail
               data={getProjectUnits(r.project_id)}
