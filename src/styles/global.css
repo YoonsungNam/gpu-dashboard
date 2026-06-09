@@ -1,0 +1,45 @@
+/* Pretendard webfont (closest public match to "Pretendard GOV" used in Figma).
+   Swap for the internal Pretendard GOV face when porting. */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+body {
+  font-family: 'Pretendard GOV', Pretendard, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, sans-serif;
+  color: #2f363c;
+  background: #f2f6f9;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Inline CSS can't express :hover / media queries — a few shared helpers cover
+   the interactive states the design needs. Keep this file minimal. */
+.gd-row:hover {
+  background: #fafbfc;
+}
+.gd-clickable {
+  cursor: pointer;
+}
+.gd-nav-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccd1d6;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

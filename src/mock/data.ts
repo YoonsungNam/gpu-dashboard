@@ -1,0 +1,201 @@
+/**
+ * Mock data shaped exactly like the real API (see types.ts).
+ * Deterministic (seeded) so screens look stable across reloads.
+ * Replace these with real fetches when porting — the shapes already match.
+ */
+import type {
+  Filters,
+  GpuCountByTask,
+  KpiByTask,
+  ProjectRow,
+  ProjectUnitsResponse,
+  QuotaByEnvGpu,
+  ServiceSummary,
+  ServiceTimeseriesPoint,
+  TaskType,
+  TopBottomProjects,
+  YN,
+} from './types';
+
+/* ---- tiny deterministic RNG (mulberry32) ---- */
+function rng(seed: number) {
+  return () => {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const pick = <T,>(r: () => number, arr: T[]) => arr[Math.floor(r() * arr.length)];
+const round1 = (n: number) => Math.round(n * 10) / 10;
+
+const DIVISIONS = ['DX', 'Platform', 'Security', 'Foundry', 'Memory'];
+const IMPORTANCE = ['전략', '핵심', '일반'];
+const PURPOSES = ['생산시스템 연계', '글로벌 파운드리 연계', '연구 개발', '서비스 운영', 'AI 모델 학습'];
+const GPU_MODELS = ['H100', 'A100', 'A800', 'L40S'];
+const PROJECT_NAMES = [
+  'AI Vision Platform', 'Data Pipeline', '추천 엔진 RT', '이미지 생성 서빙',
+  'Solution 개발용 학습', '파운드리 API 서빙', '메모리 검증 AI', 'Foundry 시뮬레이션',
+  '글로벌 파운드리 연계', '백오피스 추론', '생성형 챗봇', '코드 어시스트',
+  'GenAI Chat', '문서 요약 RT', '검색 랭킹 학습', '음성 인식 서빙',
+  '광고 추천 학습', '이상탐지 추론', '수율 예측 학습', '공정 최적화',
+  '품질 검사 비전', '재고 예측', '번역 엔진', '리뷰 분석',
+];
+
+/* ---- GET /api/kpi-by-task ---- */
+export const kpiByTask: KpiByTask[] = [
+  {
+    task: '추론',
+    avg_slot_ut: 72.3,
+    avg_gpu_ut: 38.5,
+    avg_gpu_ut_working: 45.2,
+    avg_gpu_ut_nonworking: 22.1,
+    project_count: 847,
+  },
+  {
+    task: '학습',
+    avg_slot_ut: 82.1,
+    avg_gpu_ut: 55.3,
+    avg_gpu_ut_working: 64.3,
+    avg_gpu_ut_nonworking: 31.2,
+    project_count: 234,
+  },
+];
+
+/* ---- GET /api/gpu-count-by-task ---- */
+export const gpuCountByTask: GpuCountByTask = { 추론: 1842, 학습: 576 };
+
+/* ---- GET /api/projects ---- */
+export const projects: ProjectRow[] = Array.from({ length: 24 }, (_, i) => {
+  const r = rng(1000 + i);
+  const slot = round1(20 + r() * 78);
+  const gpu = round1(8 + r() * 88);
+  const tasks: TaskType[] = r() > 0.6 ? ['추론', '학습'] : r() > 0.5 ? ['학습'] : ['추론'];
+  return {
+    project_id: `PRJ${String(i + 1).padStart(3, '0')}`,
+    project_name: PROJECT_NAMES[i % PROJECT_NAMES.length],
+    division: pick(r, DIVISIONS),
+    purpose: pick(r, PURPOSES),
+    business_importance: pick(r, IMPORTANCE),
+    is_critical: (r() > 0.7 ? 'Y' : 'N') as YN,
+    user_id: pick(r, ['hong.gil.dong', 'kim.cs', 'lee.yh', 'park.jm', 'choi.sw']),
+    quota: pick(r, [16, 32, 64, 128, 256]),
+    inference_gpu_ut: gpu,
+    inference_gpu_ut_working: round1(Math.min(100, gpu + 8)),
+    inference_gpu_ut_nonworking: round1(Math.max(0, gpu - 16)),
+    slot_ut: slot,
+    member_tasks: tasks,
+  };
+});
+
+/* ---- GET /api/project/units?project_id=… ---- */
+export function getProjectUnits(projectId: string): ProjectUnitsResponse {
+  const p = projects.find((x) => x.project_id === projectId) ?? projects[0];
+  const r = rng(parseInt(projectId.replace(/\D/g, '') || '1', 10) * 7 + 3);
+  const unitCount = 2 + Math.floor(r() * 3);
+  const units = Array.from({ length: unitCount }, (_, i) => {
+    const gpu = round1(10 + r() * 88);
+    return {
+      unit_id: `U${String(i + 1).padStart(3, '0')}`,
+      unit_name: `GPU-Cluster-${String(i + 1).padStart(2, '0')}`,
+      task: (r() > 0.5 ? '추론' : '학습') as TaskType,
+      gpu_model: pick(r, GPU_MODELS),
+      gpu_num: pick(r, [8, 16, 32, 64]),
+      unit_quota: pick(r, [8, 16, 32, 64]),
+      slot_ut: round1(30 + r() * 68),
+      gpu_ut: gpu,
+      gpu_ut_working: round1(Math.min(100, gpu + 7)),
+      gpu_ut_nonworking: round1(Math.max(0, gpu - 18)),
+    };
+  });
+  return {
+    info: {
+      project_name: p.project_name,
+      division: p.division,
+      purpose: p.purpose,
+      business_importance: p.business_importance,
+      slot_ut: p.slot_ut,
+      gpu_ut: p.inference_gpu_ut,
+      gpu_ut_working: p.inference_gpu_ut_working,
+      gpu_ut_nonworking: p.inference_gpu_ut_nonworking,
+    },
+    units,
+  };
+}
+
+/* ---- GET /api/top-bottom-projects ---- */
+export const topBottomProjects: TopBottomProjects = {
+  good: [...projects]
+    .sort((a, b) => b.inference_gpu_ut - a.inference_gpu_ut)
+    .slice(0, 5)
+    .map((p) => ({
+      project_id: p.project_id,
+      project_name: p.project_name,
+      division: p.division,
+      is_critical: p.is_critical,
+      quota: p.quota,
+      slot_ut: p.slot_ut,
+      gpu_ut: p.inference_gpu_ut,
+      reason: `GPU Util ${p.inference_gpu_ut.toFixed(1)}%`,
+    })),
+  alert: [...projects]
+    .sort((a, b) => a.inference_gpu_ut - b.inference_gpu_ut)
+    .slice(0, 5)
+    .map((p) => ({
+      project_id: p.project_id,
+      project_name: p.project_name,
+      division: p.division,
+      is_critical: p.is_critical,
+      quota: p.quota,
+      slot_ut: p.slot_ut,
+      gpu_ut: p.inference_gpu_ut,
+      reason: `Slot Util ${p.slot_ut.toFixed(1)}%`,
+    })),
+};
+
+/* ---- GET /api/quota-by-env-gpu (sums ≈ 2,941) ---- */
+export const quotaByEnvGpu: QuotaByEnvGpu[] = [
+  { environment: 'P1', gpu_model: 'H100', gpu_count: 512 },
+  { environment: 'P1', gpu_model: 'A100', gpu_count: 384 },
+  { environment: 'P2', gpu_model: 'H100', gpu_count: 320 },
+  { environment: 'P2', gpu_model: 'A100', gpu_count: 256 },
+  { environment: 'P2', gpu_model: 'A800', gpu_count: 192 },
+  { environment: 'D1', gpu_model: 'A100', gpu_count: 288 },
+  { environment: 'D1', gpu_model: 'L40S', gpu_count: 224 },
+  { environment: 'R&D', gpu_model: 'H100', gpu_count: 256 },
+  { environment: 'R&D', gpu_model: 'A800', gpu_count: 165 },
+  { environment: 'R&D', gpu_model: 'L40S', gpu_count: 144 },
+];
+
+/* ---- GET /api/service/summary ---- */
+export const serviceSummary: ServiceSummary = {
+  services: [
+    { service_id: 'SVC001', service_name: 'GenAI Chat', service_group_id: 'GRP001', service_group_name: 'Chat Services', avg_input: 1024000, avg_output: 2048000, avg_total: 3072000 },
+    { service_id: 'SVC002', service_name: 'Code Assist', service_group_id: 'GRP001', service_group_name: 'Chat Services', avg_input: 512000, avg_output: 768000, avg_total: 1280000 },
+  ],
+  day_count: 30,
+};
+
+/* ---- GET /api/service/timeseries (30 days × services) ---- */
+export const serviceTimeseries: ServiceTimeseriesPoint[] = serviceSummary.services.flatMap(
+  (svc, si) => {
+    const r = rng(500 + si);
+    return Array.from({ length: 30 }, (_, d) => {
+      const day = String(d + 1).padStart(2, '0');
+      return {
+        service_id: svc.service_id,
+        service_name: svc.service_name,
+        ts: `2026-05-${day}`,
+        total_tokens: Math.round((40 + r() * 30 + Math.sin(d / 4) * 8) * 1_000_000),
+      };
+    });
+  },
+);
+
+/* ---- GET /api/filters ---- */
+export const filters: Filters = {
+  divisions: DIVISIONS,
+  importance: IMPORTANCE,
+  is_critical: ['Y', 'N'],
+};
