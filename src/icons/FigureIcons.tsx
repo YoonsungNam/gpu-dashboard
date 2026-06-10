@@ -137,7 +137,7 @@ export function ServiceGroupIcon({ size = 20 }: IconProps) {
 export function ServiceIcon({ size = 20 }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
-      <rect x="3" y="3" width="14" height="14" rx="1.5" fill="#515E94" />
+      <rect x="3" y="3" width="14" height="14" fill="#515E94" />
       <path
         d="M10 5.5C10.4 8.3 11.2 9.1 14 9.5C11.2 9.9 10.4 10.7 10 13.5C9.6 10.7 8.8 9.9 6 9.5C8.8 9.1 9.6 8.3 10 5.5Z"
         fill="#F9FAFE"
@@ -184,7 +184,8 @@ export function FilterIcon({ size = 14, color = 'currentColor' }: StrokeIconProp
 export function InfoIcon({ size = 14, color = '#767D84' }: StrokeIconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 14 14" fill="none">
-      <rect x="0.5" y="0.5" width="13" height="13" rx="1" stroke={color} />
+      {/* Figma renders the box outline at ~15% opacity (#ECF1F5 on white); the 'i' stays solid. */}
+      <rect x="0.5" y="0.5" width="13" height="13" rx="1" stroke="rgba(118,125,132,0.15)" />
       <rect x="6" y="3" width="2" height="2" fill={color} />
       <rect x="6" y="6" width="2" height="5" fill={color} />
     </svg>

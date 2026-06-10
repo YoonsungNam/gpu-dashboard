@@ -169,13 +169,14 @@ export default function Sidebar({
         </>
       )}
 
-      {/* Bottom: version + policy link + user profile */}
+      {/* Bottom block — Figma order: divider → v0.35(beta) → 정책 안내 → profile
+          (divider 7104:14146 sits ABOVE the version label). */}
       <div
-        style={{ marginTop: 'auto', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}
+        style={{ marginTop: 'auto', padding: '0 20px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}
       >
-        <div style={{ ...text.caption, color: '#B2B6BB' }}>v0.35(beta)</div>
-        {/* Full-bleed 224x1 divider (Rectangle 13, 7104:14146) — escape the 20px padding */}
+        {/* Full-bleed 224x1 divider — escape the 20px padding */}
         <div style={{ height: 1, background: 'rgba(255,255,255,0.2)', margin: '0 -20px' }} />
+        <div style={{ ...text.caption, color: '#B2B6BB' }}>v0.35(beta)</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 4, ...text.body, color: '#B2B6BB' }}>
           정책 안내{' '}
           {/* Boxed external-link glyph (Icon/Icon8-Arrow_R_up-#Neu15, 7104:14149) */}
@@ -188,9 +189,10 @@ export default function Sidebar({
             <path d="M12.5 1.5L7 7" stroke="#B2B6BB" />
           </svg>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 /* Frame 2615597 gap2.0 */ }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, ...text.body, color: '#DADFE4' }}>
-            김삼성{' '}
+        {/* ~28px from the 정책 안내 row to the name row (container gap 12 + 16) */}
+        <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 2 /* Frame 2615597 gap2.0 */ }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, ...text.body, color: '#DADFE4' }}>
+            김삼성
             {/* Thin stroked chevron (Icon/Icon14-Chevron-S_Down-#d, 7104:14153) */}
             <svg width={14} height={14} viewBox="0 0 14 14" fill="none" aria-hidden>
               <path d="M4 6L7 9L10 6" stroke="#DADFE4" strokeWidth="1.2" />

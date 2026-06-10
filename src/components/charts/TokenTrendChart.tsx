@@ -65,7 +65,7 @@ export default function TokenTrendChart({
             padding: '20px 20px 8px',
           }}
         >
-          <span style={{ ...text.bodyM, color: color.textTertiary }}>{title}</span>
+          <span style={{ ...text.bodyM, color: color.textTertiary, whiteSpace: 'pre' }}>{title}</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             {lines.map((s, i) => (
               <span key={s.service_id} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>

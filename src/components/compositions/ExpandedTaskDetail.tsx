@@ -176,7 +176,8 @@ export default function ExpandedTaskDetail({
             border: `1px solid ${color.border}`,
           }}
         >
-          {/* Lead card: count + '장' over '수량(H100)기준', centered */}
+          {/* Lead card: count + '장' over '수량(H100)기준', centered.
+              Same horizontal padding as the metric cards so flex widths stay equal. */}
           <div
             style={{
               flex: 1,
@@ -185,6 +186,7 @@ export default function ExpandedTaskDetail({
               height: cardH,
               boxSizing: 'border-box',
               background: color.cardBg,
+              padding: dense ? '12px' : '12px 20px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -290,16 +292,17 @@ export default function ExpandedTaskDetail({
             border: `1px solid ${color.border}`,
           }}
         >
-          {/* Fixed 120px 모델/수량/util columns packed after Unit; trailing
-              spacer col absorbs the slack on the right (7104:9658-9705). */}
+          {/* Resource: fixed 120px 모델/수량/util columns + trailing spacer
+              (7104:9658-9705). Dense (≈740px overview panel): narrower fixed
+              columns and NO spacer, or the fixed layout collapses the Unit col. */}
           <colgroup>
-            <col style={{ width: '35%' }} />
-            <col style={{ width: 120 }} />
-            <col style={{ width: 120 }} />
+            <col style={{ width: dense ? undefined : '35%' }} />
+            <col style={{ width: dense ? 90 : 120 }} />
+            <col style={{ width: dense ? 72 : 120 }} />
             {unitCols.map((c) => (
-              <col key={c.key} style={{ width: 120 }} />
+              <col key={c.key} style={{ width: dense ? 72 : 120 }} />
             ))}
-            <col />
+            {!dense && <col />}
           </colgroup>
           <thead>
             <tr>
@@ -311,7 +314,7 @@ export default function ExpandedTaskDetail({
                   {c.label}
                 </th>
               ))}
-              <th style={th()} aria-hidden />
+              {!dense && <th style={th()} aria-hidden />}
             </tr>
           </thead>
           <tbody>
@@ -335,7 +338,7 @@ export default function ExpandedTaskDetail({
                     </td>
                   );
                 })}
-                <td style={td()} aria-hidden />
+                {!dense && <td style={td()} aria-hidden />}
               </tr>
             ))}
           </tbody>

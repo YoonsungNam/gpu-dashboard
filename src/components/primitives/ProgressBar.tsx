@@ -26,7 +26,8 @@ export default function ProgressBar({
         style={{
           width: `${Math.max(0, Math.min(100, value))}%`,
           height: '100%',
-          borderRadius: radius.pill,
+          // Figma fill rect is r1 (near-square end); track keeps the pill + clips the left end.
+          borderRadius: 1,
           background: color,
         }}
       />

@@ -107,8 +107,11 @@ export default function GpuResourcePage() {
       {
         key: 'purpose',
         header: '용도',
-        width: 110,
-        render: (r, _i, expanded) => <span style={{ color: cellColor(expanded) }}>{r.purpose}</span>,
+        width: 130,
+        // nowrap keeps the fixed 41px row height for long strings (글로벌 파운드리 연계).
+        render: (r, _i, expanded) => (
+          <span style={{ color: cellColor(expanded), whiteSpace: 'nowrap' }}>{r.purpose}</span>
+        ),
       },
       {
         key: 'is_critical',
@@ -136,12 +139,13 @@ export default function GpuResourcePage() {
         align: 'right',
         render: (r, _i, expanded) => <span style={{ color: cellColor(expanded) }}>{num(r.quota)}</span>,
       },
-      // Sort glyphs only on the four utilization columns.
+      // Sort glyphs only on the four utilization columns (uniform 120px per Figma).
       ...utilDefs.map(
         (def): DataTableColumn<ProjectRow> => ({
           key: def.key,
           header: def.label,
           align: 'center',
+          width: 120,
           sortable: true,
           render: (r) => <UtilBadge value={utilValue(r, def.key, tab)} metric={def.metric} />,
         }),

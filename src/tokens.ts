@@ -59,11 +59,11 @@ export const semantic = {
     warn: { bg: '#FFE1B5', border: '#FFD390', text: '#6B4915' },
     bad: { bg: '#FFD9D7', border: '#FFC7C3', text: '#A52921' },
   },
-  // Task-type pills (v2: darker text, weight 400 — nodes I7104:9794/9795, 7104:11214)
+  // Task-type pills (v2: darker text, weight 400, 1px borders — nodes I7104:9794/9795)
   taskType: {
-    inference: { bg: '#CCF0F9', text: '#004457' }, // 추론
-    training: { bg: '#E0D9FF', text: '#1E1251' }, // 학습
-    core: { bg: '#ECF1F5', text: '#3C444B' }, // 전략 (was 핵심)
+    inference: { bg: '#CCF0F9', text: '#004457', border: '#99E1F3' }, // 추론
+    training: { bg: '#E0D9FF', text: '#1E1251', border: '#CFC2FF' }, // 학습
+    core: { bg: '#E9EEF2', text: '#3C444B', border: '#DADFE4' }, // 전략 (was 핵심)
   },
   // Trend deltas
   delta: { up: '#239B2F', down: '#FF4337' },

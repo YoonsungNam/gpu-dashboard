@@ -28,6 +28,9 @@ export interface DataTableProps<T> {
   /** v2: Overview rank tables draw no line under the header band — pass false there.
    *  GPU 활용 현황 keeps the 1px #E4E9ED bottom border (default). */
   headBorderBottom?: boolean;
+  /** Top border above the header band. Default false: tables flush with a bordered
+   *  card edge would double the line; Overview's first rank table passes true. */
+  headBorderTop?: boolean;
   /** Width of the leading caret column (v2 활용 현황 uses 42). */
   caretWidth?: number;
   /** Per-cell style override — use for the v2 expanded-row tint (#F3F8FD/#F0F7FC). */
@@ -57,6 +60,7 @@ export default function DataTable<T>({
   vPad: vPadProp,
   headerBg = color.cardBgAlt,
   headBorderBottom = true,
+  headBorderTop = false,
   caretWidth = 40,
   rowStyle,
   panelStyle,
@@ -86,7 +90,7 @@ export default function DataTable<T>({
     // (Figma header 7104:16602 / 7104:7505) — deliberately decoupled from vPad.
     padding: '7px 10px',
     background: headerBg,
-    borderTop: `1px solid ${color.border}`,
+    ...(headBorderTop ? { borderTop: `1px solid ${color.border}` } : {}),
     ...(headBorderBottom ? { borderBottom: `1px solid ${color.border}` } : {}),
   };
 

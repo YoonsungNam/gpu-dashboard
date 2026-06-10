@@ -24,9 +24,10 @@ export default function TaskTypeBadge({
     <span
       style={{
         display: 'inline-block',
-        padding: '3px 6px',
+        padding: '2px 6px',
         borderRadius: radius.pill,
         background: c.bg,
+        border: `1px solid ${c.border}`,
         color: c.text,
         ...text.caption,
       }}

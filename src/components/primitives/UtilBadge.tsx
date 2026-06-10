@@ -25,6 +25,7 @@ export default function UtilBadge({
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
+        verticalAlign: 'top', // keep the chip off the text baseline so 41px rows don't grow by 1px
         minWidth: 60, // both sizes measure 60px wide in the v2 rasters
         padding: lg ? '2px 10px' : '2px 8px',
         borderRadius: radius.cell,

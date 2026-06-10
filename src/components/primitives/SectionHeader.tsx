@@ -19,7 +19,7 @@ function SectionMarker() {
         alignItems: 'center',
         justifyContent: 'center',
         background: color.cardBg,
-        border: `1px solid ${color.borderStrong}`,
+        border: `1px solid ${color.borderSubtle}`, // #DADFE4 (btn_2ndary edge, re-verified)
         borderRadius: radius.cell,
       }}
     >

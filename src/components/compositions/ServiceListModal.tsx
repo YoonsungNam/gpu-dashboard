@@ -238,35 +238,7 @@ export default function ServiceListModal({
           </table>
         </div>
 
-        {/* FOOTER — 60px, 1px #ECF1F5 hairline, right-aligned 닫기 btn_2ndary */}
-        <div
-          style={{
-            height: 60,
-            flexShrink: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            padding: '0 16px',
-            borderTop: '1px solid #ECF1F5',
-          }}
-        >
-          <button
-            type="button"
-            className="gd-clickable"
-            onClick={onClose}
-            style={{
-              height: 28,
-              padding: '0 12px',
-              background: color.white,
-              border: `1px solid ${color.borderStrong}`,
-              borderRadius: 2,
-              ...text.bodyM, // 500/14
-              color: color.textTitle,
-            }}
-          >
-            닫기
-          </button>
-        </div>
+        {/* Dialog footer hidden in the Figma instance — X / Esc / overlay click close. */}
       </div>
     </div>
   );

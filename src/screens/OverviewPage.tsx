@@ -179,7 +179,11 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
       ? '시간대와 무관하게 연속 수행되므로, 24시간 전체 기준으로 집계'
       : '시간대별 사용 편차가 크므로, 근무(09~18시), 비근무를 구분하여 집계';
   return (
-    <Card title={<TaskCardTitle kind={kind} caption={caption} />} headerStyle={TASK_HEADER_STYLE}>
+    <Card
+      padding={20}
+      title={<TaskCardTitle kind={kind} caption={caption} />}
+      headerStyle={TASK_HEADER_STYLE}
+    >
       <div style={{ display: 'flex', gap: space.xxl, alignItems: 'stretch' }}>
         {/* Left: GPUs (accent, 28px) over Projects (muted, 24px) on a #FAFBFC panel (node 46368/46419) */}
         <div
@@ -191,7 +195,7 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            gap: space.xl,
+            gap: 28, // Figma block spacing (재검증: 16px@1x wider than space.xl)
             padding: `${space.lg}px ${space.xl}px`,
             textAlign: 'center',
           }}
@@ -230,7 +234,7 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
                 style={{
                   position: 'absolute',
                   right: 0,
-                  bottom: 7,
+                  bottom: 2, // glyph-bottom→divider ≈ 7-8px@2x per Figma (re-verified)
                   display: 'flex',
                   gap: space.lg,
                 }}
@@ -497,18 +501,21 @@ const RANK_COLUMNS: DataTableColumn<RankedProject>[] = [
     key: 'gpu_ut',
     header: GPU_UTIL.label,
     align: 'center',
+    width: 110, // Figma column packing: 과제 452 + 3×~106-110 (재검증)
     render: (r) => <UtilBadge value={r.gpu_ut} metric={GPU_UTIL.metric} size="lg" />,
   },
   {
     key: 'slot_ut',
     header: SLOT_UTIL.label,
     align: 'center',
+    width: 110,
     render: (r) => <UtilBadge value={r.slot_ut} metric={SLOT_UTIL.metric} size="lg" />,
   },
   {
     key: 'quota',
     header: '장 수(H100기준)',
     align: 'center',
+    width: 120,
     render: (r, _i, expanded) => (
       <span style={{ ...text.body, color: expanded ? SELECTED.text : color.textSecondary }}>
         {num(r.quota)}
@@ -547,12 +554,15 @@ function OccupancyColumn({ task }: { task: TaskType }) {
       dense
     />
   );
-  const rankTable = (rows: RankedProject[], prefix: string) => (
+  const rankTable = (rows: RankedProject[], prefix: string, first = false) => (
     <DataTable
       columns={RANK_COLUMNS}
       rows={rows}
       rowKey={(r) => `${prefix}-${r.project_id}`}
       vPad={13}
+      // 재검증: no line under the header band; table-top border on the FIRST table only.
+      headBorderBottom={false}
+      headBorderTop={first}
       expandedContent={expandRow}
       rowStyle={(_r, _i, expanded) => (expanded ? { background: SELECTED.rowBg } : undefined)}
       panelStyle={{ padding: 0, background: '#F2F6F9' }}
@@ -579,7 +589,7 @@ function OccupancyColumn({ task }: { task: TaskType }) {
             count={topBottomProjects.good.length}
             caption="GPU Util ≥ 66%"
           />
-          {rankTable(topBottomProjects.good, 'good')}
+          {rankTable(topBottomProjects.good, 'good', true)}
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg }}>
