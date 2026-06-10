@@ -85,14 +85,14 @@ export default function GpuResourcePage() {
   const columns: DataTableColumn<ProjectRow>[] = useMemo(() => {
     const utilDefs: MetricDef[] =
       tab === '학습' ? [GPU_UTIL, SLOT_UTIL] : [GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL];
-    const cellColor = (expanded?: boolean) => (expanded ? SELECTED_TEXT : color.textPrimary);
+    const cellColor = (expanded?: boolean) => (expanded ? SELECTED_TEXT : color.textTitle);
     return [
       {
         key: 'project_name',
         header: '과제',
         width: tab === '학습' ? 682 : 510,
         render: (r, _i, expanded) => (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 16 /* Header,Box gap16.0 (7104:8604) */, minWidth: 0 }}>
             <span style={{ ...text.bodyM, color: cellColor(expanded) }}>{r.project_name}</span>
             <GradeBadge grade={r.grade} />
           </span>
@@ -175,7 +175,7 @@ export default function GpuResourcePage() {
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: space.xl }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg /* v2: 12px toolbar→card */ }}>
       {/* Page toolbar: Tabs + count (left) · 등급 필터 + Search + 다운로드 (right) */}
       <div
         id="res-toolbar"

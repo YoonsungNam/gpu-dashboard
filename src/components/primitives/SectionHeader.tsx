@@ -47,9 +47,9 @@ export default function SectionHeader({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: space.lg,
-        paddingBottom: space.md,
-        borderBottom: `1px solid ${color.borderStrong}`,
+        // v2 exports show NO underline — the tree's 1696×1 #CCD1D6 'border' rect
+        // (7104:14386 et al.) is hidden in the design. 20px to the card top.
+        marginBottom: 20,
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: space.lg }}>

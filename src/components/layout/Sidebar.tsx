@@ -21,7 +21,7 @@ const DEV: { key: NavKey; label: string }[] = [
 // unless explicitly requested via ?dev so fidelity screenshots match the spec.
 const SHOW_DEV = new URLSearchParams(window.location.search).has('dev');
 
-/** Left navigation — rebuilt from Figma node 7001:47228 ('Aside'). */
+/** Left navigation — v2 spec Frame 2615547 [7104:14097] (originally v1 7001:47228). */
 export default function Sidebar({
   active,
   onNavigate,
@@ -41,7 +41,7 @@ export default function Sidebar({
         borderRight: '1px solid rgba(255,255,255,0.2)',
       }}
     >
-      {/* Logo header band (56px) + 1px bottom divider (Figma 7001:47212 / Rectangle 12) */}
+      {/* Logo header band (56px) + 1px bottom divider (v2 Rectangle 12 [7104:14103]) */}
       <div
         style={{
           height: 56,

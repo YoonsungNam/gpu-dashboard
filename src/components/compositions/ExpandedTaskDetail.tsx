@@ -150,14 +150,14 @@ export default function ExpandedTaskDetail({
     <div
       style={{
         background: bg,
-        padding: '16px 20px',
+        padding: dense ? '16px 20px' : '16px 20px 20px',
         display: 'flex',
         flexDirection: 'column',
-        gap: 20,
+        gap: dense ? 20 : 16,
       }}
     >
       {/* ---- 활용 지표: heading + tag cluster + KPI card strip ---- */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: dense ? 10 : 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span style={HEADING}>활용 지표</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -265,7 +265,7 @@ export default function ExpandedTaskDetail({
 
       {/* ---- 저활용 회수 예상량 (two target-vs-current gauges) ---- */}
       {showRecall && re && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: dense ? 10 : 8 }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
             <span style={HEADING}>저활용 회수 예상량</span>
             <span style={{ ...text.caption, color: color.textTertiary }}>
@@ -275,13 +275,13 @@ export default function ExpandedTaskDetail({
           {/* Card gap: resource 10 (7104:11137-11159 x-offsets), dense 12 (7104:10610). */}
           <div style={{ display: 'flex', alignItems: 'stretch', gap: dense ? 12 : 10 }}>
             <RecallEstimateCard basisLabel="GPU Util기준" basis={re.gpu} />
-            <RecallEstimateCard basisLabel="Slot Util기준" basis={re.slot} />
+            <RecallEstimateCard basisLabel="Slot Util 기준" basis={re.slot} />
           </div>
         </div>
       )}
 
       {/* ---- Unit 구성 sub-table ---- */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: dense ? 10 : 8 }}>
         <span style={HEADING}>Unit 구성</span>
         <table
           style={{

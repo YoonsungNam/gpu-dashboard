@@ -23,7 +23,7 @@ export default function AppShell({
       <Sidebar active={active} onNavigate={onNavigate} />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         <TopBar title={title} subtitle={subtitle} actions={actions} />
-        <main style={{ flex: 1, overflow: 'auto', padding: layout.pagePadding }}>
+        <main style={{ flex: 1, overflow: 'auto', padding: '16px 28px' /* v2: 28px gutters, 16px top (frames x=252..1892) */ }}>
           <div style={{ maxWidth: layout.contentMaxWidth, margin: '0 auto' }}>{children}</div>
         </main>
       </div>

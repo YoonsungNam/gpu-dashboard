@@ -79,7 +79,7 @@ export default function DataTable<T>({
     height: 40,
     boxSizing: 'border-box' as const,
     ...text.body,
-    color: color.textPrimary,
+    color: color.textTitle,
     verticalAlign: 'middle' as const,
   };
 

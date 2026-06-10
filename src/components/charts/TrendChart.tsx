@@ -32,7 +32,6 @@ export interface TrendChartProps {
 
 const tickStyle = {
   fontSize: 10,
-  fontFamily: font.mono,
 } as const;
 
 /** Index step so ~7 markers/labels land on evenly spaced dates (first + every Nth + last). */
@@ -164,7 +163,7 @@ export default function TrendChart({
 
         {series.map((s) =>
           area ? (
-            <Area
+            <Area isAnimationActive={false}
               key={s.key}
               type="monotone"
               dataKey={s.key}
@@ -177,7 +176,7 @@ export default function TrendChart({
               activeDot={{ r: 3 }}
             />
           ) : (
-            <Line
+            <Line isAnimationActive={false}
               key={s.key}
               type="monotone"
               dataKey={s.key}

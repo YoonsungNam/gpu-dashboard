@@ -260,7 +260,7 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
 /* ------------------------------------------------------------------ */
 
 function HoldingsSection() {
-  const { envRows, modelAggregates, total, maxRowTotal } = useMemo(() => {
+  const { envRows, modelAggregates, total } = useMemo(() => {
     // Stable model ordering by first appearance.
     const models: string[] = [];
     for (const q of quotaByEnvGpu) {
@@ -302,9 +302,6 @@ function HoldingsSection() {
           .map((m) => ({ key: m, value: byEnv[env][m], color: modelColor[m] })),
       };
     });
-    // Common scale so each bar's filled length encodes absolute magnitude.
-    const maxRowTotal = Math.max(1, ...envRows.map((r) => r.rowTotal));
-
     const modelAggregates = models.map((m) => ({
       model: m,
       color: modelColor[m],
@@ -312,7 +309,7 @@ function HoldingsSection() {
       share: total > 0 ? ((counts[m] ?? 0) / total) * 100 : 0,
     }));
 
-    return { envRows, modelAggregates, total, maxRowTotal };
+    return { envRows, modelAggregates, total };
   }, []);
 
   const legendItems = modelAggregates.map((m) => ({
@@ -338,7 +335,8 @@ function HoldingsSection() {
             </span>
             <Legend items={legendItems} size={12} />
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: space.xxl }}>
+          {/* Trailing 6px after the last bar keeps the Figma 26px card-bottom spacing. */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: space.xxl, paddingBottom: space.sm }}>
             {envRows.map((row) => (
               <div key={row.label} style={{ display: 'flex', flexDirection: 'column', gap: space.sm }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
@@ -354,13 +352,14 @@ function HoldingsSection() {
                     </span>
                   </span>
                 </div>
-                <StackedBar segments={row.segments} maxTotal={maxRowTotal} />
+                {/* v2: full-width percentage bar (no absolute-magnitude track remainder) */}
+                <StackedBar segments={row.segments} />
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right: #FAFBFC total panel (node 7001:47398; hairline #F2F6F9 outline, 20px pad,
+        {/* Right: #FAFBFC total panel (v2 node 7104:14390; hairline #F2F6F9 outline, 20px pad,
             full-bleed divider, heading→rows gap 8, rows gap 6 per 7104:14394) */}
         <div
           style={{
@@ -389,20 +388,26 @@ function HoldingsSection() {
             </span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: space.sm }}>
               {modelAggregates.map((m) => (
-                <div key={m.model} style={{ display: 'flex', alignItems: 'center', gap: space.sm }}>
-                  <span
-                    style={{ width: 12, height: 12, borderRadius: 1, background: m.color, flexShrink: 0 }}
-                  />
-                  {/* v2 (7104:14400/14401): name #767D84 500/14, percent #565E66 400/14 */}
-                  <span style={{ ...text.bodyM, color: color.textTertiary, flex: 1 }}>{m.model}</span>
-                  <span style={{ ...text.body, color: color.textSecondary }}>{pct(m.share)}</span>
+                // Figma Frame 85 (262×20, gap 4): legend 100 + pct 66 + count 88, numbers right-aligned
+                <div key={m.model} style={{ display: 'flex', alignItems: 'center', gap: space.xs }}>
+                  <span style={{ flex: 1, display: 'inline-flex', alignItems: 'center', gap: space.sm, minWidth: 0 }}>
+                    <span
+                      style={{ width: 12, height: 12, borderRadius: 1, background: m.color, flexShrink: 0 }}
+                    />
+                    {/* v2 (7104:14400/14401): name #767D84 500/14, percent #565E66 400/14 */}
+                    <span style={{ ...text.bodyM, color: color.textTertiary }}>{m.model}</span>
+                  </span>
+                  <span style={{ ...text.body, color: color.textSecondary, width: 66, textAlign: 'right', flexShrink: 0 }}>
+                    {pct(m.share)}
+                  </span>
                   <span
                     style={{
                       ...text.bodyM,
                       fontWeight: 500,
                       color: color.textSecondary,
-                      width: 48,
+                      width: 88,
                       textAlign: 'right',
+                      flexShrink: 0,
                     }}
                   >
                     {num(m.count)}
@@ -587,7 +592,7 @@ function OccupancyColumn({ task }: { task: TaskType }) {
           <RankTitle
             title="우수 활용 과제"
             count={topBottomProjects.good.length}
-            caption="GPU Util ≥ 66%"
+            caption={task === '학습' ? 'GPU Util ≥ 66% and Slot Util ≥ 80%' : 'GPU Util ≥ 66%'}
           />
           {rankTable(topBottomProjects.good, 'good', true)}
         </div>
@@ -686,7 +691,7 @@ function TrendSection() {
                 </span>
                 <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 3 }}>
                   <span style={{ fontSize: 16, lineHeight: '20px', fontWeight: 500, color: accent }}>
-                    {trendAvg(pts, key)}
+                    {trendAvg(pts, key).toFixed(1)}
                   </span>
                   <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 400, color: color.textSecondary }}>
                     %

@@ -30,10 +30,12 @@ const TICK = { fontSize: 12, fill: color.textSecondary, fontFamily: font.family 
 export default function TokenTrendChart({
   rows,
   series,
-  // Double space after '내' matches TEXT node 7104:4069 exactly.
-  title = '그룹 내  상위 5개 서비스 · 일별 토큰 추이',
+  title,
 }: TokenTrendChartProps) {
   const lines = series.slice(0, 5);
+  // Figma's '상위 5개' (node 7104:4069) is the cap of a 41-service group, not a
+  // constant — show the actual line count. Double space after '내' per the node.
+  const heading = title ?? `그룹 내  상위 ${lines.length}개 서비스 · 일별 토큰 추이`;
   return (
     <div
       style={{
@@ -65,7 +67,7 @@ export default function TokenTrendChart({
             padding: '20px 20px 8px',
           }}
         >
-          <span style={{ ...text.bodyM, color: color.textTertiary, whiteSpace: 'pre' }}>{title}</span>
+          <span style={{ ...text.bodyM, color: color.textTertiary, whiteSpace: 'pre' }}>{heading}</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             {lines.map((s, i) => (
               <span key={s.service_id} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>

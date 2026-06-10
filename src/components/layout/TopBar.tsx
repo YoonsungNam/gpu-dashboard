@@ -17,7 +17,7 @@ export default function TopBar({
         height: layout.topbarHeight,
         flexShrink: 0,
         background: color.cardBg,
-        borderBottom: `1px solid ${color.border}`,
+        borderBottom: '1px solid #D4D9DE' /* v2 export hairline (Rectangle 18) */,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',

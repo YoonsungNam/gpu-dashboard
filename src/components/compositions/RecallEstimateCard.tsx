@@ -38,7 +38,7 @@ export default function RecallEstimateCard({
       }}
     >
       {/* Basis caption */}
-      <div style={{ ...text.caption, color: color.textTertiary }}>{basisLabel}</div>
+      <div style={{ ...text.label, color: color.textTertiary }}>{basisLabel}</div>
 
       {/* 현재 / 목표 row */}
       <div
@@ -47,7 +47,7 @@ export default function RecallEstimateCard({
           alignItems: 'center',
           justifyContent: 'space-between',
           marginTop: 10,
-          ...text.caption,
+          ...text.body,
         }}
       >
         <span style={{ color: color.textTertiary }}>

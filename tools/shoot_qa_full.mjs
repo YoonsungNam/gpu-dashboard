@@ -1,0 +1,14 @@
+import { chromium } from 'playwright';
+import { mkdirSync } from 'node:fs';
+const port = process.argv[2] || '5180';
+mkdirSync('design/shots/qa_fresh', { recursive: true });
+const b = await chromium.launch({ args: ['--no-sandbox','--disable-setuid-sandbox','--disable-gpu','--force-color-profile=srgb'] });
+const ctx = await b.newContext({ viewport: { width: 1920, height: 2400 }, deviceScaleFactor: 1 });
+const p = await ctx.newPage();
+await p.goto(`http://localhost:${port}/?screen=overview`, { waitUntil: 'domcontentloaded' });
+await p.waitForLoadState('networkidle').catch(()=>{});
+await p.waitForTimeout(1800);
+await p.screenshot({ path: 'design/shots/qa_fresh/overview_full2.png', fullPage: true });
+console.log('shot overview_full');
+await p.close();
+await b.close().catch(()=>{});

@@ -36,7 +36,7 @@ export default function TokenUsagePage() {
     : null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: space.md }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg }}>
       {/* KPI/toolbar row (56px, no card): KPI strip left · search + 다운로드 right */}
       <div
         id="tok-toolbar"
@@ -49,7 +49,7 @@ export default function TokenUsagePage() {
         }}
       >
         <ServiceCountKpis totals={tokenTotals} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: space.md }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: space.md, alignSelf: 'flex-end' }}>
           <SearchInput
             value={query}
             onChange={setQuery}

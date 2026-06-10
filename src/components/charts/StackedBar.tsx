@@ -8,10 +8,12 @@ interface Segment {
 }
 
 /**
- * 보유현황 horizontal magnitude bar (Figma node 7001:47492 etc.).
- * Segments are sized by ABSOLUTE count against a shared `maxTotal`, so each row's
- * filled length encodes its real magnitude and the remaining #ECF1F5 track stays
- * visible. Wide segments show their raw count in white 700/11px. Near-rectangular (r2).
+ * 보유현황 horizontal stacked bar.
+ * v2 (nodes 7104:14486/14499/14512/14525): every row's segment frame spans the FULL
+ * 1277px track — bars are 100% filled and segment widths are PERCENTAGES of the row
+ * total. (v1's absolute-magnitude partial fill — inner frames 1152/947/791/827 of
+ * 1277, node 7001:47494 — is gone.) Wide segments still show their raw count in
+ * white 700/11px. Near-rectangular (r2) on an #ECF1F5 track.
  */
 export default function StackedBar({
   segments,
@@ -19,10 +21,13 @@ export default function StackedBar({
   height = 22,
 }: {
   segments: Segment[];
-  /** Common denominator across all rows (usually the largest row total). */
-  maxTotal: number;
+  /** Optional absolute-scale denominator (v1 behavior). Omit for the v2
+   *  normalized full-fill bar (denominator = row total). */
+  maxTotal?: number;
   height?: number;
 }) {
+  const rowTotal = segments.reduce((s, seg) => s + seg.value, 0);
+  const denom = maxTotal ?? rowTotal;
   return (
     <div
       style={{
@@ -35,7 +40,7 @@ export default function StackedBar({
       }}
     >
       {segments.map((seg) => {
-        const w = maxTotal > 0 ? (seg.value / maxTotal) * 100 : 0;
+        const w = denom > 0 ? (seg.value / denom) * 100 : 0;
         return (
           <div
             key={seg.key}

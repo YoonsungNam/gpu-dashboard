@@ -169,7 +169,7 @@ export default function TokenGroupTable({
             const expanded = g.service_group_id === expandedGroupId;
             // Per the build spec: first 3 children collapsed / 5 expanded,
             // rest behind the 더보기 row.
-            const shown = g.services.slice(0, expanded ? 5 : 3);
+            const shown = g.services.slice(0, 5); // v2 collapse frame previews 5 (blocks 7104:3004/3188)
             const hasMore = g.service_count > shown.length;
             return (
               <Fragment key={g.service_group_id}>
