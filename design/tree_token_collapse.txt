@@ -1,0 +1,1431 @@
+FRAME 'GPU토큰_Collapse' [7104:2731]  1920x1239  fill=#ECF1F5
+  FRAME 'Frame 2615546' [7104:2732]  1696x56
+    RECTANGLE 'Rectangle 17' [7104:2733]  1696x56  fill=#FFFFFF
+    TEXT 'Text' [7104:2734]  146x20  fill=#565E66  [500/14px #565E66] "과제별 일평균 토큰 사용량"
+    INSTANCE 'tag' [7104:2735]  52x20  AL:V gap10.0 pad?/?  r20.0
+      FRAME 'BG' [I7104:2735;1188:54855]  52x20  AL:H gap2.0 pad2.0/6.0  fill=#F2F6F9  r20.0
+        INSTANCE 'Guide/Icon_dummy_set' [I7104:2735;1188:54856]  16x16
+          INSTANCE 'Guide/Icon-dummy_area-16' [I7104:2735;1188:54856;470:80385]  16x16  fill=#CCF3EF
+          INSTANCE 'Icon/Live' [I7104:2735;1188:54856;470:80384]  14x14
+            ELLIPSE 'Ellipse 14' [I7104:2735;1188:54856;470:80384;2243:2805]  8x8  fill=#239B2F
+        TEXT 'Text' [I7104:2735;1188:54857]  22x14  fill=#454E56  [400/12px #454E56] "Live"
+    TEXT '토큰 활용 현황' [7104:2736]  116x24  fill=#2F363C  [600/20px #2F363C] "토큰 활용 현황"
+    INSTANCE 'btn_ghost' [7104:2737]  89x28  AL:H gap4.0 pad4.0/8.0  fill=#000000@0.00  r2.0
+      INSTANCE 'icon_only-before' [I7104:2737;11162:48205]  16x16  r1.0
+        INSTANCE 'Guide/Icon_dummy_set' [I7104:2737;11162:48205;487:77890]  16x16
+          INSTANCE 'Guide/Icon-dummy_area-16' [I7104:2737;11162:48205;487:77890;470:80385]  16x16  fill=#CCF3EF
+          INSTANCE 'Icon/Icon14-Information' [I7104:2737;11162:48205;487:77890;470:80384]  14x14
+            GROUP 'Group 511' [I7104:2737;11162:48205;487:77890;470:80384;221:53770]  14x14
+              ELLIPSE 'Ellipse 32' [I7104:2737;11162:48205;487:77890;470:80384;221:53771]  14x14  fill=#FFFFFF
+              ELLIPSE 'Ellipse 33' [I7104:2737;11162:48205;487:77890;470:80384;221:53772]  2x2  fill=#56595F
+              VECTOR 'Rectangle 430' [I7104:2737;11162:48205;487:77890;470:80384;221:53773]  2x5  fill=#56595F
+            GROUP 'Group 304' [I7104:2737;11162:48205;487:77890;470:80384;221:53774]  13x13
+              GROUP 'Group 303' [I7104:2737;11162:48205;487:77890;470:80384;221:53775]  13x13
+                VECTOR 'Rectangle 881' [I7104:2737;11162:48205;487:77890;470:80384;221:53776]  13x13  fill=#FFFFFF  r1.0
+                VECTOR 'Ellipse 34' [I7104:2737;11162:48205;487:77890;470:80384;221:53777]  2x2  fill=#767D84
+                VECTOR 'Rectangle 882' [I7104:2737;11162:48205;487:77890;470:80384;221:53778]  2x5  fill=#767D84
+      FRAME 'text' [I7104:2737;11162:48206]  53x20  AL:H gap10.0 pad?/?
+        TEXT 'Button' [I7104:2737;11162:48207]  53x20  fill=#565E66  [500/14px #565E66] "지표 정의"
+    FRAME 'Frame 52' [7104:2738]  478x28  AL:H gap13.0 pad?/?
+      FRAME 'Frame 50' [7104:2739]  147x28  AL:H gap6.0 pad?/?
+        TEXT 'max~부서명이 유효하지 않습니다.' [7104:2740]  21x14  fill=#3C444B  [500/12px #3C444B] "기간"
+        FRAME 'select' [7104:2741]  120x28  AL:V gap4.0 pad?/?
+          FRAME 'title, button' [7104:2742]  120x28  AL:H gap4.0 pad?/6.0  fill=#FFFFFF  r2.0
+            FRAME 'title' [7104:2743]  86x28  AL:H gap10.0 pad4.0/?
+              TEXT 'Button' [7104:2744]  86x20  fill=#3C444B  [400/14px #3C444B] "최근 30일"
+            FRAME 'buttons' [7104:2745]  16x16  AL:H gap2.0 pad?/?
+              INSTANCE 'icon_only_Basic' [7104:2746]  16x16  r1.0
+                INSTANCE 'Guide/Icon_dummy_set' [I7104:2746;487:77890]  16x16
+                  INSTANCE 'Guide/Icon-dummy_area-16' [I7104:2746;487:77890;470:80385]  16x16  fill=#CCF3EF
+                  INSTANCE 'Icon/Icon14-Chevron_Down-#def' [I7104:2746;487:77890;470:80384]  14x14
+          TEXT 'text_message-default' [7104:2747]  120x12  fill=#B2B6BB  [400/11px #B2B6BB] "Text(Optional)"
+          TEXT 'text_message-emphasized' [7104:2748]  120x12  fill=#3392D3  [400/11px #3392D3] "Text(Optional)"
+          TEXT 'text_message-danger' [7104:2749]  120x12  fill=#FF4337  [400/11px #FF4337] "Text(Optional)"
+      FRAME 'Frame 51' [7104:2750]  158x28  AL:H gap6.0 pad?/?
+        TEXT 'max~부서명이 유효하지 않습니다.' [7104:2751]  32x14  fill=#3C444B  [500/12px #3C444B] "사업부"
+        FRAME 'select' [7104:2752]  120x28  AL:V gap4.0 pad?/?
+          FRAME 'title, button' [7104:2753]  120x28  AL:H gap4.0 pad?/6.0  fill=#FFFFFF  r2.0
+            FRAME 'title' [7104:2754]  86x28  AL:H gap10.0 pad4.0/?
+              TEXT 'Button' [7104:2755]  86x20  fill=#3C444B  [400/14px #3C444B] "전체"
+            FRAME 'buttons' [7104:2756]  16x16  AL:H gap2.0 pad?/?
+              INSTANCE 'icon_only_Basic' [7104:2757]  16x16  r1.0
+                INSTANCE 'Guide/Icon_dummy_set' [I7104:2757;487:77890]  16x16
+                  INSTANCE 'Guide/Icon-dummy_area-16' [I7104:2757;487:77890;470:80385]  16x16  fill=#CCF3EF
+                  INSTANCE 'Icon/Icon14-Chevron_Down-#def' [I7104:2757;487:77890;470:80384]  14x14
+          TEXT 'text_message-default' [7104:2758]  120x12  fill=#B2B6BB  [400/11px #B2B6BB] "Text(Optional)"
+          TEXT 'text_message-emphasized' [7104:2759]  120x12  fill=#3392D3  [400/11px #3392D3] "Text(Optional)"
+          TEXT 'text_message-danger' [7104:2760]  120x12  fill=#FF4337  [400/11px #FF4337] "Text(Optional)"
+      FRAME 'Frame 52' [7104:2761]  147x28  AL:H gap6.0 pad?/?
+        TEXT 'max~부서명이 유효하지 않습니다.' [7104:2762]  21x14  fill=#3C444B  [500/12px #3C444B] "전략"
+        FRAME 'select' [7104:2763]  120x28  AL:V gap4.0 pad?/?
+          FRAME 'title, button' [7104:2764]  120x28  AL:H gap4.0 pad?/6.0  fill=#FFFFFF  r2.0
+            FRAME 'title' [7104:2765]  86x28  AL:H gap10.0 pad4.0/?
+              TEXT 'Button' [7104:2766]  86x20  fill=#3C444B  [400/14px #3C444B] "전체"
+            FRAME 'buttons' [7104:2767]  16x16  AL:H gap2.0 pad?/?
+              INSTANCE 'icon_only_Basic' [7104:2768]  16x16  r1.0
+                INSTANCE 'Guide/Icon_dummy_set' [I7104:2768;487:77890]  16x16
+                  INSTANCE 'Guide/Icon-dummy_area-16' [I7104:2768;487:77890;470:80385]  16x16  fill=#CCF3EF
+                  INSTANCE 'Icon/Icon14-Chevron_Down-#def' [I7104:2768;487:77890;470:80384]  14x14
+          TEXT 'text_message-default' [7104:2769]  120x12  fill=#B2B6BB  [400/11px #B2B6BB] "Text(Optional)"
+          TEXT 'text_message-emphasized' [7104:2770]  120x12  fill=#3392D3  [400/11px #3392D3] "Text(Optional)"
+          TEXT 'text_message-danger' [7104:2771]  120x12  fill=#FF4337  [400/11px #FF4337] "Text(Optional)"
+    RECTANGLE 'Rectangle 18' [7104:2772]  1696x1
+  RECTANGLE 'Divider' [7104:2773]  1x23  fill=#DADFE4
+  FRAME 'Frame 26096792' [7104:2774]  1640x1059  r6.0
+    FRAME 'Frame 26096770' [7104:2775]  1640x206  AL:V gap? pad?/?
+      FRAME 'Frame 26096736' [7104:2776]  1640x61  AL:H gap? pad?/?
+        INSTANCE 'datatable-item' [7104:2777]  32x61  AL:V gap? pad?/?  fill=#FFFFFF
+          FRAME 'Table_Header-Icons' [I7104:2777;1257:178859]  32x60  AL:H gap6.0 pad?/6.0
+            INSTANCE 'icon_only_Basic-Chevron' [I7104:2777;1280:7750]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:2777;1280:7750;487:77890]  16x16
+                INSTANCE 'Icon/Icon-Share-16' [I7104:2777;1280:7750;487:77890;470:80385]  16x16
+                  VECTOR 'Rectangle 859' [I7104:2777;1280:7750;487:77890;470:80385;221:52855]  16x15  fill=#FFFFFF
+                INSTANCE 'Icon/Icon14-Chevron_Right-#ic' [I7104:2777;1280:7750;487:77890;470:80384]  14x14
+                  RECTANGLE 'Rectangle 102' [I7104:2777;1280:7750;487:77890;470:80384;221:53534]  14x14  fill=#FF54EE
+                  VECTOR 'Vector 12' [I7104:2777;1280:7750;487:77890;470:80384;221:53535]  4x8
+            INSTANCE 'icon_only_Basic-checkbox' [I7104:2777;1257:178860]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:2777;1257:178860;487:77890]  16x16
+                INSTANCE 'Guide/Icon-dummy_area-16' [I7104:2777;1257:178860;487:77890;470:80385]  16x16  fill=#CCF3EF
+                INSTANCE 'Icon/Icon14-Chevron_Right-#ic' [I7104:2777;1257:178860;487:77890;470:80384]  14x14
+                  RECTANGLE 'Rectangle 102' [I7104:2777;1257:178860;487:77890;470:80384;221:53534]  14x14  fill=#FF54EE
+                  VECTOR 'Vector 12' [I7104:2777;1257:178860;487:77890;470:80384;221:53535]  4x8
+            INSTANCE 'icon_only_Basic' [I7104:2777;1257:178861]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:2777;1257:178861;487:77890]  16x16
+                INSTANCE 'Guide/Icon-dummy_area-16' [I7104:2777;1257:178861;487:77890;470:80385]  16x16  fill=#CCF3EF
+                INSTANCE 'Icon/Icon14-Share-#neu08' [I7104:2777;1257:178861;487:77890;470:80384]  14x14
+                  BOOLEAN_OPERATION 'Subtract' [I7104:2777;1257:178861;487:77890;470:80384;326:57977]  4x8  fill=#CCD1D6
+                  ELLIPSE 'Ellipse 47' [I7104:2777;1257:178861;487:77890;470:80384;326:57982]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 48' [I7104:2777;1257:178861;487:77890;470:80384;326:57983]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 49' [I7104:2777;1257:178861;487:77890;470:80384;326:57984]  5x5  fill=#FFFFFF
+            INSTANCE 'icon_only_Basic' [I7104:2777;1257:178862]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:2777;1257:178862;487:77890]  16x16
+                INSTANCE 'Icon/Icon-Share-14-#neu08' [I7104:2777;1257:178862;487:77890;470:80385]  16x16
+                  VECTOR 'Rectangle 859' [I7104:2777;1257:178862;487:77890;470:80385;221:52855]  16x15  fill=#FFFFFF
+                INSTANCE 'Icon/Icon14-Share-#neu08' [I7104:2777;1257:178862;487:77890;470:80384]  14x14
+                  BOOLEAN_OPERATION 'Subtract' [I7104:2777;1257:178862;487:77890;470:80384;326:57977]  4x8  fill=#CCD1D6
+                  ELLIPSE 'Ellipse 47' [I7104:2777;1257:178862;487:77890;470:80384;326:57982]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 48' [I7104:2777;1257:178862;487:77890;470:80384;326:57983]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 49' [I7104:2777;1257:178862;487:77890;470:80384;326:57984]  5x5  fill=#FFFFFF
+          RECTANGLE 'border_under' [I7104:2777;1257:178863]  32x1  fill=#ECF1F5
+        FRAME 'datatable-item' [7104:2778]  660x61  AL:H gap? pad?/?
+          FRAME 'Table_Header, Border_Under' [7104:2779]  660x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:2780]  660x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [7104:2781]  660x38  AL:V gap2.0 pad?/6.0
+                FRAME 'Header, Box' [7104:2782]  648x38  AL:H gap16.0 pad?/6.0
+                  FRAME 'Background' [7104:2783]  22x22  fill=#ECF1F5  r2.0
+                  FRAME 'Frame 26096740' [7104:2785]  598x38  AL:V gap4.0 pad?/?
+            RECTANGLE 'border_under' [7104:2788]  660x1  fill=#ECF1F5
+        FRAME 'datatable-item' [7104:2789]  234x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [7104:2790]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [7104:2791]  234x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:2792]  234x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [7104:2793]  234x20  AL:V gap20.0 pad?/6.0
+                FRAME 'Container' [7104:2794]  222x20  AL:H gap12.0 pad?/?
+                  FRAME 'chart' [7104:2795]  120x6
+                  TEXT '8.3%' [7104:2798]  46x20  fill=#3C444B  [400/14px #3C444B] "8.3%"
+            RECTANGLE 'border_under' [7104:2799]  234x1  fill=#ECF1F5
+        INSTANCE 'datatable-item' [7104:2800]  160x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:2800;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:2800;1258:9783]  160x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:2800;1258:9784]  160x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:2800;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:2800;1258:9788]  148x20  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:2800;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:2800;1258:9790]  148x20  fill=#3C444B  [400/14px #3C444B] "2.9M"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:2800;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:2800;1258:9796]  160x1  fill=#ECF1F5
+        INSTANCE 'datatable-item' [7104:2801]  160x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:2801;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:2801;1258:9783]  160x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:2801;1258:9784]  160x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:2801;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                FRAME 'Title, Icon' [I7104:2801;1258:9788]  134x20  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:2801;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:2801;1258:9790]  134x20  fill=#3C444B  [400/14px #3C444B] "1.7M"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:2801;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:2801;1258:9796]  160x1  fill=#ECF1F5
+        FRAME 'datatable-item' [7104:2802]  234x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [7104:2803]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [7104:2804]  234x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:2805]  234x60  AL:H gap? pad?/12.0
+              FRAME 'Header, Box' [7104:2806]  210x20  AL:V gap20.0 pad?/?
+                FRAME 'Container' [7104:2807]  210x20  AL:H gap12.0 pad?/?
+                  FRAME 'chart' [7104:2808]  120x6
+                  TEXT '1.6:2' [7104:2811]  46x20  fill=#3C444B  [400/14px #3C444B] "1.6:2"
+            RECTANGLE 'border_under' [7104:2812]  234x1  fill=#ECF1F5
+        INSTANCE 'datatable-item' [7104:2813]  160x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:2813;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:2813;1258:9783]  160x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:2813;1258:9784]  160x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:2813;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:2813;1258:9788]  148x20  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:2813;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:2813;1258:9790]  148x20  fill=#3C444B  [400/14px #3C444B] "1.7M"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:2813;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:2813;1258:9796]  160x1  fill=#ECF1F5
+      FRAME 'Divider' [7104:2814]  1640x11  AL:H gap? pad?/?
+        INSTANCE 'datatable-item' [7104:2815]  1640x11  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:2815;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:2815;1258:9783]  1640x11  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:2815;1258:9784]  1640x10  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:2815;1258:9785]  1640x10  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:2815;1258:9788]  87x14  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:2815;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:2815;1258:9790]  87x14  fill=#767D84  [500/14px #767D84] "Moderatioin Pro"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:2815;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:2815;1258:9796]  1640x1  fill=#FFFFFF
+      FRAME 'Frame 26096771' [7104:2816]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:2817]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:2818]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2818;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2818;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2818;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2818;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2818;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2818;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2819]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2819;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2819;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2819;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2819;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2819;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2819;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:2820]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:2821]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:2822]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:2823]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:2824]  222x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:2829]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2830]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2830;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2830;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2830;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2830;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2830;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2830;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2831]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2831;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2831;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2831;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2831;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:2831;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2831;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:2832]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:2833]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:2834]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:2835]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:2836]  210x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:2841]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2842]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2842;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2842;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2842;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2842;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2842;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2842;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Frame 26096768' [7104:2843]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:2844]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:2845]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2845;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2845;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2845;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2845;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2845;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2845;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2846]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2846;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2846;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2846;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2846;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2846;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2846;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:2847]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:2848]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:2849]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:2850]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:2851]  222x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:2856]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2857]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2857;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2857;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2857;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2857;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2857;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2857;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2858]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2858;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2858;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2858;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2858;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:2858;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2858;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:2859]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:2860]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:2861]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:2862]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:2863]  210x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:2868]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2869]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2869;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2869;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2869;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2869;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2869;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2869;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Frame 26096772' [7104:2870]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:2871]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:2872]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2872;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2872;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2872;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2872;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2872;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2872;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2873]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2873;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2873;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2873;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2873;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2873;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2873;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:2874]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:2875]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:2876]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:2877]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:2878]  222x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:2883]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2884]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2884;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2884;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2884;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2884;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2884;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2884;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2885]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2885;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2885;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2885;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2885;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:2885;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2885;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:2886]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:2887]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:2888]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:2889]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:2890]  210x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:2895]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2896]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2896;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2896;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2896;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2896;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2896;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2896;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Divider' [7104:2897]  1640x11  AL:H gap? pad?/?
+        FRAME 'datatable-item' [7104:2898]  1640x11  AL:H gap? pad?/?
+          FRAME 'Table_Header, Border_Under' [7104:2899]  1640x11  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:2900]  1640x9  AL:H gap? pad?/?
+              FRAME 'Header, Box' [7104:2901]  1640x9  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [7104:2902]  87x14  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [7104:2903]  16x16  r1.0
+                  TEXT 'Text' [7104:2904]  87x20  fill=#767D84  [500/14px #767D84] "Moderatioin Pro"
+                  INSTANCE 'icon_only_Basic-Info' [7104:2905]  16x16  r1.0
+            RECTANGLE 'border_under' [7104:2906]  1640x2  fill=#E4E9ED
+    FRAME 'Frame 26096776' [7104:2907]  1640x165  AL:V gap? pad?/?
+      FRAME 'Frame 26096775' [7104:2908]  1640x61  AL:H gap? pad?/?
+        INSTANCE 'datatable-item' [7104:2909]  32x61  AL:V gap? pad?/?  fill=#FFFFFF
+          FRAME 'Table_Header-Icons' [I7104:2909;1257:178859]  32x60  AL:H gap6.0 pad?/6.0
+            INSTANCE 'icon_only_Basic-Chevron' [I7104:2909;1280:7750]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:2909;1280:7750;487:77890]  16x16
+                INSTANCE 'Icon/Icon-Share-16' [I7104:2909;1280:7750;487:77890;470:80385]  16x16
+                  VECTOR 'Rectangle 859' [I7104:2909;1280:7750;487:77890;470:80385;221:52855]  16x15  fill=#FFFFFF
+                INSTANCE 'Icon/Icon14-Chevron_Right-#ic' [I7104:2909;1280:7750;487:77890;470:80384]  14x14
+                  RECTANGLE 'Rectangle 102' [I7104:2909;1280:7750;487:77890;470:80384;221:53534]  14x14  fill=#FF54EE
+                  VECTOR 'Vector 12' [I7104:2909;1280:7750;487:77890;470:80384;221:53535]  4x8
+            INSTANCE 'icon_only_Basic-checkbox' [I7104:2909;1257:178860]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:2909;1257:178860;487:77890]  16x16
+                INSTANCE 'Guide/Icon-dummy_area-16' [I7104:2909;1257:178860;487:77890;470:80385]  16x16  fill=#CCF3EF
+                INSTANCE 'Icon/Icon14-Chevron_Right-#ic' [I7104:2909;1257:178860;487:77890;470:80384]  14x14
+                  RECTANGLE 'Rectangle 102' [I7104:2909;1257:178860;487:77890;470:80384;221:53534]  14x14  fill=#FF54EE
+                  VECTOR 'Vector 12' [I7104:2909;1257:178860;487:77890;470:80384;221:53535]  4x8
+            INSTANCE 'icon_only_Basic' [I7104:2909;1257:178861]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:2909;1257:178861;487:77890]  16x16
+                INSTANCE 'Guide/Icon-dummy_area-16' [I7104:2909;1257:178861;487:77890;470:80385]  16x16  fill=#CCF3EF
+                INSTANCE 'Icon/Icon14-Share-#neu08' [I7104:2909;1257:178861;487:77890;470:80384]  14x14
+                  BOOLEAN_OPERATION 'Subtract' [I7104:2909;1257:178861;487:77890;470:80384;326:57977]  4x8  fill=#CCD1D6
+                  ELLIPSE 'Ellipse 47' [I7104:2909;1257:178861;487:77890;470:80384;326:57982]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 48' [I7104:2909;1257:178861;487:77890;470:80384;326:57983]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 49' [I7104:2909;1257:178861;487:77890;470:80384;326:57984]  5x5  fill=#FFFFFF
+            INSTANCE 'icon_only_Basic' [I7104:2909;1257:178862]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:2909;1257:178862;487:77890]  16x16
+                INSTANCE 'Icon/Icon-Share-14-#neu08' [I7104:2909;1257:178862;487:77890;470:80385]  16x16
+                  VECTOR 'Rectangle 859' [I7104:2909;1257:178862;487:77890;470:80385;221:52855]  16x15  fill=#FFFFFF
+                INSTANCE 'Icon/Icon14-Share-#neu08' [I7104:2909;1257:178862;487:77890;470:80384]  14x14
+                  BOOLEAN_OPERATION 'Subtract' [I7104:2909;1257:178862;487:77890;470:80384;326:57977]  4x8  fill=#CCD1D6
+                  ELLIPSE 'Ellipse 47' [I7104:2909;1257:178862;487:77890;470:80384;326:57982]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 48' [I7104:2909;1257:178862;487:77890;470:80384;326:57983]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 49' [I7104:2909;1257:178862;487:77890;470:80384;326:57984]  5x5  fill=#FFFFFF
+          RECTANGLE 'border_under' [I7104:2909;1257:178863]  32x1  fill=#ECF1F5
+        FRAME 'datatable-item' [7104:2910]  660x61  AL:H gap? pad?/?
+          FRAME 'Table_Header, Border_Under' [7104:2911]  660x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:2912]  660x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [7104:2913]  660x38  AL:V gap2.0 pad?/6.0
+                FRAME 'Header, Box' [7104:2914]  648x38  AL:H gap16.0 pad?/6.0
+                  FRAME 'Background' [7104:2915]  22x22  fill=#ECF1F5  r2.0
+                  FRAME 'Frame 26096740' [7104:2917]  598x38  AL:V gap4.0 pad?/?
+            RECTANGLE 'border_under' [7104:2920]  660x1  fill=#ECF1F5
+        FRAME 'datatable-item' [7104:2921]  234x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [7104:2922]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [7104:2923]  234x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:2924]  234x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [7104:2925]  234x20  AL:V gap20.0 pad?/6.0
+                FRAME 'Container' [7104:2926]  222x20  AL:H gap20.0 pad?/?
+                  FRAME 'chart' [7104:2927]  120x6
+                  TEXT '8.3%' [7104:2930]  46x20  fill=#3C444B  [400/14px #3C444B] "8.3%"
+            RECTANGLE 'border_under' [7104:2931]  234x1  fill=#ECF1F5
+        INSTANCE 'datatable-item' [7104:2932]  160x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:2932;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:2932;1258:9783]  160x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:2932;1258:9784]  160x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:2932;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:2932;1258:9788]  148x20  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:2932;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:2932;1258:9790]  148x20  fill=#3C444B  [400/14px #3C444B] "2.9M"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:2932;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:2932;1258:9796]  160x1  fill=#ECF1F5
+        INSTANCE 'datatable-item' [7104:2933]  160x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:2933;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:2933;1258:9783]  160x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:2933;1258:9784]  160x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:2933;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                FRAME 'Title, Icon' [I7104:2933;1258:9788]  134x20  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:2933;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:2933;1258:9790]  134x20  fill=#3C444B  [400/14px #3C444B] "1.7M"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:2933;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:2933;1258:9796]  160x1  fill=#ECF1F5
+        FRAME 'datatable-item' [7104:2934]  234x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [7104:2935]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [7104:2936]  234x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:2937]  234x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [7104:2938]  234x20  AL:V gap20.0 pad?/12.0
+                FRAME 'Container' [7104:2939]  210x20  AL:H gap20.0 pad?/?
+                  FRAME 'chart' [7104:2940]  120x6
+                  TEXT '1.6:2' [7104:2943]  46x20  fill=#3C444B  [400/14px #3C444B] "1.6:2"
+            RECTANGLE 'border_under' [7104:2944]  234x1  fill=#ECF1F5
+        INSTANCE 'datatable-item' [7104:2945]  160x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:2945;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:2945;1258:9783]  160x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:2945;1258:9784]  160x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:2945;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:2945;1258:9788]  148x20  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:2945;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:2945;1258:9790]  148x20  fill=#3C444B  [400/14px #3C444B] "1.7M"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:2945;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:2945;1258:9796]  160x1  fill=#ECF1F5
+      FRAME 'Divider' [7104:2946]  1640x11  AL:H gap? pad?/?
+        INSTANCE 'datatable-item' [7104:2947]  1640x11  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:2947;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:2947;1258:9783]  1640x11  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:2947;1258:9784]  1640x10  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:2947;1258:9785]  1640x10  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:2947;1258:9788]  87x14  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:2947;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:2947;1258:9790]  87x14  fill=#767D84  [500/14px #767D84] "Moderatioin Pro"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:2947;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:2947;1258:9796]  1640x1  fill=#FFFFFF
+      FRAME 'Frame 26096768' [7104:2948]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:2949]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:2950]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2950;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2950;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2950;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2950;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2950;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2950;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2951]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2951;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2951;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2951;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2951;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2951;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2951;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:2952]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:2953]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:2954]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:2955]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:2956]  222x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:2961]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2962]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2962;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2962;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2962;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2962;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2962;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2962;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2963]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2963;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2963;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2963;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2963;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:2963;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2963;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:2964]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:2965]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:2966]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:2967]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:2968]  210x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:2973]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2974]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2974;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2974;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2974;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2974;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2974;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2974;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Frame 26096769' [7104:2975]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:2976]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:2977]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2977;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2977;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2977;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2977;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2977;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2977;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2978]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2978;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2978;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2978;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2978;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2978;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2978;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:2979]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:2980]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:2981]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:2982]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:2983]  222x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:2988]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2989]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2989;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2989;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2989;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2989;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:2989;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2989;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:2990]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:2990;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:2990;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:2990;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:2990;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:2990;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:2990;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:2991]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:2992]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:2993]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:2994]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:2995]  210x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:3000]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3001]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3001;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3001;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3001;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3001;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3001;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3001;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Divider' [7104:3002]  1640x11  AL:H gap? pad?/?
+        INSTANCE 'datatable-item' [7104:3003]  1640x11  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:3003;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:3003;1258:9783]  1640x11  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:3003;1258:9784]  1640x10  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:3003;1258:9785]  1640x10  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:3003;1258:9788]  87x14  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:3003;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:3003;1258:9790]  87x14  fill=#767D84  [500/14px #767D84] "Moderatioin Pro"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:3003;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:3003;1258:9796]  1640x1  fill=#FFFFFF
+    FRAME 'Frame 26096772' [7104:3004]  1640x329  AL:V gap? pad?/?
+      FRAME 'Frame 26096772' [7104:3005]  1640x61  AL:H gap? pad?/?
+        INSTANCE 'datatable-item' [7104:3006]  32x61  AL:V gap? pad?/?  fill=#FFFFFF
+          FRAME 'Table_Header-Icons' [I7104:3006;1257:178859]  32x60  AL:H gap6.0 pad?/6.0
+            INSTANCE 'icon_only_Basic-Chevron' [I7104:3006;1280:7750]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:3006;1280:7750;487:77890]  16x16
+                INSTANCE 'Icon/Icon-Share-16' [I7104:3006;1280:7750;487:77890;470:80385]  16x16
+                  VECTOR 'Rectangle 859' [I7104:3006;1280:7750;487:77890;470:80385;221:52855]  16x15  fill=#FFFFFF
+                INSTANCE 'Icon/Icon14-Chevron_Right-#ic' [I7104:3006;1280:7750;487:77890;470:80384]  14x14
+                  RECTANGLE 'Rectangle 102' [I7104:3006;1280:7750;487:77890;470:80384;221:53534]  14x14  fill=#FF54EE
+                  VECTOR 'Vector 12' [I7104:3006;1280:7750;487:77890;470:80384;221:53535]  4x8
+            INSTANCE 'icon_only_Basic-checkbox' [I7104:3006;1257:178860]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:3006;1257:178860;487:77890]  16x16
+                INSTANCE 'Guide/Icon-dummy_area-16' [I7104:3006;1257:178860;487:77890;470:80385]  16x16  fill=#CCF3EF
+                INSTANCE 'Icon/Icon14-Chevron_Right-#ic' [I7104:3006;1257:178860;487:77890;470:80384]  14x14
+                  RECTANGLE 'Rectangle 102' [I7104:3006;1257:178860;487:77890;470:80384;221:53534]  14x14  fill=#FF54EE
+                  VECTOR 'Vector 12' [I7104:3006;1257:178860;487:77890;470:80384;221:53535]  4x8
+            INSTANCE 'icon_only_Basic' [I7104:3006;1257:178861]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:3006;1257:178861;487:77890]  16x16
+                INSTANCE 'Guide/Icon-dummy_area-16' [I7104:3006;1257:178861;487:77890;470:80385]  16x16  fill=#CCF3EF
+                INSTANCE 'Icon/Icon14-Share-#neu08' [I7104:3006;1257:178861;487:77890;470:80384]  14x14
+                  BOOLEAN_OPERATION 'Subtract' [I7104:3006;1257:178861;487:77890;470:80384;326:57977]  4x8  fill=#CCD1D6
+                  ELLIPSE 'Ellipse 47' [I7104:3006;1257:178861;487:77890;470:80384;326:57982]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 48' [I7104:3006;1257:178861;487:77890;470:80384;326:57983]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 49' [I7104:3006;1257:178861;487:77890;470:80384;326:57984]  5x5  fill=#FFFFFF
+            INSTANCE 'icon_only_Basic' [I7104:3006;1257:178862]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:3006;1257:178862;487:77890]  16x16
+                INSTANCE 'Icon/Icon-Share-14-#neu08' [I7104:3006;1257:178862;487:77890;470:80385]  16x16
+                  VECTOR 'Rectangle 859' [I7104:3006;1257:178862;487:77890;470:80385;221:52855]  16x15  fill=#FFFFFF
+                INSTANCE 'Icon/Icon14-Share-#neu08' [I7104:3006;1257:178862;487:77890;470:80384]  14x14
+                  BOOLEAN_OPERATION 'Subtract' [I7104:3006;1257:178862;487:77890;470:80384;326:57977]  4x8  fill=#CCD1D6
+                  ELLIPSE 'Ellipse 47' [I7104:3006;1257:178862;487:77890;470:80384;326:57982]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 48' [I7104:3006;1257:178862;487:77890;470:80384;326:57983]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 49' [I7104:3006;1257:178862;487:77890;470:80384;326:57984]  5x5  fill=#FFFFFF
+          RECTANGLE 'border_under' [I7104:3006;1257:178863]  32x1  fill=#ECF1F5
+        FRAME 'datatable-item' [7104:3007]  660x61  AL:H gap? pad?/?
+          FRAME 'Table_Header, Border_Under' [7104:3008]  660x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:3009]  660x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [7104:3010]  660x38  AL:V gap2.0 pad?/6.0
+                FRAME 'Header, Box' [7104:3011]  648x38  AL:H gap16.0 pad?/6.0
+                  FRAME 'Background' [7104:3012]  22x22  fill=#ECF1F5  r2.0
+                  FRAME 'Frame 26096740' [7104:3014]  598x38  AL:V gap4.0 pad?/?
+            RECTANGLE 'border_under' [7104:3017]  660x1  fill=#ECF1F5
+        FRAME 'datatable-item' [7104:3018]  234x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [7104:3019]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [7104:3020]  234x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:3021]  234x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [7104:3022]  234x20  AL:V gap20.0 pad?/6.0
+                FRAME 'Container' [7104:3023]  222x20  AL:H gap12.0 pad?/?
+                  FRAME 'chart' [7104:3024]  120x6
+                  TEXT '29.2%' [7104:3027]  46x20  fill=#3C444B  [400/14px #3C444B] "29.2%"
+            RECTANGLE 'border_under' [7104:3028]  234x1  fill=#ECF1F5
+        INSTANCE 'datatable-item' [7104:3029]  160x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:3029;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:3029;1258:9783]  160x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:3029;1258:9784]  160x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:3029;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:3029;1258:9788]  148x20  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:3029;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:3029;1258:9790]  148x20  fill=#3C444B  [400/14px #3C444B] "2.9M"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:3029;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:3029;1258:9796]  160x1  fill=#ECF1F5
+        INSTANCE 'datatable-item' [7104:3030]  160x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:3030;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:3030;1258:9783]  160x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:3030;1258:9784]  160x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:3030;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                FRAME 'Title, Icon' [I7104:3030;1258:9788]  134x20  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:3030;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:3030;1258:9790]  134x20  fill=#3C444B  [400/14px #3C444B] "1.7M"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:3030;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:3030;1258:9796]  160x1  fill=#ECF1F5
+        FRAME 'datatable-item' [7104:3031]  234x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [7104:3032]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [7104:3033]  234x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:3034]  234x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [7104:3035]  234x20  AL:V gap20.0 pad?/12.0
+                FRAME 'Container' [7104:3036]  210x20  AL:H gap12.0 pad?/?
+                  FRAME 'chart' [7104:3037]  120x6
+                  TEXT '5.2:2' [7104:3040]  46x20  fill=#3C444B  [400/14px #3C444B] "5.2:2"
+            RECTANGLE 'border_under' [7104:3041]  234x1  fill=#ECF1F5
+        INSTANCE 'datatable-item' [7104:3042]  160x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:3042;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:3042;1258:9783]  160x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:3042;1258:9784]  160x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:3042;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:3042;1258:9788]  148x20  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:3042;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:3042;1258:9790]  148x20  fill=#3C444B  [400/14px #3C444B] "1.7M"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:3042;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:3042;1258:9796]  160x1  fill=#ECF1F5
+      FRAME 'Divider' [7104:3043]  1640x11  AL:H gap? pad?/?
+        INSTANCE 'datatable-item' [7104:3044]  1640x11  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:3044;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:3044;1258:9783]  1640x11  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:3044;1258:9784]  1640x10  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:3044;1258:9785]  1640x10  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:3044;1258:9788]  87x14  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:3044;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:3044;1258:9790]  87x14  fill=#767D84  [500/14px #767D84] "Moderatioin Pro"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:3044;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:3044;1258:9796]  1640x1  fill=#FFFFFF
+      FRAME 'Frame 26096768' [7104:3045]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:3046]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:3047]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3047;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3047;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3047;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3047;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3047;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3047;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3048]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3048;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3048;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3048;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3048;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3048;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3048;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3049]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3050]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3051]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3052]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:3053]  222x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:3058]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3059]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3059;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3059;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3059;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3059;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3059;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3059;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3060]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3060;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3060;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3060;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3060;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:3060;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3060;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3061]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3062]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3063]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3064]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:3065]  210x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:3070]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3071]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3071;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3071;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3071;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3071;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3071;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3071;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Frame 26096769' [7104:3072]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:3073]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:3074]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3074;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3074;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3074;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3074;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3074;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3074;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3075]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3075;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3075;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3075;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3075;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3075;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3075;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3076]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3077]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3078]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3079]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:3080]  222x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:3085]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3086]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3086;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3086;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3086;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3086;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3086;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3086;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3087]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3087;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3087;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3087;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3087;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:3087;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3087;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3088]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3089]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3090]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3091]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:3092]  210x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:3097]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3098]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3098;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3098;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3098;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3098;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3098;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3098;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Frame 26096771' [7104:3099]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:3100]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:3101]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3101;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3101;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3101;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3101;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3101;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3101;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3102]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3102;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3102;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3102;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3102;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3102;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3102;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3103]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3104]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3105]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3106]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:3107]  222x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:3112]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3113]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3113;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3113;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3113;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3113;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3113;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3113;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3114]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3114;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3114;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3114;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3114;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:3114;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3114;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3115]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3116]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3117]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3118]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:3119]  210x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:3124]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3125]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3125;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3125;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3125;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3125;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3125;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3125;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Frame 26096770' [7104:3126]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:3127]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:3128]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3128;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3128;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3128;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3128;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3128;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3128;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3129]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3129;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3129;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3129;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3129;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3129;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3129;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3130]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3131]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3132]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3133]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:3134]  222x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:3139]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3140]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3140;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3140;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3140;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3140;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3140;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3140;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3141]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3141;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3141;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3141;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3141;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:3141;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3141;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3142]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3143]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3144]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3145]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:3146]  210x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:3151]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3152]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3152;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3152;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3152;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3152;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3152;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3152;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Frame 26096765' [7104:3153]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:3154]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:3155]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3155;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3155;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3155;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3155;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3155;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3155;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3156]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3156;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3156;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3156;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3156;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3156;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3156;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3157]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3158]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3159]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3160]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:3161]  222x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:3166]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3167]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3167;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3167;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3167;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3167;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3167;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3167;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3168]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3168;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3168;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3168;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3168;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:3168;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3168;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3169]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3170]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3171]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3172]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:3173]  210x20  AL:H gap12.0 pad?/?
+              RECTANGLE 'border_under' [7104:3178]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3179]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3179;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3179;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3179;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3179;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3179;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3179;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Divider' [7104:3180]  1640x11  AL:H gap? pad?/?
+        INSTANCE 'datatable-item' [7104:3181]  1640x11  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:3181;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:3181;1258:9783]  1640x11  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:3181;1258:9784]  1640x10  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:3181;1258:9785]  1640x10  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:3181;1258:9788]  87x14  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:3181;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:3181;1258:9790]  87x14  fill=#767D84  [500/14px #767D84] "Moderatioin Pro"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:3181;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:3181;1258:9796]  1640x1  fill=#EFF4F8
+      FRAME 'datatable-item' [7104:3182]  1640x41  AL:H gap? pad?/?
+        FRAME 'Table_Header, Border_Under' [7104:3183]  1640x41  AL:V gap? pad?/?  fill=#FFFFFF
+          FRAME 'Table_Header' [7104:3184]  1640x39  AL:H gap? pad?/?
+            FRAME 'Header, Box' [7104:3185]  1640x20  AL:V gap2.0 pad?/?
+              INSTANCE 'btn_ghost' [7104:3186]  120x20  AL:H gap4.0 pad?/6.0  fill=#000000@0.00  r2.0
+                FRAME 'text' [I7104:3186;11162:48226]  108x14  AL:H gap10.0 pad?/?
+                  TEXT 'Button' [I7104:3186;11162:48227]  108x14  fill=#565E66  [400/12px #565E66] "35개 서비스 더보기 →"
+          RECTANGLE 'border_under' [7104:3187]  1640x2  fill=#E4E9ED
+    FRAME 'Frame 26096774' [7104:3188]  1640x329  AL:V gap? pad?/?
+      FRAME 'Frame 26096775' [7104:3189]  1640x61  AL:H gap? pad?/?
+        INSTANCE 'datatable-item' [7104:3190]  32x61  AL:V gap? pad?/?  fill=#FFFFFF
+          FRAME 'Table_Header-Icons' [I7104:3190;1257:178859]  32x60  AL:H gap6.0 pad?/6.0
+            INSTANCE 'icon_only_Basic-Chevron' [I7104:3190;1280:7750]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:3190;1280:7750;487:77890]  16x16
+                INSTANCE 'Icon/Icon-Share-16' [I7104:3190;1280:7750;487:77890;470:80385]  16x16
+                  VECTOR 'Rectangle 859' [I7104:3190;1280:7750;487:77890;470:80385;221:52855]  16x15  fill=#FFFFFF
+                INSTANCE 'Icon/Icon14-Chevron_Right-#ic' [I7104:3190;1280:7750;487:77890;470:80384]  14x14
+                  RECTANGLE 'Rectangle 102' [I7104:3190;1280:7750;487:77890;470:80384;221:53534]  14x14  fill=#FF54EE
+                  VECTOR 'Vector 12' [I7104:3190;1280:7750;487:77890;470:80384;221:53535]  4x8
+            INSTANCE 'icon_only_Basic-checkbox' [I7104:3190;1257:178860]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:3190;1257:178860;487:77890]  16x16
+                INSTANCE 'Guide/Icon-dummy_area-16' [I7104:3190;1257:178860;487:77890;470:80385]  16x16  fill=#CCF3EF
+                INSTANCE 'Icon/Icon14-Chevron_Right-#ic' [I7104:3190;1257:178860;487:77890;470:80384]  14x14
+                  RECTANGLE 'Rectangle 102' [I7104:3190;1257:178860;487:77890;470:80384;221:53534]  14x14  fill=#FF54EE
+                  VECTOR 'Vector 12' [I7104:3190;1257:178860;487:77890;470:80384;221:53535]  4x8
+            INSTANCE 'icon_only_Basic' [I7104:3190;1257:178861]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:3190;1257:178861;487:77890]  16x16
+                INSTANCE 'Guide/Icon-dummy_area-16' [I7104:3190;1257:178861;487:77890;470:80385]  16x16  fill=#CCF3EF
+                INSTANCE 'Icon/Icon14-Share-#neu08' [I7104:3190;1257:178861;487:77890;470:80384]  14x14
+                  BOOLEAN_OPERATION 'Subtract' [I7104:3190;1257:178861;487:77890;470:80384;326:57977]  4x8  fill=#CCD1D6
+                  ELLIPSE 'Ellipse 47' [I7104:3190;1257:178861;487:77890;470:80384;326:57982]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 48' [I7104:3190;1257:178861;487:77890;470:80384;326:57983]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 49' [I7104:3190;1257:178861;487:77890;470:80384;326:57984]  5x5  fill=#FFFFFF
+            INSTANCE 'icon_only_Basic' [I7104:3190;1257:178862]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:3190;1257:178862;487:77890]  16x16
+                INSTANCE 'Icon/Icon-Share-14-#neu08' [I7104:3190;1257:178862;487:77890;470:80385]  16x16
+                  VECTOR 'Rectangle 859' [I7104:3190;1257:178862;487:77890;470:80385;221:52855]  16x15  fill=#FFFFFF
+                INSTANCE 'Icon/Icon14-Share-#neu08' [I7104:3190;1257:178862;487:77890;470:80384]  14x14
+                  BOOLEAN_OPERATION 'Subtract' [I7104:3190;1257:178862;487:77890;470:80384;326:57977]  4x8  fill=#CCD1D6
+                  ELLIPSE 'Ellipse 47' [I7104:3190;1257:178862;487:77890;470:80384;326:57982]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 48' [I7104:3190;1257:178862;487:77890;470:80384;326:57983]  5x5  fill=#FFFFFF
+                  ELLIPSE 'Ellipse 49' [I7104:3190;1257:178862;487:77890;470:80384;326:57984]  5x5  fill=#FFFFFF
+          RECTANGLE 'border_under' [I7104:3190;1257:178863]  32x1  fill=#ECF1F5
+        FRAME 'datatable-item' [7104:3191]  660x61  AL:H gap? pad?/?
+          FRAME 'Table_Header, Border_Under' [7104:3192]  660x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:3193]  660x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [7104:3194]  660x38  AL:V gap2.0 pad?/6.0
+                FRAME 'Header, Box' [7104:3195]  648x38  AL:H gap16.0 pad?/6.0
+                  FRAME 'Background' [7104:3196]  22x22  fill=#EFF4F8  r2.0
+                  FRAME 'Frame 26096740' [7104:3198]  598x38  AL:V gap4.0 pad?/?
+            RECTANGLE 'border_under' [7104:3201]  660x1  fill=#ECF1F5
+        FRAME 'datatable-item' [7104:3202]  234x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [7104:3203]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [7104:3204]  234x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:3205]  234x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [7104:3206]  234x20  AL:V gap20.0 pad?/6.0
+                FRAME 'Container' [7104:3207]  222x20  AL:H gap20.0 pad?/?
+                  FRAME 'chart' [7104:3208]  120x6
+                  TEXT '12.5%' [7104:3211]  46x20  fill=#3C444B  [400/14px #3C444B] "12.5%"
+            RECTANGLE 'border_under' [7104:3212]  234x1  fill=#ECF1F5
+        INSTANCE 'datatable-item' [7104:3213]  160x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:3213;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:3213;1258:9783]  160x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:3213;1258:9784]  160x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:3213;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:3213;1258:9788]  148x20  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:3213;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:3213;1258:9790]  148x20  fill=#3C444B  [400/14px #3C444B] "2.9M"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:3213;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:3213;1258:9796]  160x1  fill=#ECF1F5
+        INSTANCE 'datatable-item' [7104:3214]  160x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:3214;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:3214;1258:9783]  160x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:3214;1258:9784]  160x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:3214;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                FRAME 'Title, Icon' [I7104:3214;1258:9788]  134x20  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:3214;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:3214;1258:9790]  134x20  fill=#3C444B  [400/14px #3C444B] "1.7M"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:3214;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:3214;1258:9796]  160x1  fill=#ECF1F5
+        FRAME 'datatable-item' [7104:3215]  234x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [7104:3216]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [7104:3217]  234x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [7104:3218]  234x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [7104:3219]  234x20  AL:V gap20.0 pad?/12.0
+                FRAME 'Container' [7104:3220]  210x20  AL:H gap20.0 pad?/?
+                  FRAME 'chart' [7104:3221]  120x6
+                  TEXT '6.2:6' [7104:3224]  46x20  fill=#3C444B  [400/14px #3C444B] "6.2:6"
+            RECTANGLE 'border_under' [7104:3225]  234x1  fill=#ECF1F5
+        INSTANCE 'datatable-item' [7104:3226]  160x61  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:3226;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:3226;1258:9783]  160x61  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:3226;1258:9784]  160x60  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:3226;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:3226;1258:9788]  148x20  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:3226;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:3226;1258:9790]  148x20  fill=#3C444B  [400/14px #3C444B] "1.7M"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:3226;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:3226;1258:9796]  160x1  fill=#ECF1F5
+      FRAME 'Divider' [7104:3227]  1640x11  AL:H gap? pad?/?
+        INSTANCE 'datatable-item' [7104:3228]  1640x11  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:3228;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:3228;1258:9783]  1640x11  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:3228;1258:9784]  1640x10  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:3228;1258:9785]  1640x10  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:3228;1258:9788]  87x14  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:3228;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:3228;1258:9790]  87x14  fill=#767D84  [500/14px #767D84] "Moderatioin Pro"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:3228;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:3228;1258:9796]  1640x1  fill=#FFFFFF
+      FRAME 'Frame 26096771' [7104:3229]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:3230]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:3231]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3231;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3231;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3231;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3231;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3231;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3231;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3232]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3232;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3232;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3232;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3232;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3232;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3232;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3233]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3234]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3235]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3236]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:3237]  222x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:3242]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3243]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3243;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3243;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3243;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3243;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3243;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3243;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3244]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3244;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3244;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3244;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3244;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:3244;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3244;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3245]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3246]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3247]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3248]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:3249]  210x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:3254]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3255]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3255;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3255;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3255;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3255;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3255;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3255;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Frame 26096772' [7104:3256]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:3257]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:3258]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3258;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3258;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3258;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3258;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3258;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3258;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3259]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3259;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3259;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3259;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3259;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3259;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3259;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3260]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3261]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3262]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3263]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:3264]  222x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:3269]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3270]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3270;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3270;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3270;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3270;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3270;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3270;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3271]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3271;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3271;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3271;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3271;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:3271;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3271;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3272]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3273]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3274]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3275]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:3276]  210x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:3281]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3282]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3282;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3282;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3282;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3282;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3282;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3282;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Frame 26096773' [7104:3283]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:3284]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:3285]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3285;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3285;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3285;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3285;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3285;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3285;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3286]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3286;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3286;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3286;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3286;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3286;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3286;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3287]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3288]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3289]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3290]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:3291]  222x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:3296]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3297]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3297;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3297;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3297;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3297;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3297;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3297;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3298]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3298;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3298;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3298;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3298;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:3298;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3298;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3299]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3300]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3301]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3302]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:3303]  210x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:3308]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3309]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3309;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3309;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3309;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3309;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3309;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3309;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Frame 26096774' [7104:3310]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:3311]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:3312]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3312;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3312;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3312;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3312;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3312;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3312;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3313]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3313;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3313;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3313;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3313;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3313;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3313;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3314]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3315]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3316]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3317]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:3318]  222x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:3323]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3324]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3324;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3324;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3324;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3324;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3324;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3324;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3325]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3325;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3325;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3325;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3325;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:3325;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3325;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3326]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3327]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3328]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3329]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:3330]  210x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:3335]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3336]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3336;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3336;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3336;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3336;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3336;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3336;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Frame 26096765' [7104:3337]  1640x41  AL:V gap? pad?/?
+        FRAME 'Frame 26096743' [7104:3338]  1640x41  AL:H gap? pad?/?
+          INSTANCE 'datatable-item' [7104:3339]  106x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3339;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3339;1258:9783]  106x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3339;1258:9784]  106x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3339;1258:9785]  106x14  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3339;1258:9788]  87x14  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3339;1258:9796]  106x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3340]  586x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3340;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3340;1258:9783]  586x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3340;1258:9784]  586x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3340;1258:9785]  586x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3340;1258:9788]  574x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3340;1258:9796]  586x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3341]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3342]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3343]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3344]  234x20  AL:V gap20.0 pad?/6.0
+                  FRAME 'Container' [7104:3345]  222x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:3350]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3351]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3351;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3351;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3351;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3351;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3351;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3351;1258:9796]  160x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3352]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3352;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3352;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3352;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3352;1258:9785]  160x20  AL:V gap2.0 pad?/20.0
+                  FRAME 'Title, Icon' [I7104:3352;1258:9788]  134x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3352;1258:9796]  160x1  fill=#FFFFFF
+          FRAME 'datatable-item' [7104:3353]  234x41  AL:H gap? pad?/?
+            FRAME 'Table_Header, Border_Under' [7104:3354]  234x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [7104:3355]  234x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [7104:3356]  234x20  AL:V gap20.0 pad?/12.0
+                  FRAME 'Container' [7104:3357]  210x20  AL:H gap20.0 pad?/?
+              RECTANGLE 'border_under' [7104:3362]  234x1  fill=#FFFFFF
+          INSTANCE 'datatable-item' [7104:3363]  160x41  AL:H gap? pad?/?
+            RECTANGLE 'Divider' [I7104:3363;1258:9782]  1x23  fill=#DADFE4
+            FRAME 'Table_Header, Border_Under' [I7104:3363;1258:9783]  160x41  AL:V gap? pad?/?  fill=#FFFFFF
+              FRAME 'Table_Header' [I7104:3363;1258:9784]  160x40  AL:H gap? pad?/?
+                FRAME 'Header, Box' [I7104:3363;1258:9785]  160x20  AL:V gap2.0 pad?/6.0
+                  FRAME 'Title, Icon' [I7104:3363;1258:9788]  148x20  AL:H gap2.0 pad?/?
+              RECTANGLE 'border_under' [I7104:3363;1258:9796]  160x1  fill=#FFFFFF
+      FRAME 'Divider' [7104:3364]  1640x11  AL:H gap? pad?/?
+        INSTANCE 'datatable-item' [7104:3365]  1640x11  AL:H gap? pad?/?
+          RECTANGLE 'Divider' [I7104:3365;1258:9782]  1x23  fill=#DADFE4
+          FRAME 'Table_Header, Border_Under' [I7104:3365;1258:9783]  1640x11  AL:V gap? pad?/?  fill=#FFFFFF
+            FRAME 'Table_Header' [I7104:3365;1258:9784]  1640x10  AL:H gap? pad?/?
+              FRAME 'Header, Box' [I7104:3365;1258:9785]  1640x10  AL:V gap2.0 pad?/6.0
+                FRAME 'Title, Icon' [I7104:3365;1258:9788]  87x14  AL:H gap2.0 pad?/?
+                  INSTANCE 'icon_only_Basic-Chevron' [I7104:3365;1280:171669]  16x16  r1.0
+                  TEXT 'Text' [I7104:3365;1258:9790]  87x14  fill=#767D84  [500/14px #767D84] "Moderatioin Pro"
+                  INSTANCE 'icon_only_Basic-Info' [I7104:3365;1258:9791]  16x16  r1.0
+            RECTANGLE 'border_under' [I7104:3365;1258:9796]  1640x1  fill=#EFF4F8
+      FRAME 'datatable-item' [7104:3366]  1640x41  AL:H gap? pad?/?
+        FRAME 'Table_Header, Border_Under' [7104:3367]  1640x41  AL:V gap? pad?/?  fill=#FFFFFF
+          FRAME 'Table_Header' [7104:3368]  1640x39  AL:H gap? pad?/?
+            FRAME 'Header, Box' [7104:3369]  1640x20  AL:V gap2.0 pad?/?
+              INSTANCE 'btn_ghost' [7104:3370]  120x20  AL:H gap4.0 pad?/6.0  fill=#000000@0.00  r2.0
+                FRAME 'text' [I7104:3370;11162:48226]  108x14  AL:H gap10.0 pad?/?
+                  TEXT 'Button' [I7104:3370;11162:48227]  108x14  fill=#565E66  [400/12px #565E66] "41개 서비스 더보기 →"
+          RECTANGLE 'border_under' [7104:3371]  1640x2  fill=#E4E9ED
+    FRAME 'Table' [7104:3372]  1640x30
+      FRAME 'Datatable-BG' [7104:3373]  1640x30  AL:V gap? pad?/?
+        INSTANCE 'Datatable-Header' [7104:3374]  1640x30
+          VECTOR 'BG' [I7104:3374;7714:85378]  1640x28  fill=#FAFBFC
+          VECTOR 'Border' [I7104:3374;7714:85379]  1640x1  fill=#E4E9ED
+          VECTOR 'Border' [I7104:3374;7714:85380]  1640x1  fill=#E4E9ED
+      FRAME 'Header' [7104:3375]  1640x29  AL:H gap? pad?/?
+        INSTANCE 'Datatable-Header-Title' [7104:3376]  32x29  AL:H gap? pad?/?  fill=#FAFBFC
+          FRAME 'Contents' [I7104:3376;5362:4574]  32x14  AL:H gap? pad?/?
+            FRAME 'Text, Icon, Arrange' [I7104:3376;5362:4575]  32x14  AL:H gap4.0 pad?/8.0
+              TEXT '카테고리타이틀01' [I7104:3376;5362:4576]  16x14  [400/12px ] ""
+              FRAME 'Arrange' [I7104:3376;5362:4577]  5x10
+                INSTANCE 'Icon/Icon-Triangle_Up-5-#Neutr' [I7104:3376;5362:4578]  5x5
+                  VECTOR 'Rectangle 842' [I7104:3376;5362:4578;648:2907]  5x4  fill=#B9BBBE
+                INSTANCE 'Icon/Icon-Triangle_Down-5-#Ne' [I7104:3376;5362:4579]  5x5
+                  VECTOR 'Rectangle 842' [I7104:3376;5362:4579;648:2893]  5x4  fill=#B9BBBE
+          RECTANGLE 'Divider' [I7104:3376;5362:4580]  1x28  fill=#E6E7E8
+        INSTANCE 'Datatable-Header-Title' [7104:3377]  660x29  AL:H gap? pad?/?  fill=#FAFBFC
+          FRAME 'Contents' [I7104:3377;5362:4574]  660x14  AL:H gap? pad?/?
+            FRAME 'Text, Icon, Arrange' [I7104:3377;5362:4575]  660x14  AL:H gap4.0 pad?/8.0
+              TEXT '카테고리타이틀01' [I7104:3377;5362:4576]  97x14  fill=#767D84  [500/12px #767D84] "서비스 그룹 · 서비스"
+              FRAME 'Arrange' [I7104:3377;5362:4577]  5x10
+                INSTANCE 'Icon/Icon-Triangle_Up-5-#Neutr' [I7104:3377;5362:4578]  5x5
+                  VECTOR 'Rectangle 842' [I7104:3377;5362:4578;648:2907]  5x4  fill=#B9BBBE
+                INSTANCE 'Icon/Icon-Triangle_Down-5-#Ne' [I7104:3377;5362:4579]  5x5
+                  VECTOR 'Rectangle 842' [I7104:3377;5362:4579;648:2893]  5x4  fill=#B9BBBE
+          RECTANGLE 'Divider' [I7104:3377;5362:4580]  1x28  fill=#E6E7E8
+        … +5 more 'Datatable-Header-Title' INSTANCE
+  INSTANCE 'btn_2ndary' [7104:3383]  85x28  AL:H gap4.0 pad4.0/8.0  fill=#FFFFFF  r2.0
+    INSTANCE 'icon_only-before' [I7104:3383;11162:36386]  16x16  r1.0
+      INSTANCE 'Guide/Icon_dummy_set' [I7104:3383;11162:36386;487:77890]  16x16
+        INSTANCE 'Guide/Icon-dummy_area-16' [I7104:3383;11162:36386;487:77890;470:80385]  16x16  fill=#CCF3EF
+        INSTANCE 'Icon/Icon14-Excel_down' [I7104:3383;11162:36386;487:77890;470:80384]  14x14  fill=#FFFFFF@0.00
+          FRAME 'Frame 4002' [I7104:3383;11162:36386;487:77890;470:80384;325:25805]  10x10
+            VECTOR 'Rectangle' [I7104:3383;11162:36386;487:77890;470:80384;325:25806]  10x10  fill=#3C724B
+            VECTOR 'Rectangle' [I7104:3383;11162:36386;487:77890;470:80384;325:25807]  10x10  fill=#3C724B
+            VECTOR 'Rectangle' [I7104:3383;11162:36386;487:77890;470:80384;325:25808]  4x1  fill=#3C724B
+    FRAME 'text' [I7104:3383;11162:36387]  49x20  AL:H gap10.0 pad?/?
+      TEXT 'Button' [I7104:3383;11162:36388]  49x20  fill=#3C444B  [500/14px #3C444B] "다운로드"
+  FRAME 'LNB' [7104:3384]  224x1239
+    FRAME 'Aside' [7104:3385]  224x1183  fill=#002035
+      FRAME 'menu' [7104:3386]  223x134  AL:V gap1.0 pad?/?
+        FRAME 'lnb/tree' [7104:3387]  223x44  AL:V gap? pad?/?
+          FRAME 'Icon, Tree_Title' [7104:3388]  223x44  AL:H gap7.0 pad?/20.0  fill=#002035
+            FRAME 'SVG' [7104:3389]  16x16
+              RECTANGLE 'Rectangle 18' [7104:3390]  13x4  fill=#002035
+              RECTANGLE 'Rectangle 20' [7104:3391]  5x10  fill=#002035
+              RECTANGLE 'Rectangle 21' [7104:3392]  9x10  fill=#002035
+            TEXT '드롭다운 메뉴_01 드롭다운 메뉴_0' [7104:3393]  160x20  fill=#FFFFFF  [500/14px #FFFFFF] "Overview"
+        FRAME 'lnb/tree' [7104:3394]  223x44  AL:V gap? pad?/?
+          FRAME 'Icon, Tree_Title' [7104:3395]  223x44  AL:H gap7.0 pad?/20.0  fill=#002035
+            FRAME 'SVG' [7104:3396]  16x16
+              RECTANGLE 'Rectangle 18' [7104:3397]  1x1  fill=#E4E9ED  r1.0
+              RECTANGLE 'Rectangle 20' [7104:3398]  1x1  fill=#E4E9ED  r1.0
+              RECTANGLE 'Rectangle 22' [7104:3399]  1x1  fill=#E4E9ED  r1.0
+              RECTANGLE 'Rectangle 24' [7104:3400]  1x1  fill=#E4E9ED  r1.0
+              RECTANGLE 'Rectangle 19' [7104:3401]  10x1  r1.0
+              RECTANGLE 'Rectangle 21' [7104:3402]  10x1  r1.0
+              RECTANGLE 'Rectangle 23' [7104:3403]  10x1  r1.0
+              RECTANGLE 'Rectangle 25' [7104:3404]  10x1  r1.0
+            TEXT '드롭다운 메뉴_01 드롭다운 메뉴_0' [7104:3405]  160x20  fill=#FFFFFF  [500/14px #FFFFFF] "GPU 활용 현황"
+        FRAME 'lnb/tree' [7104:3406]  223x44  AL:V gap? pad?/?
+          FRAME 'Icon, Tree_Title' [7104:3407]  223x44  AL:H gap7.0 pad?/20.0  fill=#2793D5
+            FRAME 'Icon/Icon14-Ai' [7104:3408]  14x14
+              STAR 'Star 1' [7104:3409]  14x14  fill=#FFFFFF
+              BOOLEAN_OPERATION 'Union' [7104:3410]  12x14
+                VECTOR 'Rectangle 3469610' [7104:3411]  6x14  fill=#6471DF
+                VECTOR 'Rectangle 3469611' [7104:3412]  12x6  fill=#6471DF
+            TEXT '드롭다운 메뉴_01 드롭다운 메뉴_0' [7104:3413]  162x20  fill=#FFFFFF  [500/14px #FFFFFF] "토큰 활용 현황"
+      FRAME 'Footer' [7104:3414]  224x113
+        TEXT 'v0.35(beta)' [7104:3415]  62x14  fill=#B2B6BB  [400/12px #B2B6BB] "v0.35(beta)"
+        RECTANGLE 'Rectangle 13' [7104:3416]  224x1  fill=#FFFFFF@0.20
+        FRAME 'Frame 2615592' [7104:3417]  71x20  AL:H gap4.0 pad?/?
+          TEXT '정책 안내' [7104:3418]  53x20  fill=#B2B6BB  [400/14px #B2B6BB] "정책 안내"
+          INSTANCE 'Icon/Icon8-Arrow_R_up-#Neu15' [7104:3419]  14x14
+            VECTOR 'Vector 169' [I7104:3419;1238:193384]  4x4
+            VECTOR 'Vector 170' [I7104:3419;1238:193385]  6x6
+            VECTOR 'Vector 435' [I7104:3419;1238:193386]  9x9
+        FRAME 'Frame 2615597' [7104:3420]  160x36  AL:V gap2.0 pad?/?
+          FRAME 'Frame 2615596' [7104:3421]  160x20  AL:H gap10.0 pad1.0/41.0
+            TEXT '김삼성' [7104:3422]  160x20  fill=#DADFE4  [400/14px #DADFE4] "김삼성"
+            INSTANCE 'Icon/Icon14-Chevron-S_Down-#d' [7104:3423]  14x14
+              VECTOR 'Vector 185' [I7104:3423;8668:21777]  6x3
+          TEXT 'Samsung.Kim@samsung.com' [7104:3424]  160x14  fill=#DADFE4  [400/12px #DADFE4] "Samsung.Kim@samsung.com"
+    FRAME 'Top' [7104:3425]  224x56  fill=#002035
+      FRAME 'VerticalBorder' [7104:3426]  224x56
+        RECTANGLE 'Rectangle 11' [7104:3427]  1x64  fill=#FFFFFF@0.20
+        RECTANGLE 'Rectangle 3469631' [7104:3428]  1x55  fill=#334551
+      INSTANCE 'LNB _Header-scale_button' [7104:3429]  19x55  AL:H gap10.0 pad?/?  fill=#002035
+        INSTANCE 'Icon/Icon5-Triangle_Left-#Neu1' [I7104:3429;1098:231329]  19x55
+          VECTOR 'Rectangle 883' [I7104:3429;1098:231329;221:53454]  4x5  fill=#FFFFFF
+      RECTANGLE 'Rectangle 12' [7104:3430]  224x1  fill=#FFFFFF@0.20
+      FRAME 'Frame 2615552' [7104:3431]  148x24  AL:H gap12.0 pad?/?
+        FRAME 'Frame 2615551' [7104:3432]  22x22
+          BOOLEAN_OPERATION 'Union' [7104:3433]  22x22  fill=#99A8E3
+            BOOLEAN_OPERATION 'Subtract' [7104:3434]  22x22  fill=#FFFFFF
+              VECTOR 'Ellipse 13 (Stroke)' [7104:3435]  22x22  fill=#FFFFFF
+              RECTANGLE 'Rectangle 3469632' [7104:3436]  14x14  fill=#D9D9D9
+            RECTANGLE 'Rectangle 3469633' [7104:3437]  10x3  fill=#FFFFFF
+            RECTANGLE 'Rectangle 3469634' [7104:3438]  5x2  fill=#FFFFFF
+          RECTANGLE 'Rectangle 3469635' [7104:3439]  5x5  fill=#E9EEF2
+        TEXT 'GPU Monitor' [7104:3440]  114x24  fill=#FFFFFF  [700/19px #FFFFFF] "GPU Monitor"
+  FRAME 'Frame 2615635' [7104:3441]  200x28  AL:H gap? pad?/?
+    FRAME 'Frame 2615641' [7104:3442]  200x28  AL:H gap8.0 pad?/?
+      INSTANCE 'search' [7104:3443]  200x28  AL:V gap4.0 pad?/?
+        FRAME 'title, button' [I7104:3443;11225:30970]  200x28  AL:H gap4.0 pad?/6.0  fill=#FFFFFF  r2.0
+          FRAME 'title' [I7104:3443;11225:30971]  166x28  AL:H gap10.0 pad4.0/?
+            TEXT 'Button' [I7104:3443;11225:30972]  166x20  fill=#90969D  [400/14px #90969D] "과제명/담당자 검색"
+          FRAME 'buttons' [I7104:3443;11225:30975]  16x16  AL:H gap2.0 pad?/?
+            INSTANCE 'icon_only_Basic' [I7104:3443;11227:10724]  16x16  r1.0
+              INSTANCE 'Guide/Icon_dummy_set' [I7104:3443;11227:10724;487:77890]  16x16
+                INSTANCE 'Guide/Icon-dummy_area-16' [I7104:3443;11227:10724;487:77890;470:80385]  16x16  fill=#CCF3EF
+                INSTANCE 'Icon/Icon-Magni-14-#default_on' [I7104:3443;11227:10724;487:77890;470:80384]  14x14
+                  RECTANGLE 'Rectangle 323' [I7104:3443;11227:10724;487:77890;470:80384;221:53603]  14x14
+                  GROUP 'Group 226' [I7104:3443;11227:10724;487:77890;470:80384;221:53604]  12x12
+        TEXT 'text_message-default' [I7104:3443;11225:30977]  120x12  fill=#B2B6BB  [400/11px #B2B6BB] "Text(Optional)"
+        TEXT 'text_message-emphasized' [I7104:3443;11225:30978]  120x12  fill=#3392D3  [400/11px #3392D3] "Text(Optional)"
+        TEXT 'text_message-danger' [I7104:3443;11225:30979]  120x12  fill=#FF4337  [400/11px #FF4337] "Text(Optional)"
+  FRAME 'ServiceCount' [7104:3444]  526x28  AL:H gap? pad?/?
+    FRAME 'list' [7104:3445]  129x28  AL:H gap10.0 pad?/?
+      FRAME 'TitleIcon' [7104:3446]  91x22  AL:H gap6.0 pad?/?
+        FRAME 'Icon/ServiceGroup' [7104:3447]  20x20
+          RECTANGLE 'Rectangle 3473624' [7104:3448]  6x6  fill=#3A4571
+          RECTANGLE 'Rectangle 3473626' [7104:3449]  6x6  fill=#3A4571
+          RECTANGLE 'Rectangle 3473627' [7104:3450]  6x6  fill=#3A4571
+          BOOLEAN_OPERATION 'Union' [7104:3451]  8x9  fill=#8092DC
+            VECTOR 'Rectangle 3469610' [7104:3452]  4x9  fill=#6471DF
+            VECTOR 'Rectangle 3469611' [7104:3453]  8x4  fill=#6471DF
+        TEXT '서비스 그룹' [7104:3454]  65x22  fill=#3C444B  [400/14px #3C444B] "서비스 그룹"
+      TEXT '52' [7104:3455]  28x28  fill=#3C444B  [600/24px #3C444B] "52"
+    INSTANCE 'Icon/Icon12-Divider-neu17' [7104:3456]  31x12  AL:H gap10.0 pad?/8.0
+      RECTANGLE 'stick' [I7104:3456;11151:31777]  1x12  fill=#2F363C
+    FRAME 'list' [7104:3457]  143x28  AL:H gap10.0 pad?/?
+      FRAME 'TitleIcon' [7104:3458]  63x22  AL:H gap6.0 pad?/?
+        FRAME 'Icon/Service' [7104:3459]  20x20
+          RECTANGLE 'Rectangle 3473624' [7104:3460]  14x14  fill=#515E94
+          BOOLEAN_OPERATION 'Union' [7104:3461]  8x9  fill=#F9FAFE
+            VECTOR 'Rectangle 3469610' [7104:3462]  4x9  fill=#6471DF
+            VECTOR 'Rectangle 3469611' [7104:3463]  8x4  fill=#6471DF
+        TEXT '서비스' [7104:3464]  37x22  fill=#3C444B  [400/14px #3C444B] "서비스"
+      TEXT '42112' [7104:3465]  70x28  fill=#3C444B  [600/24px #3C444B] "42112"
+    INSTANCE 'Icon/Icon12-Divider-neu17' [7104:3466]  31x12  AL:H gap10.0 pad?/8.0
+      RECTANGLE 'stick' [I7104:3466;11151:31777]  1x12  fill=#2F363C
+    FRAME 'list' [7104:3467]  192x28  AL:H gap10.0 pad?/?
+      FRAME 'TitleIcon' [7104:3468]  119x22  AL:H gap6.0 pad?/?
+        FRAME 'Icon/Service' [7104:3469]  20x20
+          RECTANGLE 'Rectangle 3473624' [7104:3470]  14x14
+          BOOLEAN_OPERATION 'Union' [7104:3471]  8x9  fill=#515E94
+            VECTOR 'Rectangle 3469610' [7104:3472]  4x9  fill=#6471DF
+            VECTOR 'Rectangle 3469611' [7104:3473]  8x4  fill=#6471DF
+          BOOLEAN_OPERATION 'Union' [7104:3474]  8x9  fill=#515E94
+            VECTOR 'Rectangle 3469610' [7104:3475]  4x9  fill=#6471DF
+            VECTOR 'Rectangle 3469611' [7104:3476]  8x4  fill=#6471DF
+        TEXT '일평균 토큰 합계' [7104:3477]  93x22  fill=#3C444B  [400/14px #3C444B] "일평균 토큰 합계"
+      TEXT '402M' [7104:3478]  63x28  fill=#3C444B  [600/24px #3C444B] "402M"

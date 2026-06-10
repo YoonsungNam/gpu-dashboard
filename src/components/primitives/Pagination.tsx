@@ -12,8 +12,8 @@ function buildRange(page: number, pageCount: number): Array<number | '…'> {
   const SIBLINGS = 1; // pages on each side of current
   const items: Array<number | '…'> = [];
 
-  // Small enough to show everything.
-  if (pageCount <= 7) {
+  // Small enough to show everything (v2 design windows up to 10 numbers).
+  if (pageCount <= 10) {
     for (let p = 1; p <= pageCount; p++) items.push(p);
     return items;
   }
@@ -120,9 +120,9 @@ export default function Pagination({
             onClick={() => !active && onChange(item)}
             style={{
               ...baseBtn,
-              // Figma active page: light-grey #E4E9ED fill + blue #3392D3 text (not solid brand/white).
+              // Figma active page: light-grey #E4E9ED fill + blue #2793D5 text (v2 node 221:66764).
               background: active ? color.border : 'transparent',
-              color: active ? '#3392D3' : color.textSecondary,
+              color: active ? '#2793D5' : color.textSecondary,
               cursor: active ? 'default' : 'pointer',
               fontWeight: 500,
             }}

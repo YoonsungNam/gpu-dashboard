@@ -1,11 +1,14 @@
 import type { ReactNode } from 'react';
-import { color, layout, text } from '../../tokens';
+import { color, layout, space, text } from '../../tokens';
 
 export default function TopBar({
   title,
+  subtitle,
   actions,
 }: {
   title: string;
+  /** v2: page caption rendered inline right of the title (500/14 #565E66). */
+  subtitle?: string;
   actions?: ReactNode;
 }) {
   return (
@@ -21,7 +24,12 @@ export default function TopBar({
         padding: '0 16px',
       }}
     >
-      <div style={{ ...text.sectionTitle, color: color.textPrimary }}>{title}</div>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: space.lg }}>
+        <span style={{ ...text.sectionTitle, color: color.textPrimary }}>{title}</span>
+        {subtitle && (
+          <span style={{ ...text.bodyM, color: color.textSecondary }}>{subtitle}</span>
+        )}
+      </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>{actions}</div>
     </header>
   );

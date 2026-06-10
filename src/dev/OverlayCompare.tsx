@@ -1,15 +1,22 @@
 import { useState, type ReactNode } from 'react';
-import ov1 from '../../design/GPU_Overview1.png';
-import ov2 from '../../design/GPU_Overview2.png';
-import rs1 from '../../design/GPU_Resource1.png';
-import rs2 from '../../design/GPU_Resource2.png';
+// v2 (2026-06-10) reference frames — v1 originals live in design/archive/v1-20260608/.
+import ov1 from '../../design/GPU_Overview_v2.png';
+import ov2 from '../../design/GPU_Overview_v2_expand.png';
+import rs1 from '../../design/GPU_Resource_inf.png';
+import rs2 from '../../design/GPU_Resource_inf_expand.png';
+import rs3 from '../../design/GPU_Resource_train.png';
+import tk1 from '../../design/GPU_Token_collapse.png';
+import tk2 from '../../design/GPU_Token_expand.png';
 import { color, radius, space, text } from '../tokens';
 
 const FRAMES = [
-  { id: 'ov1', label: 'Overview (1)', src: ov1 },
-  { id: 'ov2', label: 'Overview (2)', src: ov2 },
-  { id: 'rs1', label: 'GPU 자원 (1)', src: rs1 },
-  { id: 'rs2', label: 'GPU 자원 (2)', src: rs2 },
+  { id: 'ov1', label: 'Overview', src: ov1 },
+  { id: 'ov2', label: 'Overview (Expand)', src: ov2 },
+  { id: 'rs1', label: 'GPU 활용 현황 (추론)', src: rs1 },
+  { id: 'rs2', label: 'GPU 활용 현황 (추론 Expand)', src: rs2 },
+  { id: 'rs3', label: 'GPU 활용 현황 (학습)', src: rs3 },
+  { id: 'tk1', label: '토큰 활용 현황 (Collapse)', src: tk1 },
+  { id: 'tk2', label: '토큰 활용 현황 (Expand)', src: tk2 },
 ];
 
 /**

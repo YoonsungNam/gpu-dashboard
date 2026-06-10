@@ -1,0 +1,897 @@
+FRAME 'GPUOverview' [7104:13957]  1920x2124  fill=#ECF1F5
+  FRAME 'Header' [7104:13958]  1696x72
+    FRAME 'Frame 88' [7104:13959]  346x24  AL:H gap12.0 pad?/?
+      INSTANCE 'btn_2ndary' [7104:13960]  24x24  AL:H gap4.0 pad2.0/8.0  fill=#FFFFFF  r2.0
+        INSTANCE 'icon_only-before' [I7104:13960;11162:36397]  16x16  r1.0
+          INSTANCE 'Guide/Icon_dummy_set' [I7104:13960;11162:36397;487:77890]  16x16
+            INSTANCE 'Guide/Icon-dummy_area-16' [I7104:13960;11162:36397;487:77890;470:80385]  16x16  fill=#CCF3EF
+            INSTANCE 'Icon/Icon14-Chevron_Down-#def' [I7104:13960;11162:36397;487:77890;470:80384]  14x14
+              RECTANGLE 'Rectangle 102' [I7104:13960;11162:36397;487:77890;470:80384;221:53562]  14x14  fill=#FF54EE
+              VECTOR 'Vector 12' [I7104:13960;11162:36397;487:77890;470:80384;221:53563]  8x4
+      TEXT 'GPU 활용현황' [7104:13961]  116x24  fill=#3C444B  [600/20px #3C444B] "GPU 활용현황"
+      TEXT '추론 · 학습별 핵심 모니터링 지표' [7104:13962]  182x20  fill=#565E66  [400/14px #565E66] "추론 · 학습별 핵심 모니터링 지표"
+    RECTANGLE 'border' [7104:13963]  1696x1  fill=#CCD1D6
+  FRAME 'Header' [7104:13964]  1696x72
+    FRAME 'Frame 88' [7104:13965]  308x24  AL:H gap12.0 pad?/?
+      INSTANCE 'btn_2ndary' [7104:13966]  24x24  AL:H gap4.0 pad2.0/8.0  fill=#FFFFFF  r2.0
+        INSTANCE 'icon_only-before' [I7104:13966;11162:36397]  16x16  r1.0
+          INSTANCE 'Guide/Icon_dummy_set' [I7104:13966;11162:36397;487:77890]  16x16
+            INSTANCE 'Guide/Icon-dummy_area-16' [I7104:13966;11162:36397;487:77890;470:80385]  16x16  fill=#CCF3EF
+            INSTANCE 'Icon/Icon14-Chevron_Down-#def' [I7104:13966;11162:36397;487:77890;470:80384]  14x14
+              RECTANGLE 'Rectangle 102' [I7104:13966;11162:36397;487:77890;470:80384;221:53562]  14x14  fill=#FF54EE
+              VECTOR 'Vector 12' [I7104:13966;11162:36397;487:77890;470:80384;221:53563]  8x4
+      TEXT 'GPU 활용도 점검' [7104:13967]  139x24  fill=#3C444B  [600/20px #3C444B] "GPU 활용도 점검"
+      TEXT '우수 저활용 과제 순위' [7104:13968]  121x20  fill=#565E66  [400/14px #565E66] "우수 저활용 과제 순위"
+    RECTANGLE 'border' [7104:13969]  1696x1  fill=#CCD1D6
+  FRAME 'Header' [7104:13970]  1696x72
+    FRAME 'Frame 88' [7104:13971]  417x24  AL:H gap12.0 pad?/?
+      INSTANCE 'btn_2ndary' [7104:13972]  24x24  AL:H gap4.0 pad2.0/8.0  fill=#FFFFFF  r2.0
+        INSTANCE 'icon_only-before' [I7104:13972;11162:36397]  16x16  r1.0
+          INSTANCE 'Guide/Icon_dummy_set' [I7104:13972;11162:36397;487:77890]  16x16
+            INSTANCE 'Guide/Icon-dummy_area-16' [I7104:13972;11162:36397;487:77890;470:80385]  16x16  fill=#CCF3EF
+            INSTANCE 'Icon/Icon14-Chevron_Down-#def' [I7104:13972;11162:36397;487:77890;470:80384]  14x14
+              RECTANGLE 'Rectangle 102' [I7104:13972;11162:36397;487:77890;470:80384;221:53562]  14x14  fill=#FF54EE
+              VECTOR 'Vector 12' [I7104:13972;11162:36397;487:77890;470:80384;221:53563]  8x4
+      TEXT 'GPU 사용추이' [7104:13973]  116x24  fill=#3C444B  [600/20px #3C444B] "GPU 사용추이"
+      TEXT '최근 30일 · 추론/학습별 Slot Util · GP' [7104:13974]  253x20  fill=#565E66  [400/14px #565E66] "최근 30일 · 추론/학습별 Slot Util · GPU Ut"
+    RECTANGLE 'border' [7104:13975]  1696x1  fill=#CCD1D6
+  FRAME 'Background+VerticalBorder' [7104:13976]  810x287  fill=#FFFFFF  r8.0
+    RECTANGLE 'Rectangle 3473595' [7104:13977]  144x191  fill=#FAFBFC  r4.0
+    FRAME 'count' [7104:13978]  120x52  AL:V gap2.0 pad?/?
+      TEXT '36' [7104:13979]  120x36  fill=#90969D  [500/24px #90969D] "36"
+      TEXT 'Projects' [7104:13980]  45x14  fill=#90969D  [500/12px #90969D] "Projects"
+    FRAME 'count' [7104:13981]  120x54  AL:V gap4.0 pad?/?
+      TEXT '521' [7104:13982]  120x36  fill=#007492  [600/28px #007492] "521"
+      TEXT 'GPUs' [7104:13983]  31x14  fill=#90969D  [500/12px #90969D] "GPUs"
+    FRAME 'Frame 26096705' [7104:13984]  606x190  AL:V gap? pad?/?
+      FRAME 'HorizontalBorder' [7104:13985]  606x95
+        TEXT 'GPU Util' [7104:13986]  54x20  fill=#3C444B  [400/14px #3C444B] "GPU Util"
+        TEXT '64.1' [7104:13987]  41x24  fill=#239B2F  [600/20px #239B2F] "64.1"
+        TEXT '%' [7104:13988]  13x20  fill=#565E66  [400/14px #565E66] "%"
+        FRAME 'Chart' [7104:13989]  409x8  fill=#E9EEF2  r10.0
+          RECTANGLE 'Background' [7104:13990]  261x8  fill=#55C961  r1.0
+        RECTANGLE 'Rectangle 3473596' [7104:13991]  606x1  fill=#E4E9ED
+        FRAME 'Frame 10' [7104:13992]  295x20  AL:H gap12.0 pad?/?
+          FRAME 'Frame 9' [7104:13993]  143x20  AL:H gap6.0 pad?/?
+            TEXT '· GPU Util WH' [7104:13994]  92x20  fill=#767D84  [400/14px #767D84] "· GPU Util WH"
+            FRAME 'Frame 2615571' [7104:13995]  45x20  AL:H gap3.0 pad?/?
+              TEXT '55.2' [7104:13996]  29x20  fill=#3C444B  [400/14px #3C444B] "55.2"
+              TEXT '%' [7104:13997]  13x20  fill=#565E66  [400/14px #565E66] "%"
+          FRAME 'Frame 8' [7104:13998]  140x20  AL:H gap6.0 pad?/?
+            TEXT '· GPU Util AH' [7104:13999]  89x20  fill=#767D84  [400/14px #767D84] "· GPU Util AH"
+            FRAME 'Frame 2615571' [7104:14000]  45x20  AL:H gap3.0 pad?/?
+              TEXT '61.2' [7104:14001]  29x20  fill=#3C444B  [400/14px #3C444B] "61.2"
+              TEXT '%' [7104:14002]  13x20  fill=#565E66  [400/14px #565E66] "%"
+      FRAME 'HorizontalBorder' [7104:14003]  606x95
+        TEXT 'Slot Util' [7104:14004]  51x20  fill=#3C444B  [400/14px #3C444B] "Slot Util"
+        TEXT '15.3' [7104:14005]  41x24  fill=#FF4337  [600/20px #FF4337] "15.3"
+        TEXT '%' [7104:14006]  13x20  fill=#565E66  [400/14px #565E66] "%"
+        FRAME 'Chart' [7104:14007]  409x8  fill=#E9EEF2  r10.0
+          RECTANGLE 'Background' [7104:14008]  69x8  fill=#FF8E87  r1.0
+    FRAME 'Frame 26096707' [7104:14009]  810x56
+      RECTANGLE 'box ' [7104:14010]  810x56  fill=#FFFFFF
+      RECTANGLE 'box ' [7104:14011]  810x1  fill=#E4E9ED
+      FRAME 'titel' [7104:14012]  484x20  AL:H gap10.0 pad?/?
+        FRAME 'Frame 26096711' [7104:14013]  141x20  AL:H gap6.0 pad?/?
+          INSTANCE 'icon/icon20-Brainstorming' [7104:14014]  20x20
+            FRAME 'Frame 2609509' [I7104:14014;1336:95194]  16x19
+              FRAME 'Frame 2609510' [I7104:14014;1336:96059]  17x8
+                VECTOR 'Vector 870' [I7104:14014;1336:90608]  15x9  fill=#EDF2F4
+              VECTOR 'Vector 864' [I7104:14014;1336:90610]  2x2
+              VECTOR 'Vector 867' [I7104:14014;1336:90611]  2x2
+              VECTOR 'Vector 868' [I7104:14014;1336:90612]  1x2
+              VECTOR 'Vector 866' [I7104:14014;1336:90613]  1x2
+              FRAME 'Frame 2609507' [I7104:14014;1336:93021]  14x10
+                BOOLEAN_OPERATION 'Union' [I7104:14014;1336:90615]  14x10  fill=#B3E8F6
+                  ELLIPSE 'Ellipse 210' [I7104:14014;1336:90616]  5x5  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 211' [I7104:14014;1336:90617]  5x5  fill=#A0A0A0
+                  VECTOR 'Rectangle 3469533' [I7104:14014;1336:90618]  10x4  fill=#D9D9D9
+                  ELLIPSE 'Ellipse 211' [I7104:14014;1336:90619]  5x5  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 214' [I7104:14014;1336:90620]  7x6  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 213' [I7104:14014;1336:90621]  5x5  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 212' [I7104:14014;1336:90622]  7x7  fill=#A0A0A0
+                VECTOR 'Vector 861' [I7104:14014;1336:90623]  2x2
+                VECTOR 'Vector 863' [I7104:14014;1336:90624]  2x1
+                VECTOR 'Vector 862' [I7104:14014;1336:90625]  2x2
+          TEXT 'Inference / 추론' [7104:14015]  115x20  fill=#2F363C  [600/16px #2F363C] "Inference / 추론"
+        TEXT '시간대별 사용 편차가 크므로, 근무(09~18시), 비' [7104:14016]  333x14  fill=#3C444B  [400/12px #3C444B] "시간대별 사용 편차가 크므로, 근무(09~18시), 비근무를 "
+  FRAME 'Background+VerticalBorder' [7104:14017]  810x287  fill=#FFFFFF  r8.0
+    RECTANGLE 'Rectangle 3473595' [7104:14018]  144x191  fill=#FAFBFC  r4.0
+    FRAME 'count' [7104:14019]  120x52  AL:V gap2.0 pad?/?
+      TEXT '52' [7104:14020]  120x36  fill=#90969D  [500/24px #90969D] "52"
+      TEXT 'Projects' [7104:14021]  45x14  fill=#90969D  [500/12px #90969D] "Projects"
+    FRAME 'count' [7104:14022]  120x54  AL:V gap4.0 pad?/?
+      TEXT '852' [7104:14023]  120x36  fill=#5A4F8C  [600/28px #5A4F8C] "852"
+      TEXT 'GPUs' [7104:14024]  31x14  fill=#90969D  [500/12px #90969D] "GPUs"
+    FRAME 'Frame 26096705' [7104:14025]  606x190  AL:V gap? pad?/?
+      FRAME 'HorizontalBorder' [7104:14026]  606x95
+        TEXT 'GPU Util' [7104:14027]  54x20  fill=#3C444B  [400/14px #3C444B] "GPU Util"
+        TEXT '64.1' [7104:14028]  41x24  fill=#239B2F  [600/20px #239B2F] "64.1"
+        TEXT '%' [7104:14029]  13x20  fill=#565E66  [400/14px #565E66] "%"
+        FRAME 'Chart' [7104:14030]  409x8  fill=#E9EEF2  r10.0
+          RECTANGLE 'Background' [7104:14031]  261x8  fill=#55C961  r1.0
+        RECTANGLE 'Rectangle 3473596' [7104:14032]  606x1  fill=#E4E9ED
+      FRAME 'HorizontalBorder' [7104:14033]  606x95
+        TEXT 'Slot Util' [7104:14034]  51x20  fill=#3C444B  [400/14px #3C444B] "Slot Util"
+        TEXT '15.3' [7104:14035]  41x24  fill=#FF4337  [600/20px #FF4337] "15.3"
+        TEXT '%' [7104:14036]  13x20  fill=#565E66  [400/14px #565E66] "%"
+        FRAME 'Chart' [7104:14037]  409x8  fill=#E9EEF2  r10.0
+          RECTANGLE 'Background' [7104:14038]  69x8  fill=#FF8E87  r1.0
+    FRAME 'Frame 26096708' [7104:14039]  810x56
+      RECTANGLE 'box ' [7104:14040]  810x56  fill=#FFFFFF
+      RECTANGLE 'box ' [7104:14041]  810x1  fill=#E4E9ED
+      FRAME 'Frame 26096710' [7104:14042]  435x20  AL:H gap6.0 pad?/?
+        FRAME 'Frame 26096710' [7104:14043]  128x20  AL:H gap6.0 pad?/?
+          FRAME 'icon/icon20-dict' [7104:14044]  20x20
+            VECTOR 'Rectangle 3469235' [7104:14045]  17x12  fill=#DADFE4  r0.5
+            VECTOR 'Rectangle 3469236' [7104:14046]  13x12  fill=#D5CCFF  r0.5
+            RECTANGLE 'Rectangle 3469257' [7104:14047]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469260' [7104:14048]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469258' [7104:14049]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469261' [7104:14050]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469259' [7104:14051]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469262' [7104:14052]  4x1  fill=#222B4D
+            VECTOR 'Vector 842' [7104:14053]  0x6  fill=#222B4D
+          TEXT 'Training / 학습' [7104:14054]  102x20  fill=#2F363C  [600/16px #2F363C] "Training / 학습"
+        TEXT '시간대와 무관하게 연속 수행되므로, 24시간 전체 기준' [7104:14055]  301x14  fill=#3C444B  [400/12px #3C444B] "시간대와 무관하게 연속 수행되므로, 24시간 전체 기준으로 집"
+  FRAME 'Frame 2615546' [7104:14056]  1696x56
+    RECTANGLE 'Rectangle 17' [7104:14057]  1696x56  fill=#FFFFFF
+    TEXT 'Text' [7104:14058]  134x20  fill=#565E66  [500/14px #565E66] "전체 자원 활용을 한눈에"
+    INSTANCE 'btn_ghost' [7104:14059]  89x28  AL:H gap4.0 pad4.0/8.0  fill=#000000@0.00  r2.0
+      INSTANCE 'icon_only-before' [I7104:14059;11162:48205]  16x16  r1.0
+        INSTANCE 'Guide/Icon_dummy_set' [I7104:14059;11162:48205;487:77890]  16x16
+          INSTANCE 'Guide/Icon-dummy_area-16' [I7104:14059;11162:48205;487:77890;470:80385]  16x16  fill=#CCF3EF
+          INSTANCE 'Icon/Icon14-Information' [I7104:14059;11162:48205;487:77890;470:80384]  14x14
+            GROUP 'Group 511' [I7104:14059;11162:48205;487:77890;470:80384;221:53770]  14x14
+              ELLIPSE 'Ellipse 32' [I7104:14059;11162:48205;487:77890;470:80384;221:53771]  14x14  fill=#FFFFFF
+              ELLIPSE 'Ellipse 33' [I7104:14059;11162:48205;487:77890;470:80384;221:53772]  2x2  fill=#56595F
+              VECTOR 'Rectangle 430' [I7104:14059;11162:48205;487:77890;470:80384;221:53773]  2x5  fill=#56595F
+            GROUP 'Group 304' [I7104:14059;11162:48205;487:77890;470:80384;221:53774]  13x13
+              GROUP 'Group 303' [I7104:14059;11162:48205;487:77890;470:80384;221:53775]  13x13
+                VECTOR 'Rectangle 881' [I7104:14059;11162:48205;487:77890;470:80384;221:53776]  13x13  fill=#FFFFFF  r1.0
+                VECTOR 'Ellipse 34' [I7104:14059;11162:48205;487:77890;470:80384;221:53777]  2x2  fill=#767D84
+                VECTOR 'Rectangle 882' [I7104:14059;11162:48205;487:77890;470:80384;221:53778]  2x5  fill=#767D84
+      FRAME 'text' [I7104:14059;11162:48206]  53x20  AL:H gap10.0 pad?/?
+        TEXT 'Button' [I7104:14059;11162:48207]  53x20  fill=#565E66  [500/14px #565E66] "지표 정의"
+    FRAME 'Frame 52' [7104:14060]  478x28  AL:H gap13.0 pad?/?
+      FRAME 'Frame 50' [7104:14061]  147x28  AL:H gap6.0 pad?/?
+        TEXT 'max~부서명이 유효하지 않습니다.' [7104:14062]  21x14  fill=#3C444B  [500/12px #3C444B] "기간"
+        FRAME 'select' [7104:14063]  120x28  AL:V gap4.0 pad?/?
+          FRAME 'title, button' [7104:14064]  120x28  AL:H gap4.0 pad?/6.0  fill=#FFFFFF  r2.0
+            FRAME 'title' [7104:14065]  86x28  AL:H gap10.0 pad4.0/?
+              TEXT 'Button' [7104:14066]  86x20  fill=#3C444B  [400/14px #3C444B] "최근 30일"
+            FRAME 'buttons' [7104:14067]  16x16  AL:H gap2.0 pad?/?
+              INSTANCE 'icon_only_Basic' [7104:14068]  16x16  r1.0
+                INSTANCE 'Guide/Icon_dummy_set' [I7104:14068;487:77890]  16x16
+                  INSTANCE 'Guide/Icon-dummy_area-16' [I7104:14068;487:77890;470:80385]  16x16  fill=#CCF3EF
+                  INSTANCE 'Icon/Icon14-Chevron_Down-#def' [I7104:14068;487:77890;470:80384]  14x14
+          TEXT 'text_message-default' [7104:14069]  120x12  fill=#B2B6BB  [400/11px #B2B6BB] "Text(Optional)"
+          TEXT 'text_message-emphasized' [7104:14070]  120x12  fill=#3392D3  [400/11px #3392D3] "Text(Optional)"
+          TEXT 'text_message-danger' [7104:14071]  120x12  fill=#FF4337  [400/11px #FF4337] "Text(Optional)"
+      FRAME 'Frame 51' [7104:14072]  158x28  AL:H gap6.0 pad?/?
+        TEXT 'max~부서명이 유효하지 않습니다.' [7104:14073]  32x14  fill=#3C444B  [500/12px #3C444B] "사업부"
+        FRAME 'select' [7104:14074]  120x28  AL:V gap4.0 pad?/?
+          FRAME 'title, button' [7104:14075]  120x28  AL:H gap4.0 pad?/6.0  fill=#FFFFFF  r2.0
+            FRAME 'title' [7104:14076]  86x28  AL:H gap10.0 pad4.0/?
+              TEXT 'Button' [7104:14077]  86x20  fill=#3C444B  [400/14px #3C444B] "전체"
+            FRAME 'buttons' [7104:14078]  16x16  AL:H gap2.0 pad?/?
+              INSTANCE 'icon_only_Basic' [7104:14079]  16x16  r1.0
+                INSTANCE 'Guide/Icon_dummy_set' [I7104:14079;487:77890]  16x16
+                  INSTANCE 'Guide/Icon-dummy_area-16' [I7104:14079;487:77890;470:80385]  16x16  fill=#CCF3EF
+                  INSTANCE 'Icon/Icon14-Chevron_Down-#def' [I7104:14079;487:77890;470:80384]  14x14
+          TEXT 'text_message-default' [7104:14080]  120x12  fill=#B2B6BB  [400/11px #B2B6BB] "Text(Optional)"
+          TEXT 'text_message-emphasized' [7104:14081]  120x12  fill=#3392D3  [400/11px #3392D3] "Text(Optional)"
+          TEXT 'text_message-danger' [7104:14082]  120x12  fill=#FF4337  [400/11px #FF4337] "Text(Optional)"
+      FRAME 'Frame 52' [7104:14083]  147x28  AL:H gap6.0 pad?/?
+        TEXT 'max~부서명이 유효하지 않습니다.' [7104:14084]  21x14  fill=#3C444B  [500/12px #3C444B] "전략"
+        FRAME 'select' [7104:14085]  120x28  AL:V gap4.0 pad?/?
+          FRAME 'title, button' [7104:14086]  120x28  AL:H gap4.0 pad?/6.0  fill=#FFFFFF  r2.0
+            FRAME 'title' [7104:14087]  86x28  AL:H gap10.0 pad4.0/?
+              TEXT 'Button' [7104:14088]  86x20  fill=#3C444B  [400/14px #3C444B] "전체"
+            FRAME 'buttons' [7104:14089]  16x16  AL:H gap2.0 pad?/?
+              INSTANCE 'icon_only_Basic' [7104:14090]  16x16  r1.0
+                INSTANCE 'Guide/Icon_dummy_set' [I7104:14090;487:77890]  16x16
+                  INSTANCE 'Guide/Icon-dummy_area-16' [I7104:14090;487:77890;470:80385]  16x16  fill=#CCF3EF
+                  INSTANCE 'Icon/Icon14-Chevron_Down-#def' [I7104:14090;487:77890;470:80384]  14x14
+          TEXT 'text_message-default' [7104:14091]  120x12  fill=#B2B6BB  [400/11px #B2B6BB] "Text(Optional)"
+          TEXT 'text_message-emphasized' [7104:14092]  120x12  fill=#3392D3  [400/11px #3392D3] "Text(Optional)"
+          TEXT 'text_message-danger' [7104:14093]  120x12  fill=#FF4337  [400/11px #FF4337] "Text(Optional)"
+    TEXT 'Overview' [7104:14094]  89x24  fill=#2F363C  [600/20px #2F363C] "Overview"
+    RECTANGLE 'Rectangle 18' [7104:14095]  1696x1
+    INSTANCE 'tag' [7104:14096]  52x20  AL:V gap10.0 pad?/?  r20.0
+      FRAME 'BG' [I7104:14096;1188:54855]  52x20  AL:H gap2.0 pad2.0/6.0  fill=#F2F6F9  r20.0
+        INSTANCE 'Guide/Icon_dummy_set' [I7104:14096;1188:54856]  16x16
+          INSTANCE 'Guide/Icon-dummy_area-16' [I7104:14096;1188:54856;470:80385]  16x16  fill=#CCF3EF
+          INSTANCE 'Icon/Live' [I7104:14096;1188:54856;470:80384]  14x14
+            ELLIPSE 'Ellipse 14' [I7104:14096;1188:54856;470:80384;2243:2805]  8x8  fill=#239B2F
+        TEXT 'Text' [I7104:14096;1188:54857]  22x14  fill=#454E56  [400/12px #454E56] "Live"
+  FRAME 'Frame 2615547' [7104:14097]  224x2124
+    FRAME 'Background+HorizontalBorder' [7104:14098]  224x56  fill=#002035
+      FRAME 'VerticalBorder' [7104:14099]  224x56
+        RECTANGLE 'Rectangle 11' [7104:14100]  1x64  fill=#FFFFFF@0.20
+        RECTANGLE 'Rectangle 3469631' [7104:14101]  1x55  fill=#334551
+      INSTANCE 'LNB _Header-scale_button' [7104:14102]  19x55  AL:H gap10.0 pad?/?  fill=#002035
+        INSTANCE 'Icon/Icon5-Triangle_Left-#Neu1' [I7104:14102;1098:231329]  19x55
+          VECTOR 'Rectangle 883' [I7104:14102;1098:231329;221:53454]  4x5  fill=#FFFFFF
+      RECTANGLE 'Rectangle 12' [7104:14103]  224x1  fill=#FFFFFF@0.20
+      FRAME 'Frame 2615552' [7104:14104]  148x24  AL:H gap12.0 pad?/?
+        FRAME 'Frame 2615551' [7104:14105]  22x22
+          BOOLEAN_OPERATION 'Union' [7104:14106]  22x22  fill=#99A8E3
+            BOOLEAN_OPERATION 'Subtract' [7104:14107]  22x22  fill=#FFFFFF
+              VECTOR 'Ellipse 13 (Stroke)' [7104:14108]  22x22  fill=#FFFFFF
+              RECTANGLE 'Rectangle 3469632' [7104:14109]  14x14  fill=#D9D9D9
+            RECTANGLE 'Rectangle 3469633' [7104:14110]  10x3  fill=#FFFFFF
+            RECTANGLE 'Rectangle 3469634' [7104:14111]  5x2  fill=#FFFFFF
+          RECTANGLE 'Rectangle 3469635' [7104:14112]  5x5  fill=#E9EEF2
+        TEXT 'GPU Monitor' [7104:14113]  114x24  fill=#FFFFFF  [700/19px #FFFFFF] "GPU Monitor"
+    FRAME 'Aside' [7104:14114]  224x2068  fill=#002035
+      RECTANGLE 'Rectangle 11' [7104:14115]  1x1784  fill=#FFFFFF@0.20
+      FRAME 'Frame 2615553' [7104:14116]  223x134  AL:V gap1.0 pad?/?
+        FRAME 'lnb/tree' [7104:14117]  223x44  AL:V gap? pad?/?
+          FRAME 'Icon, Tree_Title' [7104:14118]  223x44  AL:H gap7.0 pad?/20.0  fill=#3392D3
+            FRAME 'SVG' [7104:14119]  16x16
+              RECTANGLE 'Rectangle 18' [7104:14120]  13x4  fill=#3392D3
+              RECTANGLE 'Rectangle 20' [7104:14121]  5x10  fill=#3392D3
+              RECTANGLE 'Rectangle 21' [7104:14122]  9x10  fill=#3392D3
+            TEXT '드롭다운 메뉴_01 드롭다운 메뉴_0' [7104:14123]  160x20  fill=#FFFFFF  [500/14px #FFFFFF] "Overview"
+        FRAME 'lnb/tree' [7104:14124]  223x44  AL:V gap? pad?/?
+          FRAME 'Icon, Tree_Title' [7104:14125]  223x44  AL:H gap7.0 pad?/20.0  fill=#002035
+            FRAME 'SVG' [7104:14126]  16x16
+              RECTANGLE 'Rectangle 18' [7104:14127]  1x1  fill=#E4E9ED  r1.0
+              RECTANGLE 'Rectangle 20' [7104:14128]  1x1  fill=#E4E9ED  r1.0
+              RECTANGLE 'Rectangle 22' [7104:14129]  1x1  fill=#E4E9ED  r1.0
+              RECTANGLE 'Rectangle 24' [7104:14130]  1x1  fill=#E4E9ED  r1.0
+              RECTANGLE 'Rectangle 19' [7104:14131]  10x1  r1.0
+              RECTANGLE 'Rectangle 21' [7104:14132]  10x1  r1.0
+              RECTANGLE 'Rectangle 23' [7104:14133]  10x1  r1.0
+              RECTANGLE 'Rectangle 25' [7104:14134]  10x1  r1.0
+            TEXT '드롭다운 메뉴_01 드롭다운 메뉴_0' [7104:14135]  160x20  fill=#FFFFFF  [500/14px #FFFFFF] "GPU 활용 현황"
+        FRAME 'lnb/tree' [7104:14136]  223x44  AL:V gap? pad?/?
+          FRAME 'Icon, Tree_Title' [7104:14137]  223x44  AL:H gap7.0 pad?/20.0  fill=#002035
+            FRAME 'Icon/Icon14-Ai' [7104:14138]  14x14
+              STAR 'Star 1' [7104:14139]  14x14  fill=#FFFFFF
+              BOOLEAN_OPERATION 'Union' [7104:14140]  12x14
+                VECTOR 'Rectangle 3469610' [7104:14141]  6x14  fill=#6471DF
+                VECTOR 'Rectangle 3469611' [7104:14142]  12x6  fill=#6471DF
+            TEXT '드롭다운 메뉴_01 드롭다운 메뉴_0' [7104:14143]  162x20  fill=#FFFFFF  [500/14px #FFFFFF] "토큰 활용 현황"
+      FRAME 'Frame 2615595' [7104:14144]  224x113
+        TEXT 'v0.35(beta)' [7104:14145]  62x14  fill=#B2B6BB  [400/12px #B2B6BB] "v0.35(beta)"
+        RECTANGLE 'Rectangle 13' [7104:14146]  224x1  fill=#FFFFFF@0.20
+        FRAME 'Frame 2615592' [7104:14147]  71x20  AL:H gap4.0 pad?/?
+          TEXT '정책 안내' [7104:14148]  53x20  fill=#B2B6BB  [400/14px #B2B6BB] "정책 안내"
+          INSTANCE 'Icon/Icon8-Arrow_R_up-#Neu15' [7104:14149]  14x14
+            VECTOR 'Vector 169' [I7104:14149;1238:193384]  4x4
+            VECTOR 'Vector 170' [I7104:14149;1238:193385]  6x6
+            VECTOR 'Vector 435' [I7104:14149;1238:193386]  9x9
+        FRAME 'Frame 2615597' [7104:14150]  160x36  AL:V gap2.0 pad?/?
+          FRAME 'Frame 2615596' [7104:14151]  160x20  AL:H gap10.0 pad1.0/41.0
+            TEXT '김삼성' [7104:14152]  160x20  fill=#DADFE4  [400/14px #DADFE4] "김삼성"
+            INSTANCE 'Icon/Icon14-Chevron-S_Down-#d' [7104:14153]  14x14
+              VECTOR 'Vector 185' [I7104:14153;8668:21777]  6x3
+          TEXT 'Samsung.Kim@samsung.com' [7104:14154]  160x14  fill=#DADFE4  [400/12px #DADFE4] "Samsung.Kim@samsung.com"
+  FRAME 'Background+VerticalBorder' [7104:14155]  810x360  fill=#FFFFFF  r8.0
+    FRAME 'Frame 10' [7104:14156]  233x20  AL:H gap12.0 pad?/?
+      FRAME 'Frame 9' [7104:14157]  112x20  AL:H gap6.0 pad?/?
+        TEXT 'GPU 평균' [7104:14158]  57x20  fill=#767D84  [400/14px #767D84] "GPU 평균"
+        FRAME 'Frame 2615571' [7104:14159]  49x20  AL:H gap3.0 pad?/?
+          TEXT '46.4' [7104:14160]  33x20  fill=#007492  [500/16px #007492] "46.4"
+          TEXT '%' [7104:14161]  13x20  fill=#565E66  [400/14px #565E66] "%"
+      FRAME 'Frame 8' [7104:14162]  109x20  AL:H gap6.0 pad?/?
+        TEXT 'Slot 평균' [7104:14163]  54x20  fill=#767D84  [400/14px #767D84] "Slot 평균"
+        FRAME 'Frame 2615571' [7104:14164]  49x20  AL:H gap3.0 pad?/?
+          TEXT '61.2' [7104:14165]  33x20  fill=#007492  [500/16px #007492] "61.2"
+          TEXT '%' [7104:14166]  13x20  fill=#565E66  [400/14px #565E66] "%"
+    FRAME 'Frame 18' [7104:14167]  144x14  AL:H gap12.0 pad?/?
+      FRAME 'Frame 16' [7104:14168]  67x14  AL:H gap6.0 pad?/?
+        FRAME 'Frame 2615572' [7104:14169]  14x14
+          RECTANGLE 'Rectangle 3469648' [7104:14170]  13x3  fill=#00B3E2
+        TEXT 'GPU Util' [7104:14171]  47x14  fill=#565E66  [500/12px #565E66] "GPU Util"
+      FRAME 'Frame 18' [7104:14172]  65x14  AL:H gap6.0 pad?/?
+        FRAME 'Frame 2615572' [7104:14173]  14x14
+          RECTANGLE 'Rectangle 3469648' [7104:14174]  3x3  fill=#00B3E2
+          RECTANGLE 'Rectangle 3469649' [7104:14175]  3x3  fill=#00B3E2
+          RECTANGLE 'Rectangle 3469650' [7104:14176]  3x3  fill=#00B3E2
+        TEXT 'Slot Util' [7104:14177]  45x14  fill=#565E66  [500/12px #565E66] "Slot Util"
+    FRAME 'SVG' [7104:14178]  779x238
+      GROUP 'Group' [7104:14179]  742x13
+        VECTOR 'Vector' [7104:14180]  727x0  fill=#000000
+        TEXT '0' [7104:14181]  7x13  fill=#90969D  [400/10px #90969D] "0"
+      GROUP 'Group' [7104:14182]  748x13
+        VECTOR 'Vector' [7104:14183]  727x0  fill=#000000
+        TEXT '25' [7104:14184]  13x13  fill=#90969D  [400/10px #90969D] "25"
+      … +3 more 'Group' GROUP
+      TEXT '04-07' [7104:14194]  30x13  fill=#767D84  [400/10px #767D84] "04-07"
+      TEXT '04-12' [7104:14195]  28x12  fill=#767D84  [400/10px #767D84] "04-12"
+      TEXT '04-17' [7104:14196]  28x13  fill=#767D84  [400/10px #767D84] "04-17"
+      TEXT '04-22' [7104:14197]  30x13  fill=#767D84  [400/10px #767D84] "04-22"
+      TEXT '04-27' [7104:14198]  29x13  fill=#767D84  [400/10px #767D84] "04-27"
+      TEXT '05-02' [7104:14199]  30x13  fill=#767D84  [400/10px #767D84] "05-02"
+      TEXT '05-06' [7104:14200]  30x13  fill=#767D84  [400/10px #767D84] "05-06"
+      VECTOR 'Vector' [7104:14201]  712x39
+      VECTOR 'Vector' [7104:14202]  713x31
+      ELLIPSE 'Ellipse 21' [7104:14203]  10x10  fill=#00B3E2
+      ELLIPSE 'Ellipse 23' [7104:14204]  10x10  fill=#00B3E2
+      ELLIPSE 'Ellipse 24' [7104:14205]  10x10  fill=#00B3E2
+      ELLIPSE 'Ellipse 25' [7104:14206]  10x10  fill=#00B3E2
+      ELLIPSE 'Ellipse 26' [7104:14207]  10x10  fill=#00B3E2
+      ELLIPSE 'Ellipse 27' [7104:14208]  10x10  fill=#00B3E2
+      ELLIPSE 'Ellipse 15' [7104:14209]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 16' [7104:14210]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 28' [7104:14211]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 17' [7104:14212]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 18' [7104:14213]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 19' [7104:14214]  10x10  fill=#FFFFFF
+      RECTANGLE 'Rectangle 3473597' [7104:14215]  1x195  fill=#CCD1D6
+      ELLIPSE 'Ellipse 14' [7104:14216]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 22' [7104:14217]  10x10  fill=#0093BA
+      INSTANCE 'Tooltip' [7104:14218]  127x58  AL:V gap? pad?/?
+        FRAME 'Triangle-Up' [I7104:14218;1177:40448]  42x8
+          VECTOR 'tu' [I7104:14218;1177:40450]  16x8  fill=#283037@0.90
+        FRAME 'Tooltip' [I7104:14218;1177:40451]  127x58  AL:V gap? pad8.0/16.0  fill=#283037@0.90  r6.0
+          TEXT 'text-body' [I7104:14218;11592:9604]  95x42  fill=#FAFBFC  [400/12px #FAFBFC] "05-29 Slot Util: 98.4 GPU Util: 42"
+        FRAME 'Triangle-Down' [I7104:14218;1177:40453]  42x8
+          VECTOR 'td' [I7104:14218;1177:40454]  16x8  fill=#283037@0.90
+      INSTANCE 'guide/icon-Cursor-Hover-24' [7104:14219]  24x24
+        VECTOR 'Vector 183' [I7104:14219;221:53871]  12x18  fill=#2F363C
+    FRAME 'Frame 26096707' [7104:14220]  810x56
+      RECTANGLE 'box ' [7104:14221]  810x56  fill=#FFFFFF
+      FRAME 'titel' [7104:14222]  141x20  AL:H gap10.0 pad?/?
+        FRAME 'Frame 26096711' [7104:14223]  141x20  AL:H gap6.0 pad?/?
+          INSTANCE 'icon/icon20-Brainstorming' [7104:14224]  20x20
+            FRAME 'Frame 2609509' [I7104:14224;1336:95194]  16x19
+              FRAME 'Frame 2609510' [I7104:14224;1336:96059]  17x8
+                VECTOR 'Vector 870' [I7104:14224;1336:90608]  15x9  fill=#EDF2F4
+              VECTOR 'Vector 864' [I7104:14224;1336:90610]  2x2
+              VECTOR 'Vector 867' [I7104:14224;1336:90611]  2x2
+              VECTOR 'Vector 868' [I7104:14224;1336:90612]  1x2
+              VECTOR 'Vector 866' [I7104:14224;1336:90613]  1x2
+              FRAME 'Frame 2609507' [I7104:14224;1336:93021]  14x10
+                BOOLEAN_OPERATION 'Union' [I7104:14224;1336:90615]  14x10  fill=#B3E8F6
+                  ELLIPSE 'Ellipse 210' [I7104:14224;1336:90616]  5x5  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 211' [I7104:14224;1336:90617]  5x5  fill=#A0A0A0
+                  VECTOR 'Rectangle 3469533' [I7104:14224;1336:90618]  10x4  fill=#D9D9D9
+                  ELLIPSE 'Ellipse 211' [I7104:14224;1336:90619]  5x5  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 214' [I7104:14224;1336:90620]  7x6  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 213' [I7104:14224;1336:90621]  5x5  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 212' [I7104:14224;1336:90622]  7x7  fill=#A0A0A0
+                VECTOR 'Vector 861' [I7104:14224;1336:90623]  2x2
+                VECTOR 'Vector 863' [I7104:14224;1336:90624]  2x1
+                VECTOR 'Vector 862' [I7104:14224;1336:90625]  2x2
+          TEXT 'Inference / 추론' [7104:14225]  115x20  fill=#2F363C  [600/16px #2F363C] "Inference / 추론"
+      RECTANGLE 'box ' [7104:14226]  810x1  fill=#E4E9ED
+  FRAME 'Background+VerticalBorder' [7104:14227]  810x360  fill=#FFFFFF  r8.0
+    FRAME 'Frame 10' [7104:14228]  233x20  AL:H gap12.0 pad?/?
+      FRAME 'Frame 9' [7104:14229]  112x20  AL:H gap6.0 pad?/?
+        TEXT 'GPU 평균' [7104:14230]  57x20  fill=#767D84  [400/14px #767D84] "GPU 평균"
+        FRAME 'Frame 2615571' [7104:14231]  49x20  AL:H gap3.0 pad?/?
+          TEXT '46.4' [7104:14232]  33x20  fill=#007492  [500/16px #007492] "46.4"
+          TEXT '%' [7104:14233]  13x20  fill=#565E66  [400/14px #565E66] "%"
+      FRAME 'Frame 8' [7104:14234]  109x20  AL:H gap6.0 pad?/?
+        TEXT 'Slot 평균' [7104:14235]  54x20  fill=#767D84  [400/14px #767D84] "Slot 평균"
+        FRAME 'Frame 2615571' [7104:14236]  49x20  AL:H gap3.0 pad?/?
+          TEXT '61.2' [7104:14237]  33x20  fill=#007492  [500/16px #007492] "61.2"
+          TEXT '%' [7104:14238]  13x20  fill=#565E66  [400/14px #565E66] "%"
+    FRAME 'Frame 18' [7104:14239]  144x14  AL:H gap12.0 pad?/?
+      FRAME 'Frame 16' [7104:14240]  67x14  AL:H gap6.0 pad?/?
+        FRAME 'Frame 2615572' [7104:14241]  14x14
+          RECTANGLE 'Rectangle 3469648' [7104:14242]  13x3  fill=#00B3E2
+        TEXT 'GPU Util' [7104:14243]  47x14  fill=#565E66  [500/12px #565E66] "GPU Util"
+      FRAME 'Frame 18' [7104:14244]  65x14  AL:H gap6.0 pad?/?
+        FRAME 'Frame 2615572' [7104:14245]  14x14
+          RECTANGLE 'Rectangle 3469648' [7104:14246]  3x3  fill=#00B3E2
+          RECTANGLE 'Rectangle 3469649' [7104:14247]  3x3  fill=#00B3E2
+          RECTANGLE 'Rectangle 3469650' [7104:14248]  3x3  fill=#00B3E2
+        TEXT 'Slot Util' [7104:14249]  45x14  fill=#565E66  [500/12px #565E66] "Slot Util"
+    FRAME 'SVG' [7104:14250]  779x238
+      GROUP 'Group' [7104:14251]  742x13
+        VECTOR 'Vector' [7104:14252]  727x0  fill=#000000
+        TEXT '0' [7104:14253]  7x13  fill=#90969D  [400/10px #90969D] "0"
+      GROUP 'Group' [7104:14254]  748x13
+        VECTOR 'Vector' [7104:14255]  727x0  fill=#000000
+        TEXT '25' [7104:14256]  13x13  fill=#90969D  [400/10px #90969D] "25"
+      … +3 more 'Group' GROUP
+      TEXT '04-07' [7104:14266]  30x13  fill=#767D84  [400/10px #767D84] "04-07"
+      TEXT '04-12' [7104:14267]  28x12  fill=#767D84  [400/10px #767D84] "04-12"
+      TEXT '04-17' [7104:14268]  28x13  fill=#767D84  [400/10px #767D84] "04-17"
+      TEXT '04-22' [7104:14269]  30x13  fill=#767D84  [400/10px #767D84] "04-22"
+      TEXT '04-27' [7104:14270]  29x13  fill=#767D84  [400/10px #767D84] "04-27"
+      TEXT '05-02' [7104:14271]  30x13  fill=#767D84  [400/10px #767D84] "05-02"
+      TEXT '05-06' [7104:14272]  30x13  fill=#767D84  [400/10px #767D84] "05-06"
+      VECTOR 'Vector' [7104:14273]  712x39
+      VECTOR 'Vector' [7104:14274]  713x31
+      ELLIPSE 'Ellipse 21' [7104:14275]  10x10  fill=#00B3E2
+      ELLIPSE 'Ellipse 23' [7104:14276]  10x10  fill=#00B3E2
+      ELLIPSE 'Ellipse 24' [7104:14277]  10x10  fill=#00B3E2
+      ELLIPSE 'Ellipse 25' [7104:14278]  10x10  fill=#00B3E2
+      ELLIPSE 'Ellipse 26' [7104:14279]  10x10  fill=#00B3E2
+      ELLIPSE 'Ellipse 27' [7104:14280]  10x10  fill=#00B3E2
+      ELLIPSE 'Ellipse 15' [7104:14281]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 16' [7104:14282]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 28' [7104:14283]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 17' [7104:14284]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 18' [7104:14285]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 19' [7104:14286]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 14' [7104:14288]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 22' [7104:14289]  10x10  fill=#0093BA
+    FRAME 'Frame 26096707' [7104:14292]  810x56
+      RECTANGLE 'box ' [7104:14293]  810x56  fill=#FFFFFF
+      FRAME 'titel' [7104:14294]  141x20  AL:H gap10.0 pad?/?
+        FRAME 'Frame 26096711' [7104:14295]  141x20  AL:H gap6.0 pad?/?
+          INSTANCE 'icon/icon20-Brainstorming' [7104:14296]  20x20
+            FRAME 'Frame 2609509' [I7104:14296;1336:95194]  16x19
+              FRAME 'Frame 2609510' [I7104:14296;1336:96059]  17x8
+                VECTOR 'Vector 870' [I7104:14296;1336:90608]  15x9  fill=#EDF2F4
+              VECTOR 'Vector 864' [I7104:14296;1336:90610]  2x2
+              VECTOR 'Vector 867' [I7104:14296;1336:90611]  2x2
+              VECTOR 'Vector 868' [I7104:14296;1336:90612]  1x2
+              VECTOR 'Vector 866' [I7104:14296;1336:90613]  1x2
+              FRAME 'Frame 2609507' [I7104:14296;1336:93021]  14x10
+                BOOLEAN_OPERATION 'Union' [I7104:14296;1336:90615]  14x10  fill=#B3E8F6
+                  ELLIPSE 'Ellipse 210' [I7104:14296;1336:90616]  5x5  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 211' [I7104:14296;1336:90617]  5x5  fill=#A0A0A0
+                  VECTOR 'Rectangle 3469533' [I7104:14296;1336:90618]  10x4  fill=#D9D9D9
+                  ELLIPSE 'Ellipse 211' [I7104:14296;1336:90619]  5x5  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 214' [I7104:14296;1336:90620]  7x6  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 213' [I7104:14296;1336:90621]  5x5  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 212' [I7104:14296;1336:90622]  7x7  fill=#A0A0A0
+                VECTOR 'Vector 861' [I7104:14296;1336:90623]  2x2
+                VECTOR 'Vector 863' [I7104:14296;1336:90624]  2x1
+                VECTOR 'Vector 862' [I7104:14296;1336:90625]  2x2
+          TEXT 'Inference / 추론' [7104:14297]  115x20  fill=#2F363C  [600/16px #2F363C] "Inference / 추론"
+      RECTANGLE 'box ' [7104:14298]  810x1  fill=#E4E9ED
+  FRAME 'Background+VerticalBorder' [7104:14299]  810x360  fill=#FFFFFF  r8.0
+    FRAME 'SVG' [7104:14300]  779x238
+      GROUP 'Group' [7104:14301]  742x13
+        VECTOR 'Vector' [7104:14302]  727x0  fill=#000000
+        TEXT '0' [7104:14303]  7x13  fill=#90969D  [400/10px #90969D] "0"
+      GROUP 'Group' [7104:14304]  748x13
+        VECTOR 'Vector' [7104:14305]  727x0  fill=#000000
+        TEXT '25' [7104:14306]  13x13  fill=#90969D  [400/10px #90969D] "25"
+      … +3 more 'Group' GROUP
+      TEXT '04-07' [7104:14316]  30x13  fill=#767D84  [400/10px #767D84] "04-07"
+      TEXT '04-12' [7104:14317]  28x12  fill=#767D84  [400/10px #767D84] "04-12"
+      TEXT '04-17' [7104:14318]  28x13  fill=#767D84  [400/10px #767D84] "04-17"
+      TEXT '04-22' [7104:14319]  30x13  fill=#767D84  [400/10px #767D84] "04-22"
+      TEXT '04-27' [7104:14320]  29x13  fill=#767D84  [400/10px #767D84] "04-27"
+      TEXT '05-02' [7104:14321]  30x13  fill=#767D84  [400/10px #767D84] "05-02"
+      TEXT '05-06' [7104:14322]  30x13  fill=#767D84  [400/10px #767D84] "05-06"
+      VECTOR 'Vector' [7104:14323]  702x39
+      VECTOR 'Vector' [7104:14324]  702x31
+      ELLIPSE 'Ellipse 21' [7104:14325]  10x10  fill=#8092DC
+      ELLIPSE 'Ellipse 23' [7104:14326]  10x10  fill=#8092DC
+      ELLIPSE 'Ellipse 24' [7104:14327]  10x10  fill=#8092DC
+      ELLIPSE 'Ellipse 25' [7104:14328]  10x10  fill=#8092DC
+      ELLIPSE 'Ellipse 26' [7104:14329]  10x10  fill=#8092DC
+      ELLIPSE 'Ellipse 27' [7104:14330]  10x10  fill=#8092DC
+      ELLIPSE 'Ellipse 15' [7104:14331]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 16' [7104:14332]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 28' [7104:14333]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 17' [7104:14334]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 18' [7104:14335]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 19' [7104:14336]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 14' [7104:14338]  10x10  fill=#FFFFFF
+      ELLIPSE 'Ellipse 22' [7104:14339]  10x10  fill=#6978B8
+    FRAME 'Frame 10' [7104:14340]  233x20  AL:H gap12.0 pad?/?
+      FRAME 'Frame 9' [7104:14341]  112x20  AL:H gap6.0 pad?/?
+        TEXT 'GPU 평균' [7104:14342]  57x20  fill=#767D84  [400/14px #767D84] "GPU 평균"
+        FRAME 'Frame 2615571' [7104:14343]  49x20  AL:H gap3.0 pad?/?
+          TEXT '46.4' [7104:14344]  33x20  fill=#5A4F8C  [500/16px #5A4F8C] "46.4"
+          TEXT '%' [7104:14345]  13x20  fill=#565E66  [400/14px #565E66] "%"
+      FRAME 'Frame 8' [7104:14346]  109x20  AL:H gap6.0 pad?/?
+        TEXT 'Slot 평균' [7104:14347]  54x20  fill=#767D84  [400/14px #767D84] "Slot 평균"
+        FRAME 'Frame 2615571' [7104:14348]  49x20  AL:H gap3.0 pad?/?
+          TEXT '61.2' [7104:14349]  33x20  fill=#5A4F8C  [500/16px #5A4F8C] "61.2"
+          TEXT '%' [7104:14350]  13x20  fill=#565E66  [400/14px #565E66] "%"
+    FRAME 'Frame 18' [7104:14351]  144x14  AL:H gap12.0 pad?/?
+      FRAME 'Frame 16' [7104:14352]  67x14  AL:H gap6.0 pad?/?
+        FRAME 'Frame 2615572' [7104:14353]  14x14
+          RECTANGLE 'Rectangle 3469648' [7104:14354]  13x3  fill=#8092DC
+        TEXT 'GPU Util' [7104:14355]  47x14  fill=#565E66  [500/12px #565E66] "GPU Util"
+      FRAME 'Frame 18' [7104:14356]  65x14  AL:H gap6.0 pad?/?
+        FRAME 'Frame 2615572' [7104:14357]  14x14
+          RECTANGLE 'Rectangle 3469648' [7104:14358]  3x3  fill=#8092DC
+          RECTANGLE 'Rectangle 3469649' [7104:14359]  3x3  fill=#8092DC
+          RECTANGLE 'Rectangle 3469650' [7104:14360]  3x3  fill=#8092DC
+        TEXT 'Slot Util' [7104:14361]  45x14  fill=#565E66  [500/12px #565E66] "Slot Util"
+    FRAME 'Frame 26096708' [7104:14364]  810x56
+      RECTANGLE 'box ' [7104:14365]  810x56  fill=#FFFFFF
+      FRAME 'Frame 26096710' [7104:14366]  128x20  AL:H gap6.0 pad?/?
+        FRAME 'Frame 26096710' [7104:14367]  128x20  AL:H gap6.0 pad?/?
+          FRAME 'icon/icon20-dict' [7104:14368]  20x20
+            VECTOR 'Rectangle 3469235' [7104:14369]  17x12  fill=#DADFE4  r0.5
+            VECTOR 'Rectangle 3469236' [7104:14370]  13x12  fill=#D5CCFF  r0.5
+            RECTANGLE 'Rectangle 3469257' [7104:14371]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469260' [7104:14372]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469258' [7104:14373]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469261' [7104:14374]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469259' [7104:14375]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469262' [7104:14376]  4x1  fill=#222B4D
+            VECTOR 'Vector 842' [7104:14377]  0x6  fill=#222B4D
+          TEXT 'Training / 학습' [7104:14378]  102x20  fill=#2F363C  [600/16px #2F363C] "Training / 학습"
+      RECTANGLE 'box ' [7104:14379]  810x1  fill=#E4E9ED
+  FRAME 'Frame 26096706' [7104:14380]  1696x405  AL:V gap? pad?/?
+    FRAME 'Header' [7104:14381]  1696x72
+      FRAME 'Frame 88' [7104:14382]  309x24  AL:H gap12.0 pad?/?
+        INSTANCE 'btn_2ndary' [7104:14383]  24x24  AL:H gap4.0 pad2.0/8.0  fill=#FFFFFF  r2.0
+          INSTANCE 'icon_only-before' [I7104:14383;11162:36397]  16x16  r1.0
+            INSTANCE 'Guide/Icon_dummy_set' [I7104:14383;11162:36397;487:77890]  16x16
+              INSTANCE 'Guide/Icon-dummy_area-16' [I7104:14383;11162:36397;487:77890;470:80385]  16x16  fill=#CCF3EF
+              INSTANCE 'Icon/Icon14-Chevron_Down-#def' [I7104:14383;11162:36397;487:77890;470:80384]  14x14
+                RECTANGLE 'Rectangle 102' [I7104:14383;11162:36397;487:77890;470:80384;221:53562]  14x14  fill=#FF54EE
+                VECTOR 'Vector 12' [I7104:14383;11162:36397;487:77890;470:80384;221:53563]  8x4
+        TEXT 'GPU 보유현황' [7104:14384]  116x24  fill=#3C444B  [600/20px #3C444B] "GPU 보유현황"
+        TEXT '환경별 x 모델별 보유 장수' [7104:14385]  145x20  fill=#565E66  [400/14px #565E66] "환경별 x 모델별 보유 장수"
+      RECTANGLE 'border' [7104:14386]  1696x1  fill=#CCD1D6
+    FRAME 'Frame 2615592' [7104:14387]  1640x333
+      RECTANGLE 'Rectangle 24' [7104:14388]  1640x333  fill=#FFFFFF  r8.0
+      FRAME 'Frame 2615606' [7104:14389]  302x293
+        RECTANGLE 'box ' [7104:14390]  302x293  fill=#FAFBFC  r4.0
+        TEXT '2,941' [7104:14391]  68x28  fill=#565E66  [600/26px #565E66] "2,941"
+        TEXT '전체 GPU' [7104:14392]  57x20  fill=#90969D  [500/14px #90969D] "전체 GPU"
+        TEXT '장' [7104:14393]  13x20  fill=#90969D  [500/14px #90969D] "장"
+        FRAME 'Frame 2615560' [7104:14394]  262x204  AL:V gap8.0 pad?/?
+          TEXT '모델별 합계' [7104:14395]  262x20  fill=#90969D  [500/14px #90969D] "모델별 합계"
+          FRAME 'Frame 2615559' [7104:14396]  262x176  AL:V gap6.0 pad?/?
+            FRAME 'Frame 85' [7104:14397]  262x20  AL:H gap4.0 pad?/?
+              FRAME 'legend' [7104:14398]  100x20  AL:H gap6.0 pad?/?
+                RECTANGLE 'Background' [7104:14399]  12x12  fill=#0064A7  r1.0
+                TEXT 'H100' [7104:14400]  35x20  fill=#767D84  [500/14px #767D84] "H100"
+              TEXT '21.4%' [7104:14401]  66x20  fill=#565E66  [400/14px #565E66] "21.4%"
+              TEXT '641' [7104:14402]  88x20  fill=#565E66  [500/14px #565E66] "641"
+            FRAME 'Frame 85' [7104:14403]  262x20  AL:H gap4.0 pad?/?
+              FRAME 'legend' [7104:14404]  100x20  AL:H gap6.0 pad?/?
+                RECTANGLE 'Background' [7104:14405]  12x12  fill=#008074  r1.0
+                TEXT 'A100' [7104:14406]  34x20  fill=#767D84  [500/14px #767D84] "A100"
+              TEXT '27.4%' [7104:14407]  66x20  fill=#565E66  [400/14px #565E66] "27.4%"
+              TEXT '736' [7104:14408]  88x20  fill=#565E66  [500/14px #565E66] "736"
+            … +5 more 'Frame 85' FRAME
+        RECTANGLE 'Rectangle 3469655' [7104:14439]  302x1  fill=#E4E9ED
+      FRAME 'Legend' [7104:14440]  419x14  AL:H gap12.0 pad?/?
+        FRAME 'Legend' [7104:14441]  48x14  AL:H gap6.0 pad?/?
+          RECTANGLE 'Background' [7104:14442]  12x12  fill=#0064A7  r1.0
+          TEXT 'H100' [7104:14443]  30x14  fill=#767D84  [500/12px #767D84] "H100"
+        FRAME 'Legend' [7104:14444]  47x14  AL:H gap6.0 pad?/?
+          RECTANGLE 'Background' [7104:14445]  12x12  fill=#008074  r1.0
+          TEXT 'A100' [7104:14446]  29x14  fill=#767D84  [500/12px #767D84] "A100"
+        … +5 more 'Legend' FRAME
+      TEXT 'AIP 학습 인프라' [7104:14462]  93x20  fill=#3C444B  [500/14px #3C444B] "AIP 학습 인프라"
+      FRAME 'Frame 2615602' [7104:14463]  156x20  AL:H gap? pad?/?
+        TEXT '736 장' [7104:14464]  41x20  fill=#3C444B  [500/14px #3C444B] "736 장"
+        INSTANCE 'Icon/Icon12-Divider-neu01' [7104:14465]  17x12  AL:H gap10.0 pad?/8.0
+          RECTANGLE 'stick' [I7104:14465;221:53127]  1x12  fill=#90969D
+        TEXT '전체 대비 25.2%' [7104:14466]  98x20  fill=#767D84  [500/14px #767D84] "전체 대비 25.2%"
+      FRAME 'Frame 2615603' [7104:14467]  156x20  AL:H gap? pad?/?
+        TEXT '521 장' [7104:14468]  41x20  fill=#3C444B  [500/14px #3C444B] "521 장"
+        INSTANCE 'Icon/Icon12-Divider-neu01' [7104:14469]  17x12  AL:H gap10.0 pad?/8.0
+          RECTANGLE 'stick' [I7104:14469;221:53127]  1x12  fill=#90969D
+        TEXT '전체 대비 19.2%' [7104:14470]  98x20  fill=#767D84  [500/14px #767D84] "전체 대비 19.2%"
+      FRAME 'Frame 2615604' [7104:14471]  156x20  AL:H gap? pad?/?
+        TEXT '560 장' [7104:14472]  41x20  fill=#3C444B  [500/14px #3C444B] "560 장"
+        INSTANCE 'Icon/Icon12-Divider-neu01' [7104:14473]  17x12  AL:H gap10.0 pad?/8.0
+          RECTANGLE 'stick' [I7104:14473;221:53127]  1x12  fill=#90969D
+        TEXT '전체 대비 15.3%' [7104:14474]  98x20  fill=#767D84  [500/14px #767D84] "전체 대비 15.3%"
+      FRAME 'Frame 2615605' [7104:14475]  156x20  AL:H gap? pad?/?
+        TEXT '645 장' [7104:14476]  41x20  fill=#3C444B  [500/14px #3C444B] "645 장"
+        INSTANCE 'Icon/Icon12-Divider-neu01' [7104:14477]  17x12  AL:H gap10.0 pad?/8.0
+          RECTANGLE 'stick' [I7104:14477;221:53127]  1x12  fill=#90969D
+        TEXT '전체 대비 22.5%' [7104:14478]  98x20  fill=#767D84  [500/14px #767D84] "전체 대비 22.5%"
+      TEXT 'AIP 추론 인프라' [7104:14479]  93x20  fill=#3C444B  [500/14px #3C444B] "AIP 추론 인프라"
+      TEXT 'AI 클라우드' [7104:14480]  68x20  fill=#3C444B  [500/14px #3C444B] "AI 클라우드"
+      TEXT 'R&D 클러스터' [7104:14481]  80x20  fill=#3C444B  [500/14px #3C444B] "R&D 클러스터"
+      TEXT 'GPU 분포' [7104:14482]  57x20  fill=#90969D  [500/14px #90969D] "GPU 분포"
+      GROUP 'Group 6' [7104:14483]  1277x226
+        FRAME 'Frame 2615636' [7104:14484]  1277x22
+          RECTANGLE 'Background' [7104:14485]  1277x22  fill=#ECF1F5  r2.0
+          FRAME 'Frame 2615639' [7104:14486]  1277x22  AL:H gap? pad?/?
+            FRAME 'Background' [7104:14487]  141x22  fill=#008074
+            FRAME 'Background' [7104:14488]  141x22  fill=#66D1EE
+            … +3 more 'Background' FRAME
+            RECTANGLE 'Background' [7104:14494]  47x22  fill=#00B3E2
+            FRAME 'Background' [7104:14495]  335x22  fill=#0064A7
+              TEXT '384' [7104:14496]  19x13  fill=#FFFFFF  [700/11px #FFFFFF] "384"
+        FRAME 'Frame 2615637' [7104:14497]  1277x22
+          RECTANGLE 'Background' [7104:14498]  1277x22  fill=#ECF1F5  r2.0
+          FRAME 'Frame 2615638' [7104:14499]  1277x22  AL:H gap? pad?/?
+            FRAME 'Background' [7104:14500]  35x22  fill=#66D1EE
+            FRAME 'Background' [7104:14501]  35x22  fill=#6978B8
+            … +4 more 'Background' FRAME
+            RECTANGLE 'Background' [7104:14509]  22x22  fill=#00B3E2
+        FRAME 'Frame 2615638' [7104:14510]  1277x22
+          RECTANGLE 'Background' [7104:14511]  1277x22  fill=#ECF1F5  r2.0
+          FRAME 'Frame 2615638' [7104:14512]  1277x22  AL:H gap? pad?/?
+            FRAME 'Background' [7104:14513]  458x22  fill=#0064A7
+              TEXT '384' [7104:14514]  19x13  fill=#FFFFFF  [700/11px #FFFFFF] "384"
+            FRAME 'Background' [7104:14515]  149x22  fill=#96D552
+              TEXT '144' [7104:14516]  19x13  fill=#FFFFFF  [700/11px #FFFFFF] "144"
+            … +4 more 'Background' FRAME
+            RECTANGLE 'Background' [7104:14522]  187x22  fill=#00B3E2
+        FRAME 'Frame 2615639' [7104:14523]  1277x22
+          RECTANGLE 'Background' [7104:14524]  1277x22  fill=#ECF1F5  r2.0
+          FRAME 'Frame 2615638' [7104:14525]  1277x22  AL:H gap? pad?/?
+            FRAME 'Background' [7104:14526]  167x22  fill=#66D1EE
+            FRAME 'Background' [7104:14527]  158x22  fill=#0064A7
+              TEXT '384' [7104:14528]  19x13  fill=#FFFFFF  [700/11px #FFFFFF] "384"
+            … +4 more 'Background' FRAME
+            RECTANGLE 'Background' [7104:14535]  42x22  fill=#00B3E2
+  FRAME 'Background+VerticalBorder' [7104:14536]  810x730  fill=#FFFFFF  r8.0
+    FRAME 'Frame 26096730' [7104:14537]  134x20  AL:H gap6.0 pad?/?
+      TEXT '우수 활용 과제' [7104:14538]  93x20  fill=#3C444B  [500/16px #3C444B] "우수 활용 과제"
+      FRAME 'Frame 2615571' [7104:14539]  35x20  AL:H gap3.0 pad?/?
+        TEXT '10' [7104:14540]  19x20  fill=#3C444B  [500/16px #3C444B] "10"
+        TEXT '건' [7104:14541]  13x20  fill=#3C444B  [400/14px #3C444B] "건"
+    TEXT 'GPU Util ≥ 66%' [7104:14542]  85x14  fill=#767D84  [400/12px #767D84] "GPU Util ≥ 66%"
+    TEXT '모델학습: GPU Util ≤ 30% and Slot ' [7104:14543]  484x14  fill=#767D84  [400/12px #767D84] "모델학습: GPU Util ≤ 30% and Slot Util"
+    FRAME 'Frame 26096707' [7104:14647]  810x56
+      RECTANGLE 'box ' [7104:14648]  810x56  fill=#FFFFFF
+      FRAME 'titel' [7104:14649]  141x20  AL:H gap10.0 pad?/?
+        FRAME 'Frame 26096711' [7104:14650]  141x20  AL:H gap6.0 pad?/?
+          INSTANCE 'icon/icon20-Brainstorming' [7104:14651]  20x20
+            FRAME 'Frame 2609509' [I7104:14651;1336:95194]  16x19
+              FRAME 'Frame 2609510' [I7104:14651;1336:96059]  17x8
+                VECTOR 'Vector 870' [I7104:14651;1336:90608]  15x9  fill=#EDF2F4
+              VECTOR 'Vector 864' [I7104:14651;1336:90610]  2x2
+              VECTOR 'Vector 867' [I7104:14651;1336:90611]  2x2
+              VECTOR 'Vector 868' [I7104:14651;1336:90612]  1x2
+              VECTOR 'Vector 866' [I7104:14651;1336:90613]  1x2
+              FRAME 'Frame 2609507' [I7104:14651;1336:93021]  14x10
+                BOOLEAN_OPERATION 'Union' [I7104:14651;1336:90615]  14x10  fill=#B3E8F6
+                  ELLIPSE 'Ellipse 210' [I7104:14651;1336:90616]  5x5  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 211' [I7104:14651;1336:90617]  5x5  fill=#A0A0A0
+                  VECTOR 'Rectangle 3469533' [I7104:14651;1336:90618]  10x4  fill=#D9D9D9
+                  ELLIPSE 'Ellipse 211' [I7104:14651;1336:90619]  5x5  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 214' [I7104:14651;1336:90620]  7x6  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 213' [I7104:14651;1336:90621]  5x5  fill=#A0A0A0
+                  ELLIPSE 'Ellipse 212' [I7104:14651;1336:90622]  7x7  fill=#A0A0A0
+                VECTOR 'Vector 861' [I7104:14651;1336:90623]  2x2
+                VECTOR 'Vector 863' [I7104:14651;1336:90624]  2x1
+                VECTOR 'Vector 862' [I7104:14651;1336:90625]  2x2
+          TEXT 'Inference / 추론' [7104:14652]  115x20  fill=#2F363C  [600/16px #2F363C] "Inference / 추론"
+      RECTANGLE 'box ' [7104:14653]  810x1  fill=#E4E9ED
+      TEXT '32 Projects' [7104:14654]  74x20  fill=#007492  [500/16px #007492] "32 Projects"
+    FRAME 'Frame 2615569' [7104:14655]  115x20  AL:H gap? pad?/?
+      FRAME 'Frame 2615609' [7104:14656]  115x20  AL:H gap6.0 pad?/?
+        TEXT '저활용 과제' [7104:14657]  74x20  fill=#3C444B  [500/16px #3C444B] "저활용 과제"
+        FRAME 'Frame 2615571' [7104:14658]  35x20  AL:H gap3.0 pad?/?
+          TEXT '12' [7104:14659]  19x20  fill=#3C444B  [500/16px #3C444B] "12"
+          TEXT '건' [7104:14660]  13x20  fill=#3C444B  [400/14px #3C444B] "건"
+    FRAME 'Table' [7104:14661]  770x273
+      RECTANGLE 'border' [7104:14763]  770x1  fill=#E4E9ED
+      FRAME 'List' [7104:15307]  770x49
+        FRAME 'Frame 34' [7104:15308]  770x48  AL:H gap? pad?/?
+          FRAME 'Data' [7104:15309]  40x48
+            INSTANCE 'Icon/Icon14-Chevron-S_Right-#' [7104:15310]  14x14
+              VECTOR 'Vector 12' [I7104:15310;8668:21840]  3x6
+          FRAME 'Data' [7104:15311]  452x48
+            FRAME 'Frame 77' [7104:15312]  422x22  AL:H gap8.0 pad?/?
+              FRAME 'Background' [7104:15313]  22x22  fill=#F2F6F9  r2.0
+                TEXT '1' [7104:15314]  7x12  fill=#565E66  [400/11px #565E66] "1"
+              FRAME 'Frame 26096798' [7104:15315]  294x20  AL:H gap8.0 pad?/?
+                TEXT '이미지 생성 서빙' [7104:15316]  93x20  fill=#565E66  [500/14px #565E66] "이미지 생성 서빙"
+                FRAME 'Paragraph+Background' [7104:15317]  66x18  fill=#FFECEB  r2.0
+                  TEXT '저활용 회수' [7104:15318]  56x14  fill=#D2362C  [400/12px #D2362C] "저활용 회수"
+              TEXT 'AI 센터' [7104:15319]  90x20  fill=#565E66  [400/14px #565E66] "AI 센터"
+          … +3 more 'Data' FRAME
+        RECTANGLE 'border' [7104:15328]  770x1  fill=#E4E9ED
+      FRAME 'List' [7104:15329]  770x49
+        FRAME 'Frame 34' [7104:15330]  770x48  AL:H gap? pad?/?
+          FRAME 'Data' [7104:15331]  40x48
+            INSTANCE 'Icon/Icon14-Chevron-S_Right-#' [7104:15332]  14x14
+              VECTOR 'Vector 12' [I7104:15332;8668:21840]  3x6
+          FRAME 'Data' [7104:15333]  452x48
+            FRAME 'Frame 77' [7104:15334]  422x22  AL:H gap8.0 pad?/?
+              FRAME 'Background' [7104:15335]  22x22  fill=#F2F6F9  r2.0
+                TEXT '2' [7104:15336]  7x12  fill=#565E66  [400/11px #565E66] "2"
+              TEXT '추천 엔진 RT' [7104:15337]  294x20  fill=#565E66  [500/14px #565E66] "추천 엔진 RT"
+              TEXT 'MX 사업부' [7104:15338]  90x20  fill=#565E66  [400/14px #565E66] "MX 사업부"
+          … +3 more 'Data' FRAME
+        RECTANGLE 'border' [7104:15347]  770x1  fill=#E4E9ED
+      … +3 more 'List' FRAME
+      FRAME 'Header' [7104:16602]  770x28  AL:H gap? pad?/?
+        INSTANCE 'Datatable-Header-Title' [7104:16603]  40x28  AL:H gap? pad?/?  fill=#F6F8FA
+          FRAME 'Contents' [I7104:16603;5362:4574]  40x14  AL:H gap? pad?/?
+            FRAME 'Text, Icon, Arrange' [I7104:16603;5362:4575]  40x14  AL:H gap4.0 pad?/8.0
+              TEXT '카테고리타이틀01' [I7104:16603;5362:4576]  24x14  fill=#2C3036  [400/12px #2C3036] ""
+              FRAME 'Arrange' [I7104:16603;5362:4577]  5x10
+                INSTANCE 'Icon/Icon-Triangle_Up-5-#Neutr' [I7104:16603;5362:4578]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16603;5362:4578;648:2907]  5x4  fill=#B9BBBE
+                INSTANCE 'Icon/Icon-Triangle_Down-5-#Ne' [I7104:16603;5362:4579]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16603;5362:4579;648:2893]  5x4  fill=#B9BBBE
+          RECTANGLE 'Divider' [I7104:16603;5362:4580]  1x28  fill=#E6E7E8
+        INSTANCE 'Datatable-Header-Title' [7104:16604]  452x28  AL:H gap? pad?/?  fill=#F6F8FA
+          FRAME 'Contents' [I7104:16604;5362:4574]  452x14  AL:H gap? pad?/?
+            FRAME 'Text, Icon, Arrange' [I7104:16604;5362:4575]  452x14  AL:H gap4.0 pad?/8.0
+              TEXT '카테고리타이틀01' [I7104:16604;5362:4576]  21x14  fill=#767D84  [500/12px #767D84] "과제"
+              FRAME 'Arrange' [I7104:16604;5362:4577]  5x10
+                INSTANCE 'Icon/Icon-Triangle_Up-5-#Neutr' [I7104:16604;5362:4578]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16604;5362:4578;648:2907]  5x4  fill=#B9BBBE
+                INSTANCE 'Icon/Icon-Triangle_Down-5-#Ne' [I7104:16604;5362:4579]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16604;5362:4579;648:2893]  5x4  fill=#B9BBBE
+          RECTANGLE 'Divider' [I7104:16604;5362:4580]  1x28  fill=#E6E7E8
+        … +3 more 'Datatable-Header-Title' INSTANCE
+    FRAME 'Table' [7104:16334]  770x273
+      FRAME 'Header' [7104:16335]  770x28  AL:H gap? pad?/?
+        INSTANCE 'Datatable-Header-Title' [7104:16336]  40x28  AL:H gap? pad?/?  fill=#F6F8FA
+          FRAME 'Contents' [I7104:16336;5362:4574]  40x14  AL:H gap? pad?/?
+            FRAME 'Text, Icon, Arrange' [I7104:16336;5362:4575]  40x14  AL:H gap4.0 pad?/8.0
+              TEXT '카테고리타이틀01' [I7104:16336;5362:4576]  24x14  fill=#2C3036  [400/12px #2C3036] ""
+              FRAME 'Arrange' [I7104:16336;5362:4577]  5x10
+                INSTANCE 'Icon/Icon-Triangle_Up-5-#Neutr' [I7104:16336;5362:4578]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16336;5362:4578;648:2907]  5x4  fill=#B9BBBE
+                INSTANCE 'Icon/Icon-Triangle_Down-5-#Ne' [I7104:16336;5362:4579]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16336;5362:4579;648:2893]  5x4  fill=#B9BBBE
+          RECTANGLE 'Divider' [I7104:16336;5362:4580]  1x28  fill=#E6E7E8
+        INSTANCE 'Datatable-Header-Title' [7104:16337]  452x28  AL:H gap? pad?/?  fill=#F6F8FA
+          FRAME 'Contents' [I7104:16337;5362:4574]  452x14  AL:H gap? pad?/?
+            FRAME 'Text, Icon, Arrange' [I7104:16337;5362:4575]  452x14  AL:H gap4.0 pad?/8.0
+              TEXT '카테고리타이틀01' [I7104:16337;5362:4576]  21x14  fill=#767D84  [500/12px #767D84] "과제"
+              FRAME 'Arrange' [I7104:16337;5362:4577]  5x10
+                INSTANCE 'Icon/Icon-Triangle_Up-5-#Neutr' [I7104:16337;5362:4578]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16337;5362:4578;648:2907]  5x4  fill=#B9BBBE
+                INSTANCE 'Icon/Icon-Triangle_Down-5-#Ne' [I7104:16337;5362:4579]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16337;5362:4579;648:2893]  5x4  fill=#B9BBBE
+          RECTANGLE 'Divider' [I7104:16337;5362:4580]  1x28  fill=#E6E7E8
+        … +3 more 'Datatable-Header-Title' INSTANCE
+      RECTANGLE 'border' [7104:16341]  770x1  fill=#E4E9ED
+      FRAME 'List' [7104:16342]  770x49
+        FRAME 'Frame 34' [7104:16343]  770x48  AL:H gap? pad?/?
+          FRAME 'Data' [7104:16344]  40x48
+            INSTANCE 'Icon/Icon14-Chevron-S_Right-#' [7104:16345]  14x14
+              VECTOR 'Vector 12' [I7104:16345;8668:21840]  3x6
+          FRAME 'Data' [7104:16346]  452x48
+            FRAME 'Frame 77' [7104:16347]  422x22  AL:H gap8.0 pad?/?
+              FRAME 'Background' [7104:16348]  22x22  fill=#F2F6F9  r2.0
+                TEXT '5' [7104:16349]  7x12  fill=#565E66  [400/11px #565E66] "5"
+              TEXT '스마트싱스 음성' [7104:16350]  294x20  fill=#565E66  [500/14px #565E66] "스마트싱스 음성"
+              TEXT 'SR연구소' [7104:16351]  90x20  fill=#565E66  [400/14px #565E66] "SR연구소"
+          … +3 more 'Data' FRAME
+        RECTANGLE 'border' [7104:16360]  770x1  fill=#E4E9ED
+      FRAME 'List' [7104:16361]  770x49
+        FRAME 'Frame 34' [7104:16362]  770x48  AL:H gap? pad?/?
+          FRAME 'Data' [7104:16363]  40x48
+            INSTANCE 'Icon/Icon14-Chevron-S_Right-#' [7104:16364]  14x14
+              VECTOR 'Vector 12' [I7104:16364;8668:21840]  3x6
+          FRAME 'Data' [7104:16365]  452x48
+            FRAME 'Frame 77' [7104:16366]  422x22  AL:H gap8.0 pad?/?
+              FRAME 'Background' [7104:16367]  22x22  fill=#F2F6F9  r2.0
+                TEXT '4' [7104:16368]  7x12  fill=#565E66  [400/11px #565E66] "4"
+              TEXT '갤럭시 라이브 번역' [7104:16369]  294x20  fill=#565E66  [500/14px #565E66] "갤럭시 라이브 번역"
+              TEXT '메모리 사업부' [7104:16370]  90x20  fill=#565E66  [400/14px #565E66] "메모리 사업부"
+          … +3 more 'Data' FRAME
+        RECTANGLE 'border' [7104:16379]  770x1  fill=#E4E9ED
+      … +3 more 'List' FRAME
+  FRAME 'Background+VerticalBorder' [7104:14764]  810x730  fill=#FFFFFF  r8.0
+    TEXT 'GPU Util ≥ 66% and Slot Util ≥' [7104:14765]  194x14  fill=#767D84  [400/12px #767D84] "GPU Util ≥ 66% and Slot Util ≥ 80%"
+    TEXT '모델학습: GPU Util ≤ 30% and Slot ' [7104:14766]  484x14  fill=#767D84  [400/12px #767D84] "모델학습: GPU Util ≤ 30% and Slot Util"
+    FRAME 'Frame 2615569' [7104:14767]  115x20  AL:H gap? pad?/?
+      FRAME 'Frame 2615609' [7104:14768]  115x20  AL:H gap6.0 pad?/?
+        TEXT '저활용 과제' [7104:14769]  74x20  fill=#3C444B  [500/16px #3C444B] "저활용 과제"
+        FRAME 'Frame 2615571' [7104:14770]  35x20  AL:H gap3.0 pad?/?
+          TEXT '12' [7104:14771]  19x20  fill=#3C444B  [500/16px #3C444B] "12"
+          TEXT '건' [7104:14772]  13x20  fill=#3C444B  [400/14px #3C444B] "건"
+    FRAME 'Frame 26096708' [7104:14876]  810x56
+      RECTANGLE 'box ' [7104:14877]  810x56  fill=#FFFFFF
+      TEXT '32 Projects' [7104:14878]  74x20  fill=#5A49A6  [500/16px #5A49A6] "32 Projects"
+      FRAME 'Frame 26096710' [7104:14879]  128x20  AL:H gap6.0 pad?/?
+        FRAME 'Frame 26096710' [7104:14880]  128x20  AL:H gap6.0 pad?/?
+          FRAME 'icon/icon20-dict' [7104:14881]  20x20
+            VECTOR 'Rectangle 3469235' [7104:14882]  17x12  fill=#DADFE4  r0.5
+            VECTOR 'Rectangle 3469236' [7104:14883]  13x12  fill=#D5CCFF  r0.5
+            RECTANGLE 'Rectangle 3469257' [7104:14884]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469260' [7104:14885]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469258' [7104:14886]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469261' [7104:14887]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469259' [7104:14888]  4x1  fill=#222B4D
+            RECTANGLE 'Rectangle 3469262' [7104:14889]  4x1  fill=#222B4D
+            VECTOR 'Vector 842' [7104:14890]  0x6  fill=#222B4D
+          TEXT 'Training / 학습' [7104:14891]  102x20  fill=#2F363C  [600/16px #2F363C] "Training / 학습"
+      RECTANGLE 'box ' [7104:14892]  810x1  fill=#E4E9ED
+    FRAME 'Frame 26096730' [7104:14996]  134x20  AL:H gap6.0 pad?/?
+      TEXT '우수 활용 과제' [7104:14997]  93x20  fill=#3C444B  [500/16px #3C444B] "우수 활용 과제"
+      FRAME 'Frame 2615571' [7104:14998]  35x20  AL:H gap3.0 pad?/?
+        TEXT '20' [7104:14999]  19x20  fill=#3C444B  [500/16px #3C444B] "20"
+        TEXT '건' [7104:15000]  13x20  fill=#3C444B  [400/14px #3C444B] "건"
+    FRAME 'Table' [7104:15545]  770x273
+      RECTANGLE 'border' [7104:15552]  770x1  fill=#E4E9ED
+      FRAME 'List' [7104:15553]  770x49
+        FRAME 'Frame 34' [7104:15554]  770x48  AL:H gap? pad?/?
+          FRAME 'Data' [7104:15555]  40x48
+            INSTANCE 'Icon/Icon14-Chevron-S_Right-#' [7104:15556]  14x14
+              VECTOR 'Vector 12' [I7104:15556;8668:21840]  3x6
+          FRAME 'Data' [7104:15557]  452x48
+            FRAME 'Frame 77' [7104:15558]  422x22  AL:H gap8.0 pad?/?
+              FRAME 'Background' [7104:15559]  22x22  fill=#F2F6F9  r2.0
+                TEXT '1' [7104:15560]  7x12  fill=#565E66  [400/11px #565E66] "1"
+              FRAME 'Frame 26096798' [7104:15561]  294x20  AL:H gap8.0 pad?/?
+                TEXT '이미지 생성 서빙' [7104:15562]  93x20  fill=#565E66  [500/14px #565E66] "이미지 생성 서빙"
+                FRAME 'Paragraph+Background' [7104:15563]  66x18  fill=#FFECEB  r2.0
+                  TEXT '저활용 회수' [7104:15564]  56x14  fill=#D2362C  [400/12px #D2362C] "저활용 회수"
+              TEXT 'AI 센터' [7104:15565]  90x20  fill=#565E66  [400/14px #565E66] "AI 센터"
+          … +3 more 'Data' FRAME
+        RECTANGLE 'border' [7104:15574]  770x1  fill=#E4E9ED
+      FRAME 'List' [7104:15575]  770x49
+        FRAME 'Frame 34' [7104:15576]  770x48  AL:H gap? pad?/?
+          FRAME 'Data' [7104:15577]  40x48
+            INSTANCE 'Icon/Icon14-Chevron-S_Right-#' [7104:15578]  14x14
+              VECTOR 'Vector 12' [I7104:15578;8668:21840]  3x6
+          FRAME 'Data' [7104:15579]  452x48
+            FRAME 'Frame 77' [7104:15580]  422x22  AL:H gap8.0 pad?/?
+              FRAME 'Background' [7104:15581]  22x22  fill=#F2F6F9  r2.0
+                TEXT '2' [7104:15582]  7x12  fill=#565E66  [400/11px #565E66] "2"
+              TEXT '추천 엔진 RT' [7104:15583]  294x20  fill=#565E66  [500/14px #565E66] "추천 엔진 RT"
+              TEXT 'MX 사업부' [7104:15584]  90x20  fill=#565E66  [400/14px #565E66] "MX 사업부"
+          … +3 more 'Data' FRAME
+        RECTANGLE 'border' [7104:15593]  770x1  fill=#E4E9ED
+      … +3 more 'List' FRAME
+      FRAME 'Header' [7104:16634]  770x28  AL:H gap? pad?/?
+        INSTANCE 'Datatable-Header-Title' [7104:16635]  40x28  AL:H gap? pad?/?  fill=#F6F8FA
+          FRAME 'Contents' [I7104:16635;5362:4574]  40x14  AL:H gap? pad?/?
+            FRAME 'Text, Icon, Arrange' [I7104:16635;5362:4575]  40x14  AL:H gap4.0 pad?/8.0
+              TEXT '카테고리타이틀01' [I7104:16635;5362:4576]  24x14  fill=#2C3036  [400/12px #2C3036] ""
+              FRAME 'Arrange' [I7104:16635;5362:4577]  5x10
+                INSTANCE 'Icon/Icon-Triangle_Up-5-#Neutr' [I7104:16635;5362:4578]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16635;5362:4578;648:2907]  5x4  fill=#B9BBBE
+                INSTANCE 'Icon/Icon-Triangle_Down-5-#Ne' [I7104:16635;5362:4579]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16635;5362:4579;648:2893]  5x4  fill=#B9BBBE
+          RECTANGLE 'Divider' [I7104:16635;5362:4580]  1x28  fill=#E6E7E8
+        INSTANCE 'Datatable-Header-Title' [7104:16636]  452x28  AL:H gap? pad?/?  fill=#F6F8FA
+          FRAME 'Contents' [I7104:16636;5362:4574]  452x14  AL:H gap? pad?/?
+            FRAME 'Text, Icon, Arrange' [I7104:16636;5362:4575]  452x14  AL:H gap4.0 pad?/8.0
+              TEXT '카테고리타이틀01' [I7104:16636;5362:4576]  21x14  fill=#767D84  [500/12px #767D84] "과제"
+              FRAME 'Arrange' [I7104:16636;5362:4577]  5x10
+                INSTANCE 'Icon/Icon-Triangle_Up-5-#Neutr' [I7104:16636;5362:4578]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16636;5362:4578;648:2907]  5x4  fill=#B9BBBE
+                INSTANCE 'Icon/Icon-Triangle_Down-5-#Ne' [I7104:16636;5362:4579]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16636;5362:4579;648:2893]  5x4  fill=#B9BBBE
+          RECTANGLE 'Divider' [I7104:16636;5362:4580]  1x28  fill=#E6E7E8
+        … +3 more 'Datatable-Header-Title' INSTANCE
+    FRAME 'Table' [7104:16468]  770x273
+      RECTANGLE 'border' [7104:16475]  770x1  fill=#E4E9ED
+      FRAME 'List' [7104:16476]  770x49
+        FRAME 'Frame 34' [7104:16477]  770x48  AL:H gap? pad?/?
+          FRAME 'Data' [7104:16478]  40x48
+            INSTANCE 'Icon/Icon14-Chevron-S_Right-#' [7104:16479]  14x14
+              VECTOR 'Vector 12' [I7104:16479;8668:21840]  3x6
+          FRAME 'Data' [7104:16480]  452x48
+            FRAME 'Frame 77' [7104:16481]  422x22  AL:H gap8.0 pad?/?
+              FRAME 'Background' [7104:16482]  22x22  fill=#F2F6F9  r2.0
+                TEXT '5' [7104:16483]  7x12  fill=#565E66  [400/11px #565E66] "5"
+              TEXT '스마트싱스 음성' [7104:16484]  294x20  fill=#565E66  [500/14px #565E66] "스마트싱스 음성"
+              TEXT 'SR연구소' [7104:16485]  90x20  fill=#565E66  [400/14px #565E66] "SR연구소"
+          … +3 more 'Data' FRAME
+        RECTANGLE 'border' [7104:16494]  770x1  fill=#E4E9ED
+      FRAME 'List' [7104:16495]  770x49
+        FRAME 'Frame 34' [7104:16496]  770x48  AL:H gap? pad?/?
+          FRAME 'Data' [7104:16497]  40x48
+            INSTANCE 'Icon/Icon14-Chevron-S_Right-#' [7104:16498]  14x14
+              VECTOR 'Vector 12' [I7104:16498;8668:21840]  3x6
+          FRAME 'Data' [7104:16499]  452x48
+            FRAME 'Frame 77' [7104:16500]  422x22  AL:H gap8.0 pad?/?
+              FRAME 'Background' [7104:16501]  22x22  fill=#F2F6F9  r2.0
+                TEXT '4' [7104:16502]  7x12  fill=#565E66  [400/11px #565E66] "4"
+              TEXT '갤럭시 라이브 번역' [7104:16503]  294x20  fill=#565E66  [500/14px #565E66] "갤럭시 라이브 번역"
+              TEXT '메모리 사업부' [7104:16504]  90x20  fill=#565E66  [400/14px #565E66] "메모리 사업부"
+          … +3 more 'Data' FRAME
+        RECTANGLE 'border' [7104:16513]  770x1  fill=#E4E9ED
+      … +3 more 'List' FRAME
+      FRAME 'Header' [7104:16666]  770x28  AL:H gap? pad?/?
+        INSTANCE 'Datatable-Header-Title' [7104:16667]  40x28  AL:H gap? pad?/?  fill=#F6F8FA
+          FRAME 'Contents' [I7104:16667;5362:4574]  40x14  AL:H gap? pad?/?
+            FRAME 'Text, Icon, Arrange' [I7104:16667;5362:4575]  40x14  AL:H gap4.0 pad?/8.0
+              TEXT '카테고리타이틀01' [I7104:16667;5362:4576]  24x14  fill=#2C3036  [400/12px #2C3036] ""
+              FRAME 'Arrange' [I7104:16667;5362:4577]  5x10
+                INSTANCE 'Icon/Icon-Triangle_Up-5-#Neutr' [I7104:16667;5362:4578]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16667;5362:4578;648:2907]  5x4  fill=#B9BBBE
+                INSTANCE 'Icon/Icon-Triangle_Down-5-#Ne' [I7104:16667;5362:4579]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16667;5362:4579;648:2893]  5x4  fill=#B9BBBE
+          RECTANGLE 'Divider' [I7104:16667;5362:4580]  1x28  fill=#E6E7E8
+        INSTANCE 'Datatable-Header-Title' [7104:16668]  452x28  AL:H gap? pad?/?  fill=#F6F8FA
+          FRAME 'Contents' [I7104:16668;5362:4574]  452x14  AL:H gap? pad?/?
+            FRAME 'Text, Icon, Arrange' [I7104:16668;5362:4575]  452x14  AL:H gap4.0 pad?/8.0
+              TEXT '카테고리타이틀01' [I7104:16668;5362:4576]  21x14  fill=#767D84  [500/12px #767D84] "과제"
+              FRAME 'Arrange' [I7104:16668;5362:4577]  5x10
+                INSTANCE 'Icon/Icon-Triangle_Up-5-#Neutr' [I7104:16668;5362:4578]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16668;5362:4578;648:2907]  5x4  fill=#B9BBBE
+                INSTANCE 'Icon/Icon-Triangle_Down-5-#Ne' [I7104:16668;5362:4579]  5x5
+                  VECTOR 'Rectangle 842' [I7104:16668;5362:4579;648:2893]  5x4  fill=#B9BBBE
+          RECTANGLE 'Divider' [I7104:16668;5362:4580]  1x28  fill=#E6E7E8
+        … +3 more 'Datatable-Header-Title' INSTANCE

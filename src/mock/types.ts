@@ -10,6 +10,9 @@
 export type YN = 'Y' | 'N';
 export type TaskType = '추론' | '학습';
 
+/** v2 design: per-project utilization grade (drives 과제-cell chips + 등급 필터). */
+export type ProjectGrade = '우수' | '저활용' | '저활용 회수';
+
 /** GET /api/kpi-by-task */
 export interface KpiByTask {
   task: TaskType;
@@ -33,6 +36,8 @@ export interface RankedProject {
   slot_ut: number;
   gpu_ut: number;
   reason: string;
+  /** v2: flags rows that show the red '저활용 회수' tag. */
+  is_reclaim_target?: YN;
 }
 export interface TopBottomProjects {
   good: RankedProject[];
@@ -52,8 +57,24 @@ export interface ProjectRow {
   inference_gpu_ut: number;
   inference_gpu_ut_working?: number;
   inference_gpu_ut_nonworking?: number;
+  /** v2: training-scoped GPU Util shown on the 학습 tab. */
+  training_gpu_ut?: number;
   slot_ut: number;
   member_tasks: TaskType[];
+  /** v2: utilization grade chip (null = no chip). */
+  grade?: ProjectGrade | null;
+}
+
+/**
+ * v2: target-vs-current reclaim estimate for one basis (GPU Util / Slot Util).
+ * reclaim_count 0 → render the '이 기준 회수 없음' state.
+ */
+export interface ReclaimBasis {
+  current_pct: number;
+  target_pct: number;
+  reclaim_count: number;
+  total_count: number;
+  remaining_count: number;
 }
 
 /** GET /api/project/units?project_id=… */
@@ -66,6 +87,8 @@ export interface ProjectUnitInfo {
   gpu_ut: number;
   gpu_ut_working?: number;
   gpu_ut_nonworking?: number;
+  /** v2: feeds the '저활용 회수 예상량' gauges in the expanded detail. */
+  reclaim_estimate?: { gpu: ReclaimBasis; slot: ReclaimBasis };
 }
 export interface ProjectUnit {
   unit_id: string;
@@ -112,6 +135,46 @@ export interface ServiceTimeseriesPoint {
   service_name: string;
   ts: string; // YYYY-MM-DD
   total_tokens: number;
+}
+
+/* ------------------------------------------------------------------ */
+/* v2 — 토큰 활용 현황 (service-group token usage)                       */
+/* ------------------------------------------------------------------ */
+
+/** One service inside a group (GET /api/token/groups → services[]). */
+export interface TokenServiceItem {
+  service_id: string;
+  service_name: string;
+  /** Serving model label shown in the 서비스 전체 modal (e.g. 'GPT-OSS'). */
+  model: string;
+  /** Token share within its group, 0–100. */
+  share_pct: number;
+  avg_input: number;
+  avg_output: number;
+  avg_total: number;
+}
+
+/** GET /api/token/groups — one service-group rollup row. */
+export interface TokenGroupSummary {
+  service_group_id: string;
+  service_group_name: string;
+  division: string;
+  service_count: number;
+  /** Share of all token traffic, 0–100. */
+  share_pct: number;
+  avg_input: number;
+  avg_output: number;
+  avg_total: number;
+  /** Sorted by share_pct desc; UI shows the first 3–5, rest behind 더보기. */
+  services: TokenServiceItem[];
+}
+
+/** GET /api/token/totals — KPI strip numbers. */
+export interface TokenTotals {
+  group_count: number;
+  service_count: number;
+  avg_total: number;
+  day_count: number;
 }
 
 /** GET /api/filters */

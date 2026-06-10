@@ -59,14 +59,28 @@ export const semantic = {
     warn: { bg: '#FFE1B5', border: '#FFD390', text: '#6B4915' },
     bad: { bg: '#FFD9D7', border: '#FFC7C3', text: '#A52921' },
   },
-  // Task-type badges
+  // Task-type pills (v2: darker text, weight 400 — nodes I7104:9794/9795, 7104:11214)
   taskType: {
-    inference: { bg: '#CCF0F9', text: '#007492' }, // 추론
-    training: { bg: '#E0D9FF', text: '#5A49A6' }, // 학습
-    core: { bg: '#ECF1F5', text: '#565E66' }, // 핵심
+    inference: { bg: '#CCF0F9', text: '#004457' }, // 추론
+    training: { bg: '#E0D9FF', text: '#1E1251' }, // 학습
+    core: { bg: '#ECF1F5', text: '#3C444B' }, // 전략 (was 핵심)
   },
   // Trend deltas
   delta: { up: '#239B2F', down: '#FF4337' },
+} as const;
+
+/**
+ * 토큰 활용 현황 screen palette (v2, 2026-06-10 frames 7104:2731/3479/4356).
+ * Exact fills from the node trees + pixel sampling of the reference renders.
+ */
+export const tokenScreen = {
+  bar: { group: '#515E94', service: '#99A8E3', track: '#E4E9ED' },
+  selected: { rowBg: '#F3F8FD', badgeBg: '#E6F1FA', text: '#0077C8', meta: '#3392D3' },
+  series: ['#005599', '#00B3E2', '#96D552', '#FFB546', '#00C3B1'],
+  tableHeadBg: '#FAFBFC',
+  headDivider: '#E6E7E8',
+  sortGlyph: '#B9BBBE',
+  kpiIcon: { dark: '#3A4571', mid: '#515E94', accent: '#6471DF' },
 } as const;
 
 /** Categorical palette for GPU-model stacked bars and multi-series charts. */
@@ -152,6 +166,6 @@ export const layout = {
 } as const;
 
 export const tokens = {
-  color, semantic, chart, font, text, space, radius, shadow, layout,
+  color, semantic, chart, font, text, space, radius, shadow, layout, tokenScreen,
 };
 export default tokens;

@@ -2,12 +2,13 @@ import { radius, semantic, text } from '../../tokens';
 
 type Kind = 'inference' | 'training' | 'core';
 
-const LABEL: Record<Kind, string> = { inference: '추론', training: '학습', core: '핵심' };
+// v2: the neutral pill reads '전략' (strategy), not '핵심'.
+const LABEL: Record<Kind, string> = { inference: '추론', training: '학습', core: '전략' };
 
-/** Maps the Korean task label (or is_critical) to a colored badge. */
+/** Maps the Korean task label (or strategy flag) to a colored badge. */
 export function kindOf(task: string): Kind {
   if (task === '학습') return 'training';
-  if (task === '핵심') return 'core';
+  if (task === '핵심' || task === '전략') return 'core';
   return 'inference';
 }
 
@@ -23,12 +24,11 @@ export default function TaskTypeBadge({
     <span
       style={{
         display: 'inline-block',
-        padding: '2px 8px',
+        padding: '3px 6px',
         borderRadius: radius.pill,
         background: c.bg,
         color: c.text,
-        ...text.label,
-        fontWeight: 600,
+        ...text.caption,
       }}
     >
       {label ?? LABEL[kind]}

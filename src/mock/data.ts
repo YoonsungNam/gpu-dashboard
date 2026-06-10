@@ -7,9 +7,11 @@ import type {
   Filters,
   GpuCountByTask,
   KpiByTask,
+  ProjectGrade,
   ProjectRow,
   ProjectUnitsResponse,
   QuotaByEnvGpu,
+  ReclaimBasis,
   ServiceSummary,
   ServiceTimeseriesPoint,
   TaskType,
@@ -67,6 +69,13 @@ export const kpiByTask: KpiByTask[] = [
 /* ---- GET /api/gpu-count-by-task ---- */
 export const gpuCountByTask: GpuCountByTask = { 추론: 1842, 학습: 576 };
 
+/** v2: derive the utilization grade from GPU/Slot Util (회수 = flagged subset of 저활용). */
+function gradeOf(gpu: number, slot: number, r: () => number): ProjectGrade | null {
+  if (gpu >= 66) return '우수';
+  if (gpu <= 30 && slot <= 75) return r() > 0.5 ? '저활용 회수' : '저활용';
+  return null;
+}
+
 /* ---- GET /api/projects ---- */
 export const projects: ProjectRow[] = Array.from({ length: 24 }, (_, i) => {
   const r = rng(1000 + i);
@@ -85,10 +94,25 @@ export const projects: ProjectRow[] = Array.from({ length: 24 }, (_, i) => {
     inference_gpu_ut: gpu,
     inference_gpu_ut_working: round1(Math.min(100, gpu + 8)),
     inference_gpu_ut_nonworking: round1(Math.max(0, gpu - 16)),
+    training_gpu_ut: round1(Math.max(0, Math.min(100, gpu + (r() - 0.5) * 24))),
     slot_ut: slot,
     member_tasks: tasks,
+    grade: gradeOf(gpu, slot, r),
   };
 });
+
+/** v2: reclaim estimate for one basis — 0 reclaim when current meets target. */
+function reclaimBasis(current: number, target: number, quota: number): ReclaimBasis {
+  const reclaim =
+    current >= target ? 0 : Math.max(1, Math.round(quota * (1 - current / target)));
+  return {
+    current_pct: current,
+    target_pct: target,
+    reclaim_count: reclaim,
+    total_count: quota,
+    remaining_count: quota - reclaim,
+  };
+}
 
 /* ---- GET /api/project/units?project_id=… ---- */
 export function getProjectUnits(projectId: string): ProjectUnitsResponse {
@@ -97,9 +121,11 @@ export function getProjectUnits(projectId: string): ProjectUnitsResponse {
   const unitCount = 2 + Math.floor(r() * 3);
   const units = Array.from({ length: unitCount }, (_, i) => {
     const gpu = round1(10 + r() * 88);
+    // v2 unit naming: 'ais-{사업부}-serve-NN'
+    const div = pick(r, ['mx', 'vd', 'dx', 'sr']);
     return {
       unit_id: `U${String(i + 1).padStart(3, '0')}`,
-      unit_name: `GPU-Cluster-${String(i + 1).padStart(2, '0')}`,
+      unit_name: `ais-${div}사업부-serve-${String(i + 1).padStart(2, '0')}`,
       task: (r() > 0.5 ? '추론' : '학습') as TaskType,
       gpu_model: pick(r, GPU_MODELS),
       gpu_num: pick(r, [8, 16, 32, 64]),
@@ -120,6 +146,10 @@ export function getProjectUnits(projectId: string): ProjectUnitsResponse {
       gpu_ut: p.inference_gpu_ut,
       gpu_ut_working: p.inference_gpu_ut_working,
       gpu_ut_nonworking: p.inference_gpu_ut_nonworking,
+      reclaim_estimate: {
+        gpu: reclaimBasis(p.inference_gpu_ut, 30, p.quota),
+        slot: reclaimBasis(p.slot_ut, 70, p.quota),
+      },
     },
     units,
   };
@@ -143,7 +173,7 @@ export const topBottomProjects: TopBottomProjects = {
   alert: [...projects]
     .sort((a, b) => a.inference_gpu_ut - b.inference_gpu_ut)
     .slice(0, 5)
-    .map((p) => ({
+    .map((p, i) => ({
       project_id: p.project_id,
       project_name: p.project_name,
       division: p.division,
@@ -152,6 +182,8 @@ export const topBottomProjects: TopBottomProjects = {
       slot_ut: p.slot_ut,
       gpu_ut: p.inference_gpu_ut,
       reason: `Slot Util ${p.slot_ut.toFixed(1)}%`,
+      // v2 design flags 저활용 ranks 1 and 4 with the '저활용 회수' tag.
+      is_reclaim_target: (i === 0 || i === 3 ? 'Y' : 'N') as YN,
     })),
 };
 

@@ -8,8 +8,8 @@ type IconC = ComponentType<{ size?: number; color?: string }>;
 
 const NAV: { key: NavKey; label: string; Icon: IconC }[] = [
   { key: 'overview', label: 'Overview', Icon: OverviewIcon },
-  { key: 'resource', label: 'GPU 자원', Icon: ResourceIcon },
-  { key: 'tokens', label: '추론 토큰', Icon: TokensIcon },
+  { key: 'resource', label: 'GPU 활용 현황', Icon: ResourceIcon },
+  { key: 'tokens', label: '토큰 활용 현황', Icon: TokensIcon },
 ];
 
 const DEV: { key: NavKey; label: string }[] = [

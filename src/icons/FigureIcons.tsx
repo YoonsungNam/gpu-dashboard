@@ -106,3 +106,59 @@ export function CaretDownIcon({ size = 16, color = 'currentColor' }: StrokeIconP
     </svg>
   );
 }
+
+/* ------------------------------------------------------------------ */
+/* 토큰 활용 현황 KPI glyphs (node 7104:3444 'ServiceCount' icon set)     */
+/* ------------------------------------------------------------------ */
+
+/** ① 서비스 그룹 — three small squares + accent plus (node 7104:3447). */
+export function ServiceGroupIcon({ size = 20 }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
+      <rect x="2" y="2" width="6" height="6" rx="1" fill="#3A4571" />
+      <rect x="11" y="2" width="6" height="6" rx="1" fill="#3A4571" />
+      <rect x="2" y="11" width="6" height="6" rx="1" fill="#3A4571" />
+      <path d="M14 10.5v7M10.5 14h7" stroke="#6471DF" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** ② 서비스 — one solid square + accent plus (node 7104:3459). */
+export function ServiceIcon({ size = 20 }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
+      <rect x="2" y="3" width="13" height="13" rx="1.5" fill="#515E94" />
+      <path d="M15.5 11.5v6M12.5 14.5h6" stroke="#6471DF" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** ③ 일평균 토큰 합계 — double sparkle (node 7104:3469). */
+export function TokenSumIcon({ size = 20 }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
+      <path
+        d="M7 2l1.4 3.8L12.2 7 8.4 8.4 7 12.2 5.6 8.4 1.8 7l3.8-1.2L7 2z"
+        fill="#515E94"
+      />
+      <path
+        d="M14 9l1.1 3 3 1.1-3 1.1-1.1 3-1.1-3-3-1.1 3-1.1L14 9z"
+        fill="#6471DF"
+      />
+    </svg>
+  );
+}
+
+/** Funnel glyph for the 등급 필터 button (btn_2ndary icon, 14px). */
+export function FilterIcon({ size = 14, color = 'currentColor' }: StrokeIconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 14 14" fill="none">
+      <path
+        d="M1.8 2.5h10.4L8.4 7.3v4.2l-2.8-1.4V7.3L1.8 2.5z"
+        stroke={color}
+        strokeWidth="1.1"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

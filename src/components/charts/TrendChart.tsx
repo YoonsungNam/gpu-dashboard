@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { chart, color, font, radius, shadow, text } from '../../tokens';
+import { chart, color, font, text } from '../../tokens';
 
 export interface TrendSeries {
   key: string;
@@ -17,6 +17,8 @@ export interface TrendSeries {
   color: string;
   /** Render this series as a dashed line (e.g. Slot Util in the Figma design). */
   dash?: boolean;
+  /** Darker hover-dot fill (v2: inference #0093BA, training #6978B8). */
+  activeColor?: string;
 }
 
 export interface TrendChartProps {
@@ -24,29 +26,61 @@ export interface TrendChartProps {
   xKey: string;
   series: TrendSeries[];
   height?: number;
-  /** When true (default), render filled gradient areas; otherwise plain lines. */
+  /** When true (default), render filled gradient areas; otherwise plain v2 lines. */
   area?: boolean;
 }
 
 const tickStyle = {
   fontSize: 10,
-  fill: chart.axis,
   fontFamily: font.mono,
 } as const;
+
+/** Index step so ~7 markers/labels land on evenly spaced dates (first + every Nth + last). */
+const markerStep = (n: number) => Math.max(1, Math.round((n - 1) / 6));
+
+/** True for the indices that carry an axis label and a series marker. */
+const isMarkerIndex = (i: number, n: number, step: number) => i % step === 0 || i === n - 1;
+
+/**
+ * Per-series tick-date markers (v2 trend spec): 10px dia dots only at the
+ * labeled dates — hollow (white fill, 2px series stroke) on the solid GPU Util
+ * line, filled in series color on the dashed Slot Util line.
+ */
+function seriesDot(s: TrendSeries, n: number) {
+  const step = markerStep(n);
+  return (props: { cx?: number; cy?: number; index?: number }) => {
+    const { cx, cy, index } = props;
+    const key = `${s.key}-dot-${index}`;
+    if (index == null || cx == null || cy == null || !isMarkerIndex(index, n, step)) {
+      return <g key={key} />;
+    }
+    return s.dash ? (
+      <circle key={key} cx={cx} cy={cy} r={5} fill={s.color} />
+    ) : (
+      <circle key={key} cx={cx} cy={cy} r={5} fill={color.white} stroke={s.color} strokeWidth={2} />
+    );
+  };
+}
 
 /** Multi-series line/area chart for 사용추이 (usage trend). Legend rendered externally. */
 export default function TrendChart({
   data,
   xKey,
   series,
-  height = 180,
+  height = 238,
   area = true,
 }: TrendChartProps) {
   const Chart = area ? AreaChart : LineChart;
+  const n = data.length;
+  const step = markerStep(n);
+  // Explicit ticks so the line markers land exactly on the labeled dates.
+  const xTicks = data
+    .filter((_, i) => isMarkerIndex(i, n, step))
+    .map((d) => d[xKey]) as (string | number)[];
 
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <Chart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
+      <Chart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
         {area && (
           <defs>
             {series.map((s) => (
@@ -65,36 +99,43 @@ export default function TrendChart({
           </defs>
         )}
 
-        <CartesianGrid stroke={chart.grid} strokeDasharray="3 3" vertical={false} />
+        {/* v2: solid light horizontal gridlines on the fixed 0–100 ticks */}
+        <CartesianGrid stroke={chart.grid} vertical={false} />
 
         <XAxis
           dataKey={xKey}
-          tick={tickStyle}
-          tickLine={{ stroke: chart.grid }}
-          axisLine={{ stroke: chart.grid }}
-          interval="preserveStartEnd"
-          minTickGap={28}
+          tick={{ ...tickStyle, fill: color.textTertiary }}
+          tickLine={false}
+          axisLine={false}
+          ticks={xTicks}
+          interval={0}
+          padding={{ left: 8, right: 8 }}
           tickFormatter={(v) => (typeof v === 'string' ? v.slice(5) : String(v))}
         />
         <YAxis
-          tick={tickStyle}
-          tickLine={{ stroke: chart.grid }}
-          axisLine={{ stroke: chart.grid }}
+          domain={[0, 100]}
+          ticks={[0, 25, 50, 75, 100]}
+          tick={{ ...tickStyle, fill: chart.axis }}
+          tickLine={false}
+          axisLine={false}
           width={32}
         />
 
+        {/* v2 dark tooltip: #283037 @ 90%, r6, 8/16 padding, #FAFBFC 400/12 text */}
         <Tooltip
           contentStyle={{
-            background: color.cardBg,
-            border: `1px solid ${color.border}`,
-            borderRadius: radius.sm,
-            boxShadow: shadow.card,
+            background: 'rgba(40,48,55,0.9)',
+            border: 'none',
+            borderRadius: 6,
+            padding: '8px 16px',
+            boxShadow: 'none',
             ...text.caption,
-            color: color.textPrimary,
+            color: '#FAFBFC',
           }}
-          labelStyle={{ color: color.textSecondary, ...text.tiny }}
-          itemStyle={{ ...text.caption }}
-          cursor={{ stroke: chart.grid }}
+          labelStyle={{ ...text.caption, color: '#FAFBFC' }}
+          itemStyle={{ ...text.caption, color: '#FAFBFC', padding: 0 }}
+          labelFormatter={(v) => (typeof v === 'string' ? v.slice(5) : String(v))}
+          cursor={{ stroke: color.borderStrong }}
         />
 
         {series.map((s) =>
@@ -120,8 +161,8 @@ export default function TrendChart({
               stroke={s.color}
               strokeWidth={2}
               strokeDasharray={s.dash ? '5 4' : undefined}
-              dot={false}
-              activeDot={{ r: 3 }}
+              dot={seriesDot(s, n)}
+              activeDot={{ r: 5, strokeWidth: 0, fill: s.activeColor ?? s.color }}
             />
           ),
         )}

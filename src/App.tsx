@@ -5,36 +5,25 @@ import Gallery from './dev/Gallery';
 import OverlayCompare from './dev/OverlayCompare';
 import OverviewPage from './screens/OverviewPage';
 import GpuResourcePage from './screens/GpuResourcePage';
+import TokenUsagePage from './screens/TokenUsagePage';
 import { color, radius, semantic, space, text } from './tokens';
 import { filters } from './mock/data';
 
 const TITLES: Record<NavKey, string> = {
   overview: 'Overview',
-  resource: 'GPU 자원',
-  tokens: '추론 토큰',
+  resource: 'GPU 활용 현황',
+  tokens: '토큰 활용 현황',
   gallery: '컴포넌트 갤러리',
   overlay: 'Figma 오버레이',
 };
 
-function Placeholder({ title }: { title: string }) {
-  return (
-    <div
-      style={{
-        padding: 40,
-        background: color.cardBg,
-        borderRadius: radius.card,
-        border: `1px dashed ${color.borderStrong}`,
-        ...text.body,
-        color: color.textTertiary,
-        display: 'grid',
-        gap: space.sm,
-      }}
-    >
-      <div style={{ ...text.cardTitle, color: color.textPrimary }}>{title}</div>
-      Phase 3에서 구현 예정. 컴포넌트는 Phase 2(갤러리)에서 먼저 만들고 여기서 조립합니다.
-    </div>
-  );
-}
+/** v2: inline page captions shown right of the top-bar title. */
+const SUBTITLES: Partial<Record<NavKey, string>> = {
+  overview: '전체 자원 활용을 한눈에',
+  resource: '과제별 GPU 자원 배분 및 사용율',
+  tokens: '과제별 일평균 토큰 사용량',
+};
+
 
 /** Compact labeled select for the GPU 자원 app-bar filter cluster. */
 function ToolbarSelect({
@@ -123,7 +112,7 @@ function ResourceTopActions() {
         options={['전체', ...filters.divisions]}
       />
       <ToolbarSelect
-        label="핵심"
+        label="전략"
         value={critical}
         onChange={setCritical}
         options={['전체', ...filters.is_critical]}
@@ -158,13 +147,18 @@ export default function App() {
       active={nav}
       onNavigate={setNav}
       title={TITLES[nav]}
-      actions={nav === 'resource' || nav === 'overview' ? <ResourceTopActions /> : undefined}
+      subtitle={SUBTITLES[nav]}
+      actions={
+        nav === 'resource' || nav === 'overview' || nav === 'tokens' ? (
+          <ResourceTopActions />
+        ) : undefined
+      }
     >
       {nav === 'gallery' && <Gallery />}
       {nav === 'overlay' && <OverlayCompare />}
       {nav === 'overview' && <OverviewPage />}
       {nav === 'resource' && <GpuResourcePage />}
-      {nav === 'tokens' && <Placeholder title={TITLES[nav]} />}
+      {nav === 'tokens' && <TokenUsagePage />}
     </AppShell>
   );
 }

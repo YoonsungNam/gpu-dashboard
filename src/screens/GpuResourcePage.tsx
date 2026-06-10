@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { color, radius, semantic, space, text } from '../tokens';
 import { num } from '../lib/util';
-import { UTIL_METRICS } from '../lib/labels';
+import { GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL, type MetricDef } from '../lib/labels';
 import type { ProjectRow, TaskType } from '../mock/types';
 import Card from '../components/primitives/Card';
 import DataTable, { type DataTableColumn } from '../components/primitives/DataTable';
@@ -11,6 +11,8 @@ import Pagination from '../components/primitives/Pagination';
 import DownloadButton from '../components/primitives/DownloadButton';
 import UtilBadge from '../components/primitives/UtilBadge';
 import TaskTypeBadge from '../components/primitives/TaskTypeBadge';
+import GradeBadge from '../components/primitives/GradeBadge';
+import GradeFilter, { type GradeFilterValue } from '../components/compositions/GradeFilter';
 import ExpandedTaskDetail from '../components/compositions/ExpandedTaskDetail';
 import { projects, getProjectUnits } from '../mock/data';
 
@@ -18,22 +20,35 @@ const PAGE_SIZE = 15;
 
 type TabKey = TaskType; // '추론' | '학습'
 
-/** Per-row value getter for the four util columns (key matches the inference_* fields). */
-const UTIL_VALUE: Record<string, (r: ProjectRow) => number> = {
-  gpu_ut: (r) => r.inference_gpu_ut,
-  gpu_ut_working: (r) => r.inference_gpu_ut_working ?? 0,
-  gpu_ut_nonworking: (r) => r.inference_gpu_ut_nonworking ?? 0,
-  slot_ut: (r) => r.slot_ut,
-};
+/** v2 selected-row text color (expanded rows tint #F0F7FC + #0077C8 text). */
+const SELECTED_TEXT = '#0077C8';
+
+/** Per-tab value getter for the util columns (학습 GPU Util is training-scoped). */
+function utilValue(r: ProjectRow, key: string, tab: TabKey): number {
+  switch (key) {
+    case 'gpu_ut':
+      return tab === '학습' ? r.training_gpu_ut ?? r.inference_gpu_ut : r.inference_gpu_ut;
+    case 'gpu_ut_working':
+      return r.inference_gpu_ut_working ?? 0;
+    case 'gpu_ut_nonworking':
+      return r.inference_gpu_ut_nonworking ?? 0;
+    case 'slot_ut':
+      return r.slot_ut;
+    default:
+      return 0;
+  }
+}
 
 /**
- * GPU 자원 page (design-spec §5.B). The Live pill + 기간/사업부/핵심 filters +
- * 지표 정의 link live in the app bar (see App.tsx); this page's own toolbar is
- * just Tabs + Search (left) and result-count + 다운로드 (right).
+ * GPU 활용 현황 page (v2 — Figma frames 7104:7375/8555/9862). The Live pill +
+ * 기간/사업부/전략 filters + 지표 정의 link live in the app bar (see App.tsx);
+ * this page's toolbar is Tabs + count (left) and 등급 필터 + Search + 다운로드
+ * (right).
  */
 export default function GpuResourcePage() {
   const [tab, setTab] = useState<TabKey>('추론'); // 추론 default, no 전체
   const [query, setQuery] = useState('');
+  const [grade, setGrade] = useState<GradeFilterValue>('전체');
   const [page, setPage] = useState(1);
 
   const onTab = (k: TabKey) => {
@@ -44,92 +59,95 @@ export default function GpuResourcePage() {
     setQuery(v);
     setPage(1);
   };
+  const onGrade = (v: GradeFilterValue) => {
+    setGrade(v);
+    setPage(1);
+  };
 
-  // Client-side filtering: tab by member_tasks, search by project_name OR user_id.
+  // Client-side filtering: tab by member_tasks, search by project_name OR
+  // user_id, grade via the 등급 필터 popover ('전체' clears).
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return projects.filter((p) => {
       if (!p.member_tasks.includes(tab)) return false;
       if (q && !p.project_name.toLowerCase().includes(q) && !p.user_id.toLowerCase().includes(q))
         return false;
+      if (grade !== '전체' && p.grade !== grade) return false;
       return true;
     });
-  }, [tab, query]);
+  }, [tab, query, grade]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
   const pageRows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-  const columns: DataTableColumn<ProjectRow>[] = [
-    {
-      key: 'index',
-      header: '#',
-      width: 36,
-      align: 'center',
-      // Figma # cell: 22×22 #ECF1F5 r2 box, number #565E66 400/11px (nodes line 149-150).
-      render: (_r, i) => (
-        <span
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 22,
-            height: 22,
-            borderRadius: radius.cell,
-            background: '#ECF1F5',
-            fontSize: 11,
-            lineHeight: '13px',
-            fontWeight: 400,
-            color: color.textSecondary,
-          }}
-        >
-          {(safePage - 1) * PAGE_SIZE + i + 1}
-        </span>
+  // Tab-dependent columns: 학습 drops GPU Util WH/AH and the 과제 column widens.
+  const columns: DataTableColumn<ProjectRow>[] = useMemo(() => {
+    const utilDefs: MetricDef[] =
+      tab === '학습' ? [GPU_UTIL, SLOT_UTIL] : [GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL];
+    const cellColor = (expanded?: boolean) => (expanded ? SELECTED_TEXT : color.textTitle);
+    return [
+      {
+        key: 'project_name',
+        header: '과제',
+        width: tab === '학습' ? 682 : 510,
+        render: (r, _i, expanded) => (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+            <span style={{ ...text.bodyM, color: cellColor(expanded) }}>{r.project_name}</span>
+            <GradeBadge grade={r.grade} />
+          </span>
+        ),
+      },
+      {
+        key: 'division',
+        header: '사업부',
+        width: 246,
+        render: (r, _i, expanded) => <span style={{ color: cellColor(expanded) }}>{r.division}</span>,
+      },
+      {
+        key: 'purpose',
+        header: '용도',
+        width: 110,
+        render: (r, _i, expanded) => <span style={{ color: cellColor(expanded) }}>{r.purpose}</span>,
+      },
+      {
+        key: 'is_critical',
+        header: '전략여부',
+        width: 90,
+        align: 'center',
+        // 전략 pill when Y, '-' dash when N (never empty).
+        render: (r, _i, expanded) =>
+          r.is_critical === 'Y' ? (
+            <TaskTypeBadge kind="core" />
+          ) : (
+            <span style={{ color: cellColor(expanded) }}>-</span>
+          ),
+      },
+      {
+        key: 'user_id',
+        header: '담당자',
+        width: 80,
+        render: (r, _i, expanded) => <span style={{ color: cellColor(expanded) }}>{r.user_id}</span>,
+      },
+      {
+        key: 'quota',
+        header: '수량(H100기준)',
+        width: 110,
+        align: 'right',
+        render: (r, _i, expanded) => <span style={{ color: cellColor(expanded) }}>{num(r.quota)}</span>,
+      },
+      // Sort glyphs only on the four utilization columns.
+      ...utilDefs.map(
+        (def): DataTableColumn<ProjectRow> => ({
+          key: def.key,
+          header: def.label,
+          align: 'center',
+          sortable: true,
+          render: (r) => <UtilBadge value={utilValue(r, def.key, tab)} metric={def.metric} />,
+        }),
       ),
-    },
-    {
-      key: 'project_name',
-      header: '과제',
-      render: (r) => (
-        <span style={{ ...text.bodyM, color: color.textPrimary }}>{r.project_name}</span>
-      ),
-    },
-    {
-      key: 'division',
-      header: '사업부',
-      render: (r) => <span style={{ color: color.textPrimary }}>{r.division}</span>,
-    },
-    {
-      key: 'purpose',
-      header: '용도',
-      render: (r) => <span style={{ color: color.textPrimary }}>{r.purpose}</span>,
-    },
-    {
-      key: 'is_critical',
-      header: '핵심여부',
-      align: 'center',
-      render: (r) => (r.is_critical === 'Y' ? <TaskTypeBadge kind="core" /> : null),
-    },
-    {
-      key: 'user_id',
-      header: '담당자',
-      render: (r) => <span style={{ color: color.textPrimary }}>{r.user_id}</span>,
-    },
-    {
-      key: 'quota',
-      header: '수량(H100기준)',
-      align: 'right',
-      render: (r) => (
-        <span style={{ ...text.numTiny, color: color.textPrimary }}>{num(r.quota)}</span>
-      ),
-    },
-    ...UTIL_METRICS.map((def): DataTableColumn<ProjectRow> => ({
-      key: def.key,
-      header: def.label,
-      align: 'center',
-      render: (r) => <UtilBadge value={UTIL_VALUE[def.key](r)} metric={def.metric} />,
-    })),
-  ];
+    ];
+  }, [tab]);
 
   // Tab counts derived from the full project set.
   const inferenceCount = projects.filter((p) => p.member_tasks.includes('추론')).length;
@@ -154,7 +172,7 @@ export default function GpuResourcePage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: space.xl }}>
-      {/* Page toolbar: Tabs + Search (left) · result count + 다운로드 (right) */}
+      {/* Page toolbar: Tabs + count (left) · 등급 필터 + Search + 다운로드 (right) */}
       <div
         id="res-toolbar"
         style={{
@@ -165,20 +183,20 @@ export default function GpuResourcePage() {
           flexWrap: 'wrap',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: space.lg }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Tabs tabs={tabs} active={tab} onChange={(k) => onTab(k as TabKey)} />
-          <span style={{ width: 1, height: 14, background: color.borderStrong }} />
+          <span style={{ ...text.body, color: color.textTertiary }}>
+            {pageRows.length}/{filtered.length}
+          </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: space.md }}>
+          <GradeFilter value={grade} onChange={onGrade} />
           <SearchInput
             value={query}
             onChange={onQuery}
-            placeholder="과제명 담당자 검색"
-            width={220}
+            placeholder="과제명/담당자 검색"
+            width={200}
           />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: space.md }}>
-          <span style={{ ...text.numTiny, color: color.textTertiary }}>
-            {pageRows.length}/{filtered.length}
-          </span>
           <DownloadButton />
         </div>
       </div>
@@ -190,12 +208,17 @@ export default function GpuResourcePage() {
           columns={columns}
           rows={pageRows}
           rowKey={(r) => r.project_id}
-          compact
+          vPad={10}
+          headerBg="#FAFBFC"
+          caretWidth={42}
+          rowStyle={(_r, _i, expanded) => (expanded ? { background: '#F0F7FC' } : undefined)}
+          // Full-bleed expand panel: the detail supplies its own bg/padding.
+          panelStyle={{ padding: 0, background: '#F6F8FA' }}
           expandedContent={(r) => (
             <ExpandedTaskDetail
               data={getProjectUnits(r.project_id)}
-              isCritical={r.is_critical === 'Y'}
-              tasks={[tab]}
+              taskType={tab}
+              isStrategic={r.is_critical === 'Y'}
             />
           )}
           emptyText="조건에 맞는 과제가 없습니다"
@@ -232,7 +255,10 @@ export default function GpuResourcePage() {
   );
 }
 
-/** One labeled threshold scale as filled pill chips (e.g. "GPU Util  [≥20%][10–20%][<10%]"). */
+/**
+ * One labeled threshold scale as borderless fill-only chips
+ * (nodes 7104:9630-9648: 48×16 r2, text 400/11, label 400/12 #767D84).
+ */
 function LegendRow({
   title,
   items,
@@ -242,21 +268,23 @@ function LegendRow({
 }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: space.md }}>
-      <span style={{ fontSize: 12, lineHeight: '14px', fontWeight: 400, color: color.textTertiary }}>
-        {title}
-      </span>
+      <span style={{ ...text.caption, color: color.textTertiary }}>{title}</span>
       <div style={{ display: 'flex', alignItems: 'center', gap: space.sm }}>
         {items.map((it) => (
           <span
             key={it.label}
             style={{
-              padding: '2px 8px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 48,
+              height: 16,
+              boxSizing: 'border-box',
               borderRadius: radius.cell,
               background: it.lvl.bg,
-              border: `1px solid ${it.lvl.border}`,
               color: it.lvl.text,
               ...text.tiny,
-              fontWeight: 400,
+              whiteSpace: 'nowrap',
             }}
           >
             {it.label}

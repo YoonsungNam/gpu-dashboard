@@ -27,3 +27,27 @@ export function utilColors(value: number, metric: UtilMetric = 'gpu') {
 
 export const pct = (n: number, digits = 1) => `${n.toFixed(digits)}%`;
 export const num = (n: number) => n.toLocaleString('en-US');
+
+/**
+ * Compact token-count formatter for the 토큰 활용 현황 screen:
+ * 593_000 → '593K' · 2_900_000 → '2.9M' · 402_000_000 → '402M'.
+ * (1 decimal for M-values under 10M, none above; K below 1M.)
+ */
+export function fmtTokens(n: number): string {
+  if (n >= 1_000_000) {
+    const m = n / 1_000_000;
+    return m < 10 ? `${m.toFixed(1).replace(/\.0$/, '')}M` : `${Math.round(m)}M`;
+  }
+  if (n >= 1_000) return `${Math.round(n / 1_000)}K`;
+  return String(Math.round(n));
+}
+
+/** I:O ratio string like '1.6:2' (each side in millions, 1 decimal, trailing .0 dropped). */
+export function ioRatio(input: number, output: number): string {
+  const f = (v: number) => (v / 1_000_000).toFixed(1).replace(/\.0$/, '');
+  return `${f(input)}:${f(output)}`;
+}
+
+/** Input share of total I/O traffic, for the I:O bar width (0–100). */
+export const ioBarPct = (input: number, output: number) =>
+  input + output > 0 ? (input / (input + output)) * 100 : 0;
