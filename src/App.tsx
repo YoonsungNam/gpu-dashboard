@@ -7,6 +7,7 @@ import OverviewPage from './screens/OverviewPage';
 import GpuResourcePage from './screens/GpuResourcePage';
 import TokenUsagePage from './screens/TokenUsagePage';
 import { color, radius, semantic, space, text } from './tokens';
+import { InfoIcon } from './icons/FigureIcons';
 import { filters } from './mock/data';
 
 const TITLES: Record<NavKey, string> = {
@@ -42,7 +43,7 @@ function ToolbarSelect({
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: space.xs,
+        gap: space.sm, // Figma Frames 50/51/52 gap6.0
         ...text.label,
         color: '#3C444B', // Figma filter label color (nodes 7001:46448/46459/46470)
       }}
@@ -52,10 +53,21 @@ function ToolbarSelect({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         style={{
-          border: `1px solid ${color.border}`,
+          width: 120, // Figma 'title, button' fixed 120x28 (nodes 7104:14063/14074/14085)
+          height: 28,
+          boxSizing: 'border-box',
+          border: '1px solid #CCD1D6', // pixel-sampled select border (f2_ov_topbar.png)
           borderRadius: radius.cell,
-          padding: '4px 8px',
+          padding: '4px 26px 4px 8px',
           background: color.cardBg,
+          // Custom 14px #565E66 chevron, right-aligned 6px from the box edge
+          // (Figma Icon14-Chevron_Down; native arrow suppressed below).
+          appearance: 'none',
+          WebkitAppearance: 'none',
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M3.5 5.25L7 8.75L10.5 5.25' stroke='%23565E66' stroke-width='1.2'/%3E%3C/svg%3E\")",
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'right 6px center',
           color: '#3C444B', // Figma select value color (nodes 7001:46452/46463/46474)
           ...text.body,
         }}
@@ -79,24 +91,39 @@ function ResourceTopActions() {
   const [division, setDivision] = useState('전체');
   const [critical, setCritical] = useState('전체');
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: space.md }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 13 /* Figma Frame 52 gap13.0 */ }}>
       <span
         style={{
           display: 'inline-flex',
           alignItems: 'center',
           gap: space.xxs,
-          padding: '2px 6px',
+          height: 20, // Figma pill 52x20
+          boxSizing: 'border-box',
+          padding: '0 6px',
           borderRadius: radius.xl,
           // Figma Live tag: neutral pill #F2F6F9 + gray #454E56 text, green status dot only.
           background: '#F2F6F9',
+          border: '1px solid #E4E9ED', // pixel-verified 1px ring on the pill
           color: '#454E56',
           ...text.label,
           fontWeight: 400,
+          marginRight: 3, // pill→기간 measures ~16px in Figma (13px gap + 3)
         }}
       >
+        {/* 8px dot centered in a 16x16 icon slot (Figma BG pad 2/6 gap2) */}
         <span
-          style={{ width: 8, height: 8, borderRadius: radius.pill, background: semantic.delta.up }}
-        />
+          style={{
+            width: 16,
+            height: 16,
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <span
+            style={{ width: 8, height: 8, borderRadius: radius.pill, background: semantic.delta.up }}
+          />
+        </span>
         Live
       </span>
       <ToolbarSelect
@@ -126,9 +153,21 @@ function ResourceTopActions() {
           display: 'inline-flex',
           alignItems: 'center',
           gap: space.xs,
+          padding: '4px 8px', // btn_ghost pad 4/8 (node 7104:14059)
         }}
       >
-        <span style={{ ...text.label, color: color.textTertiary }}>ⓘ</span>
+        {/* 14x14 square-i info icon in a 16x16 slot (nodes 221:53776-53778) */}
+        <span
+          style={{
+            width: 16,
+            height: 16,
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <InfoIcon size={14} />
+        </span>
         지표 정의
       </span>
     </div>

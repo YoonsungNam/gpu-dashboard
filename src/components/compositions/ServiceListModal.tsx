@@ -2,7 +2,7 @@ import { useEffect, type CSSProperties } from 'react';
 import { color, shadow, text, tokenScreen } from '../../tokens';
 import { fmtTokens, ioRatio } from '../../lib/util';
 import type { TokenGroupSummary } from '../../mock/types';
-import { MeterBar, SortGlyphs } from './TokenGroupTable';
+import { MeterBar } from './TokenGroupTable';
 
 /**
  * '서비스 전체' modal (form-modal 7104:4356/4357, 1000x744) — opened from the
@@ -13,14 +13,14 @@ import { MeterBar, SortGlyphs } from './TokenGroupTable';
 /** Figma column grid: No 32 / 서비스 340 / 점유율 150 / Input·Output·I:O·합계 110 each. */
 const COLS = [32, 340, 150, 110, 110, 110, 110];
 
-const HEADERS: { label: string; align: 'left' | 'right' }[] = [
+const HEADERS: { label: string; align: 'left' | 'center' }[] = [
   { label: 'No', align: 'left' },
   { label: '서비스', align: 'left' },
   { label: '토큰 점유율', align: 'left' },
-  { label: '일평균 Input', align: 'right' },
-  { label: '일평균 Output', align: 'right' },
-  { label: 'I:O', align: 'right' },
-  { label: '일평균 합계', align: 'right' },
+  { label: '일평균 Input', align: 'center' },
+  { label: '일평균 Output', align: 'center' },
+  { label: 'I:O', align: 'center' },
+  { label: '일평균 합계', align: 'center' },
 ];
 
 export default function ServiceListModal({
@@ -125,13 +125,14 @@ export default function ServiceListModal({
             }}
           >
             <svg width={14} height={14} viewBox="0 0 14 14" fill="none" aria-hidden>
-              <path d="M3 3L11 11M11 3L3 11" stroke={color.textSecondary} strokeWidth="1.2" />
+              {/* 10x10 X inside the 14x14 icon (Icon14-X10, nodes 221:53106/53107). */}
+              <path d="M2 2L12 12M12 2L2 12" stroke={color.textSecondary} strokeWidth="1.2" />
             </svg>
           </button>
         </div>
 
         {/* BODY — group heading + stat strip + full service table (scrolls) */}
-        <div style={{ padding: 24, overflowY: 'auto', flex: 1, minHeight: 0 }}>
+        <div style={{ padding: '24px 20px', overflowY: 'auto', flex: 1, minHeight: 0 }}>
           <div
             style={{
               display: 'flex',
@@ -175,26 +176,17 @@ export default function ServiceListModal({
             </colgroup>
             <thead>
               <tr>
-                {HEADERS.map((h, i) => (
+                {HEADERS.map((h) => (
                   <th
                     key={h.label}
                     style={{
                       ...th,
                       textAlign: h.align,
-                      borderRight:
-                        i < HEADERS.length - 1 ? `1px solid ${tokenScreen.headDivider}` : undefined,
+                      // 토큰 점유율 header label sits 6px in, matching the bar inset.
+                      padding: h.label === '토큰 점유율' ? '0 6px' : th.padding,
                     }}
                   >
-                    <span
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: h.align === 'right' ? 'flex-end' : 'flex-start',
-                      }}
-                    >
-                      {h.label}
-                      <SortGlyphs />
-                    </span>
+                    {h.label}
                   </th>
                 ))}
               </tr>
@@ -203,7 +195,7 @@ export default function ServiceListModal({
               {group.services.map((s, i) => (
                 <tr key={s.service_id}>
                   <td style={{ ...td, ...text.body, color: color.textTertiary }}>{i + 1}</td>
-                  <td style={{ ...td, padding: '0 6px' }}>
+                  <td style={{ ...td, padding: '0 12px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
                       <span
                         style={{
@@ -219,24 +211,25 @@ export default function ServiceListModal({
                       <span style={{ ...text.caption, color: color.textSecondary }}>{s.model}</span>
                     </div>
                   </td>
-                  <td style={td}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <td style={{ ...td, padding: '0 6px' }}>
+                    {/* 90px bar + 2px gap + 46px right-aligned % (Container 7104:4382). */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <MeterBar pct={s.share_pct} fill={tokenScreen.bar.group} width={90} />
-                      <span style={{ ...text.body, color: color.textTitle }}>
+                      <span style={{ ...text.body, color: color.textTitle, width: 46, textAlign: 'right' }}>
                         {s.share_pct.toFixed(1)}%
                       </span>
                     </div>
                   </td>
-                  <td style={{ ...td, ...text.body, color: color.textTitle, textAlign: 'right' }}>
+                  <td style={{ ...td, ...text.body, color: color.textTitle, textAlign: 'center' }}>
                     {fmtTokens(s.avg_input)}
                   </td>
-                  <td style={{ ...td, ...text.body, color: color.textTitle, textAlign: 'right' }}>
+                  <td style={{ ...td, ...text.body, color: color.textTitle, textAlign: 'center' }}>
                     {fmtTokens(s.avg_output)}
                   </td>
-                  <td style={{ ...td, ...text.body, color: color.textTitle, textAlign: 'right' }}>
+                  <td style={{ ...td, ...text.body, color: color.textTitle, textAlign: 'center' }}>
                     {ioRatio(s.avg_input, s.avg_output)}
                   </td>
-                  <td style={{ ...td, ...text.body, color: color.textTitle, textAlign: 'right' }}>
+                  <td style={{ ...td, ...text.body, color: color.textTitle, textAlign: 'center' }}>
                     {fmtTokens(s.avg_total)}
                   </td>
                 </tr>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { radius, text } from '../../tokens';
+import { color, radius, text } from '../../tokens';
 import { FilterIcon } from '../../icons/FigureIcons';
 import type { ProjectGrade } from '../../mock/types';
 
@@ -10,9 +10,9 @@ const OPTIONS: GradeFilterValue[] = ['전체', '우수', '저활용', '저활용
 /**
  * 등급 필터 trigger button + single-select popover (nodes 7104:12152-12164).
  * Button states:
- *  - Enabled   → white bg, 1px #CCD1D6 border, icon #767D84, label '등급 필터' #3C444B
- *  - Open      → bg #E6F1FA, icon + label #0077C8
- *  - Activated → white bg, 1px #0077C8 border, icon + label #0077C8, label = active value
+ *  - Enabled   → white bg, 1px #DADFE4 border, icon #767D84, label '등급 필터' #3C444B
+ *  - Open      → white bg, 1px #3392D3 border, icon + label #0077C8 (7104:12155)
+ *  - Activated → bg #E6F1FA, 1px #CCD1D6 border, icon + label #0077C8, label = active value (7104:12153)
  * Popover: 120×116, white, r2, padding 6px 1px, subtle drop shadow; four
  * 118×26 items (전체/우수/저활용/저활용 회수) 400/14 #2F363C, hover/selected
  * bg #ECF1F5. '전체' clears the filter (button returns to Enabled).
@@ -45,8 +45,10 @@ export default function GradeFilter({
           height: 28,
           boxSizing: 'border-box',
           padding: '4px 8px',
-          background: open ? '#E6F1FA' : '#FFFFFF',
-          border: `1px solid ${activated && !open ? '#0077C8' : '#CCD1D6'}`,
+          background: !open && activated ? '#E6F1FA' : '#FFFFFF',
+          border: `1px solid ${
+            open ? '#3392D3' : activated ? '#CCD1D6' : color.borderSubtle
+          }`,
           borderRadius: radius.cell,
           cursor: 'pointer',
           color: blue ? '#0077C8' : '#3C444B',

@@ -15,28 +15,18 @@ import type { TokenGroupSummary, TokenServiceItem } from '../../mock/types';
 const COLS = [32, 660, 234, 160, 160, 234, 160];
 const TOTAL = COLS.reduce((s, w) => s + w, 0);
 
-const HEADERS: { label: string; align: 'left' | 'right' }[] = [
+const HEADERS: { label: string; align: 'left' | 'center' }[] = [
   { label: '', align: 'left' },
   { label: '서비스 그룹 · 서비스', align: 'left' },
   { label: '토큰 점유율', align: 'left' },
-  { label: '일평균 Input', align: 'right' },
-  { label: '일평균 Output', align: 'right' },
+  { label: '일평균 Input', align: 'center' },
+  { label: '일평균 Output', align: 'center' },
   { label: 'I:O', align: 'left' },
-  { label: '일평균 합계', align: 'right' },
+  { label: '일평균 합계', align: 'center' },
 ];
 
 /** Hairline above the 더보기 row (border_under I7104:3181;1258:9796). */
 const MORE_HAIRLINE = '#EFF4F8';
-
-/** Static stacked sort triangles (5x5 each, #B9BBBE — node 648:2907). */
-export function SortGlyphs() {
-  return (
-    <svg width={5} height={10} viewBox="0 0 5 10" aria-hidden style={{ marginLeft: 4, flexShrink: 0 }}>
-      <path d="M2.5 0L5 4H0L2.5 0Z" fill={tokenScreen.sortGlyph} />
-      <path d="M2.5 10L0 6H5L2.5 10Z" fill={tokenScreen.sortGlyph} />
-    </svg>
-  );
-}
 
 /** 6px-high rounded meter on the #E4E9ED track (chart nodes 7104:3546-3548). */
 export function MeterBar({ pct, fill, width = 120 }: { pct: number; fill: string; width?: number }) {
@@ -63,24 +53,6 @@ export function MeterBar({ pct, fill, width = 120 }: { pct: number; fill: string
         }}
       />
     </span>
-  );
-}
-
-/** 1x23 #DADFE4 stick on the left edge of cols 3-7 (nodes 7104:3541/3554). */
-function DividerStick() {
-  return (
-    <span
-      aria-hidden
-      style={{
-        position: 'absolute',
-        left: 0,
-        top: '50%',
-        transform: 'translateY(-50%)',
-        width: 1,
-        height: 23,
-        background: color.borderSubtle,
-      }}
-    />
   );
 }
 
@@ -175,28 +147,8 @@ export default function TokenGroupTable({
       <thead>
         <tr>
           {HEADERS.map((h, i) => (
-            <th
-              key={i}
-              style={{
-                ...th,
-                textAlign: h.align,
-                // 1x28 cell divider #E6E7E8 at the right edge of each cell.
-                borderRight: i < HEADERS.length - 1 ? `1px solid ${tokenScreen.headDivider}` : undefined,
-                paddingRight: h.align === 'right' ? 12 : 8,
-              }}
-            >
-              {h.label && (
-                <span
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: h.align === 'right' ? 'flex-end' : 'flex-start',
-                  }}
-                >
-                  {h.label}
-                  <SortGlyphs />
-                </span>
-              )}
+            <th key={i} style={{ ...th, textAlign: h.align }}>
+              {h.label}
             </th>
           ))}
         </tr>
@@ -303,16 +255,15 @@ function GroupRow({
   };
   const num: CSSProperties = {
     ...td,
-    textAlign: 'right',
-    paddingRight: 20,
+    textAlign: 'center',
     ...text.body,
     color: valueColor,
   };
 
   return (
     <tr className="gd-row" style={{ cursor: 'pointer' }} onClick={onToggle}>
-      {/* col1 — expand chevron, rotates down when open */}
-      <td style={{ ...td, textAlign: 'center' }}>
+      {/* col1 — expand chevron, right-leaning in the 32px column (icon at x≈17-33) */}
+      <td style={{ ...td, textAlign: 'right', paddingRight: 1 }}>
         <span
           aria-hidden
           style={{
@@ -327,8 +278,8 @@ function GroupRow({
         </span>
       </td>
 
-      {/* col2 — index badge + name/meta stack */}
-      <td style={{ ...td, padding: '0 6px' }}>
+      {/* col2 — index badge + name/meta stack (badge at x=44: 32 + 12 pad) */}
+      <td style={{ ...td, padding: '0 12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, minWidth: 0 }}>
           <span
             style={{
@@ -367,44 +318,33 @@ function GroupRow({
 
       {/* col3 — 토큰 점유율 bar + pct */}
       <td style={td}>
-        <DividerStick />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, paddingLeft: 6 }}>
           <MeterBar pct={g.share_pct} fill={tokenScreen.bar.group} />
           <span style={{ ...text.body, color: valueColor }}>{g.share_pct.toFixed(1)}%</span>
         </div>
       </td>
 
       {/* col4/col5 — 일평균 Input / Output */}
-      <td style={num}>
-        <DividerStick />
-        {fmtTokens(g.avg_input)}
-      </td>
-      <td style={num}>
-        <DividerStick />
-        {fmtTokens(g.avg_output)}
-      </td>
+      <td style={num}>{fmtTokens(g.avg_input)}</td>
+      <td style={num}>{fmtTokens(g.avg_output)}</td>
 
       {/* col6 — I:O bar + ratio */}
       <td style={td}>
-        <DividerStick />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, paddingLeft: 12 }}>
           <MeterBar pct={ioBarPct(g.avg_input, g.avg_output)} fill={tokenScreen.bar.group} />
           <span style={{ ...text.body, color: valueColor }}>{ioRatio(g.avg_input, g.avg_output)}</span>
         </div>
       </td>
 
       {/* col7 — 일평균 합계 */}
-      <td style={num}>
-        <DividerStick />
-        {fmtTokens(g.avg_total)}
-      </td>
+      <td style={num}>{fmtTokens(g.avg_total)}</td>
     </tr>
   );
 }
 
 /**
- * 41px child service row (nodes 7104:2816-2896): borderless, name indented to
- * x=106 (child grid 106/586/... — 7104:3566), all text #767D84, #99A8E3 bars.
+ * 41px child service row (nodes 7104:2816-2896): borderless, name text at
+ * x=112 (child grid 106 + pad 6 — 7104:3566), all text #767D84, #99A8E3 bars.
  */
 function ServiceRow({ service: s }: { service: TokenServiceItem; indexInGroup: number }) {
   const td: CSSProperties = {
@@ -415,15 +355,14 @@ function ServiceRow({ service: s }: { service: TokenServiceItem; indexInGroup: n
   };
   const num: CSSProperties = {
     ...td,
-    textAlign: 'right',
-    paddingRight: 20,
+    textAlign: 'center',
     ...text.body,
     color: color.textTertiary,
   };
 
   return (
     <tr>
-      <td colSpan={2} style={{ ...td, paddingLeft: 106 }}>
+      <td colSpan={2} style={{ ...td, paddingLeft: 112 }}>
         <span
           style={{
             ...text.bodyM, // 500/14 #767D84
@@ -438,7 +377,7 @@ function ServiceRow({ service: s }: { service: TokenServiceItem; indexInGroup: n
         </span>
       </td>
       <td style={td}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, paddingLeft: 6 }}>
           <MeterBar pct={s.share_pct} fill={tokenScreen.bar.service} />
           <span style={{ ...text.body, color: color.textTertiary }}>{s.share_pct.toFixed(1)}%</span>
         </div>
@@ -446,7 +385,7 @@ function ServiceRow({ service: s }: { service: TokenServiceItem; indexInGroup: n
       <td style={num}>{fmtTokens(s.avg_input)}</td>
       <td style={num}>{fmtTokens(s.avg_output)}</td>
       <td style={td}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, paddingLeft: 12 }}>
           <MeterBar pct={ioBarPct(s.avg_input, s.avg_output)} fill={tokenScreen.bar.service} />
           <span style={{ ...text.body, color: color.textTertiary }}>
             {ioRatio(s.avg_input, s.avg_output)}

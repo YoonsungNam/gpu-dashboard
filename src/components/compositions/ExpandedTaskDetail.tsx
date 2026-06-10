@@ -11,13 +11,16 @@ import type {
 import TaskTypeBadge, { kindOf } from '../primitives/TaskTypeBadge';
 import RecallEstimateCard from './RecallEstimateCard';
 
-/* v2 expanded-detail palette (nodes 7104:9750-9791 / 7104:11131-11236). */
+/* v2 expanded-detail palette — resource (nodes 7104:9750-9791 / 7104:11131-11236)
+   and overview dense (nodes 7104:10456-10527) KPI value hues differ by spec. */
 const KPI_GOOD_TEXT = '#145C1C';
 const KPI_BAD_TEXT = '#D2362C';
+const KPI_GOOD_TEXT_DENSE = '#239B2F';
+const KPI_BAD_TEXT_DENSE = '#FF4337';
 const BAR_GOOD = '#55C961';
 const BAR_BAD = '#FF4337';
 const UNIT_GOOD_TEXT = '#239B2F';
-const UNIT_BAD_TEXT = '#FF4337';
+const UNIT_BAD_TEXT = '#D2362C'; // sampled 7104:10441 — intentionally ≠ KPI strip red
 
 /** Section heading: 500/14 #3C444B ('활용 지표' / '저활용 회수 예상량' / 'Unit 구성'). */
 const HEADING = { ...text.bodyM, color: color.textTitle } as const;
@@ -67,14 +70,24 @@ export interface ExpandedTaskDetailProps {
   leadCount?: number;
   /** Panel background — overview passes '#F2F6F9', resource default '#F6F8FA'. */
   bg?: string;
+  /**
+   * Overview compact variant (nodes 7104:10456-10527): 68px KPI cards with
+   * 600/16 right-aligned values (#239B2F/#FF4337), 4px bars, 600/20 lead
+   * count, ~30px caption-size Unit 구성 rows. Default (resource, nodes
+   * 7104:9750-9791): 90px cards, 600/24 values (#145C1C/#D2362C), 6px bars,
+   * 41px body-size unit rows.
+   */
+  dense?: boolean;
 }
 
 /**
  * Inline expanded-row detail shared by the Overview and GPU 활용 현황 screens
- * (v2 — Figma Expand frames 7104:9650 / 7104:11131). Renders the 활용 지표
- * strip (separate white 90px cards), the optional 저활용 회수 예상량 gauges,
- * and the Unit 구성 sub-table. Pure presentational; spans the full panel
- * width (caller removes the panel padding via DataTable panelStyle).
+ * (v2 — Figma Expand frames 7104:9650 / 7104:11131; dense overview variant
+ * 7104:10441). Renders the 활용 지표 strip (white cards in a 1px #E4E9ED
+ * outlined strip — 90px total resource / 68px dense), the optional
+ * 저활용 회수 예상량 gauges, and the Unit 구성 sub-table. Pure presentational;
+ * spans the full panel width (caller removes the panel padding via DataTable
+ * panelStyle).
  */
 export default function ExpandedTaskDetail({
   data,
@@ -84,11 +97,24 @@ export default function ExpandedTaskDetail({
   isCritical,
   leadCount,
   bg = '#F6F8FA',
+  dense = false,
 }: ExpandedTaskDetailProps) {
   const task: TaskType = taskType ?? tasks?.[0] ?? '추론';
   const strategic = isStrategic ?? isCritical ?? false;
   const { info, units } = data;
   const lead = leadCount ?? units.reduce((sum, u) => sum + u.gpu_num, 0);
+
+  /* ---- Variant-dependent KPI styles (dense = Overview expand) ---- */
+  const kpiGood = dense ? KPI_GOOD_TEXT_DENSE : KPI_GOOD_TEXT;
+  const kpiBad = dense ? KPI_BAD_TEXT_DENSE : KPI_BAD_TEXT;
+  // Inner card height; +1px strip outline top/bottom = 68 / 90 total.
+  const cardH = dense ? 66 : 88;
+  const kpiValueFont: CSSProperties = dense
+    ? { fontSize: 16, lineHeight: '20px', fontWeight: 600 }
+    : text.metricLg;
+  const leadCountFont: CSSProperties = dense
+    ? { fontSize: 20, lineHeight: '24px', fontWeight: 600 }
+    : text.metricLg;
 
   // 저활용 회수 예상량 — shown on 학습 expands and whenever any basis reclaims.
   const re = info.reclaim_estimate;
@@ -97,22 +123,25 @@ export default function ExpandedTaskDetail({
 
   const unitCols = UNIT_UTIL_COLS[task];
 
-  /* ---- Unit 구성 sub-table cell styles (header 28px, rows 41px) ---- */
-  const th = (first = false): CSSProperties => ({
-    ...text.label,
+  /* ---- Unit 구성 sub-table cell styles ----
+     Unit/모델/수량 left-aligned, util columns centered (7104:11163-11201);
+     resource: 41px body-size rows; dense: ~30px caption-size rows. */
+  const tdVPad = dense ? 8 : 10;
+  const th = (align: 'left' | 'center' = 'center', first = false): CSSProperties => ({
+    ...(dense ? text.caption : text.label),
     color: color.textTertiary,
-    textAlign: first ? 'left' : 'center',
+    textAlign: align,
     padding: first ? '7px 8px 7px 12px' : '7px 8px',
     background: '#FAFBFC',
     borderTop: `1px solid ${color.border}`,
     borderBottom: `1px solid ${color.border}`,
     whiteSpace: 'nowrap',
   });
-  const td = (first = false): CSSProperties => ({
-    ...text.body,
+  const td = (align: 'left' | 'center' = 'center', first = false): CSSProperties => ({
+    ...(dense ? text.caption : text.body),
     color: color.textTitle,
-    textAlign: first ? 'left' : 'center',
-    padding: first ? '10px 8px 10px 12px' : '10px 8px',
+    textAlign: align,
+    padding: first ? `${tdVPad}px 8px ${tdVPad}px 12px` : `${tdVPad}px 8px`,
     borderBottom: `1px solid ${color.border}`,
     verticalAlign: 'middle',
   });
@@ -137,13 +166,23 @@ export default function ExpandedTaskDetail({
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'stretch', gap: 2 }}>
+        {/* 1px #E4E9ED outline + inter-card dividers (gap over border-colored bg) */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'stretch',
+            gap: 1,
+            background: color.border,
+            border: `1px solid ${color.border}`,
+          }}
+        >
           {/* Lead card: count + '장' over '수량(H100)기준', centered */}
           <div
             style={{
               flex: 1,
+              flexBasis: 0,
               minWidth: 0,
-              height: 90,
+              height: cardH,
               boxSizing: 'border-box',
               background: color.cardBg,
               display: 'flex',
@@ -154,10 +193,12 @@ export default function ExpandedTaskDetail({
             }}
           >
             <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 4 }}>
-              <span style={{ ...text.metricLg, color: color.textTitle }}>{lead}</span>
+              <span style={{ ...leadCountFont, color: color.textTitle }}>{lead}</span>
               <span style={{ ...text.body, color: color.textSecondary }}>장</span>
             </span>
-            <span style={{ ...text.caption, color: color.textTertiary }}>수량(H100)기준</span>
+            <span style={{ ...text.caption, color: color.textTertiary }}>
+              {dense ? '수량(H100) 기준' : '수량(H100)기준'}
+            </span>
           </div>
 
           {/* Metric cards: label / value+% / threshold-colored bar */}
@@ -169,26 +210,37 @@ export default function ExpandedTaskDetail({
                 key={def.key}
                 style={{
                   flex: 1,
+                  flexBasis: 0,
                   minWidth: 0,
-                  height: 90,
+                  height: cardH,
                   boxSizing: 'border-box',
                   background: color.cardBg,
-                  padding: '12px 16px',
+                  padding: dense ? '12px' : '12px 20px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                 }}
               >
-                <span style={{ ...text.label, color: color.textTertiary }}>{def.label}</span>
-                <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 4 }}>
-                  <span style={{ ...text.metricLg, color: good ? KPI_GOOD_TEXT : KPI_BAD_TEXT }}>
+                <span style={{ ...(dense ? text.caption : text.label), color: color.textTertiary }}>
+                  {def.label}
+                </span>
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'baseline',
+                    gap: 4,
+                    // Dense: value+% hug the cell's right edge (7104:10470).
+                    justifyContent: dense ? 'flex-end' : 'flex-start',
+                  }}
+                >
+                  <span style={{ ...kpiValueFont, color: good ? kpiGood : kpiBad }}>
                     {value.toFixed(1)}
                   </span>
                   <span style={{ ...text.body, color: color.textSecondary }}>%</span>
                 </span>
                 <div
                   style={{
-                    height: 6,
+                    height: dense ? 4 : 6,
                     borderRadius: radius.pill,
                     background: color.border,
                     overflow: 'hidden',
@@ -218,9 +270,10 @@ export default function ExpandedTaskDetail({
               · 활용률 목표 미달에 따른 회수 대상 과제(회수 수량:목표치 달성 시의 H100 환산 잉여 자원)
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'stretch', gap: 8 }}>
+          {/* Card gap: resource 10 (7104:11137-11159 x-offsets), dense 12 (7104:10610). */}
+          <div style={{ display: 'flex', alignItems: 'stretch', gap: dense ? 12 : 10 }}>
             <RecallEstimateCard basisLabel="GPU Util기준" basis={re.gpu} />
-            <RecallEstimateCard basisLabel="Slot Util 기준" basis={re.slot} />
+            <RecallEstimateCard basisLabel="Slot Util기준" basis={re.slot} />
           </div>
         </div>
       )}
@@ -237,32 +290,36 @@ export default function ExpandedTaskDetail({
             border: `1px solid ${color.border}`,
           }}
         >
+          {/* Fixed 120px 모델/수량/util columns packed after Unit; trailing
+              spacer col absorbs the slack on the right (7104:9658-9705). */}
           <colgroup>
             <col style={{ width: '35%' }} />
             <col style={{ width: 120 }} />
-            <col />
+            <col style={{ width: 120 }} />
             {unitCols.map((c) => (
-              <col key={c.key} />
+              <col key={c.key} style={{ width: 120 }} />
             ))}
+            <col />
           </colgroup>
           <thead>
             <tr>
-              <th style={th(true)}>Unit</th>
-              <th style={th()}>모델</th>
-              <th style={th()}>수량(H100기준)</th>
+              <th style={th('left', true)}>Unit</th>
+              <th style={th('left')}>모델</th>
+              <th style={th('left')}>{dense ? '수량' : '수량(H100기준)'}</th>
               {unitCols.map((c) => (
                 <th key={c.key} style={th()}>
                   {c.label}
                 </th>
               ))}
+              <th style={th()} aria-hidden />
             </tr>
           </thead>
           <tbody>
             {units.map((u) => (
               <tr key={u.unit_id}>
-                <td style={td(true)}>{u.unit_name}</td>
-                <td style={td()}>{u.gpu_model}</td>
-                <td style={td()}>{u.gpu_num}</td>
+                <td style={td('left', true)}>{u.unit_name}</td>
+                <td style={td('left')}>{u.gpu_model}</td>
+                <td style={td('left')}>{u.gpu_num}</td>
                 {unitCols.map((c) => {
                   const v = utilOf(u, c.key);
                   const good = utilLevel(v, c.metric) === 'good';
@@ -271,7 +328,6 @@ export default function ExpandedTaskDetail({
                       key={c.key}
                       style={{
                         ...td(),
-                        ...text.caption,
                         color: good ? UNIT_GOOD_TEXT : UNIT_BAD_TEXT,
                       }}
                     >
@@ -279,6 +335,7 @@ export default function ExpandedTaskDetail({
                     </td>
                   );
                 })}
+                <td style={td()} aria-hidden />
               </tr>
             ))}
           </tbody>

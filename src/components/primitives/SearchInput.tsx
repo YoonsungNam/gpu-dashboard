@@ -19,7 +19,7 @@ export default function SearchInput({
         height={14}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={color.textMuted}
+        stroke={color.textSecondary} // #565E66 — pixel-sampled magnifier strokes
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -43,9 +43,10 @@ export default function SearchInput({
         style={{
           boxSizing: 'border-box',
           width: width ? '100%' : undefined,
-          padding: '6px 28px 6px 10px',
-          border: `1px solid ${color.border}`,
-          borderRadius: radius.sm,
+          height: 28, // Figma search box 200x28 — same height as adjacent buttons
+          padding: '0 28px 0 10px',
+          border: `1px solid ${color.borderStrong}`, // #CCD1D6 (pixel-sampled)
+          borderRadius: radius.cell, // r2 (node 11225:30970)
           background: color.cardBg,
           color: color.textPrimary,
           outline: 'none',

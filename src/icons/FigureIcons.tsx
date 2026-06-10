@@ -111,54 +111,82 @@ export function CaretDownIcon({ size = 16, color = 'currentColor' }: StrokeIconP
 /* 토큰 활용 현황 KPI glyphs (node 7104:3444 'ServiceCount' icon set)     */
 /* ------------------------------------------------------------------ */
 
-/** ① 서비스 그룹 — three small squares + accent plus (node 7104:3447). */
+/**
+ * ① 서비스 그룹 — three #3A4571 squares (top-left / bottom-left / bottom-right)
+ * + a concave 4-point sparkle (#8092DC) in the top-right cell (node 7104:3447,
+ * Union 7104:3451 8x9 fill #8092DC).
+ */
 export function ServiceGroupIcon({ size = 20 }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
       <rect x="2" y="2" width="6" height="6" rx="1" fill="#3A4571" />
-      <rect x="11" y="2" width="6" height="6" rx="1" fill="#3A4571" />
       <rect x="2" y="11" width="6" height="6" rx="1" fill="#3A4571" />
-      <path d="M14 10.5v7M10.5 14h7" stroke="#6471DF" strokeWidth="1.6" strokeLinecap="round" />
+      <rect x="11" y="11" width="6" height="6" rx="1" fill="#3A4571" />
+      <path
+        d="M14 1.5C14.4 4.3 15.2 5.1 18 5.5C15.2 5.9 14.4 6.7 14 9.5C13.6 6.7 12.8 5.9 10 5.5C12.8 5.1 13.6 4.3 14 1.5Z"
+        fill="#8092DC"
+      />
     </svg>
   );
 }
 
-/** ② 서비스 — one solid square + accent plus (node 7104:3459). */
+/**
+ * ② 서비스 — one solid 14x14 #515E94 square with a white concave sparkle
+ * centered inside it (node 7104:3459, Union 7104:3461 fill #F9FAFE).
+ */
 export function ServiceIcon({ size = 20 }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
-      <rect x="2" y="3" width="13" height="13" rx="1.5" fill="#515E94" />
-      <path d="M15.5 11.5v6M12.5 14.5h6" stroke="#6471DF" strokeWidth="1.6" strokeLinecap="round" />
+      <rect x="3" y="3" width="14" height="14" rx="1.5" fill="#515E94" />
+      <path
+        d="M10 5.5C10.4 8.3 11.2 9.1 14 9.5C11.2 9.9 10.4 10.7 10 13.5C9.6 10.7 8.8 9.9 6 9.5C8.8 9.1 9.6 8.3 10 5.5Z"
+        fill="#F9FAFE"
+      />
     </svg>
   );
 }
 
-/** ③ 일평균 토큰 합계 — double sparkle (node 7104:3469). */
+/**
+ * ③ 일평균 토큰 합계 — twin concave sparkles, BOTH #515E94
+ * (node 7104:3469; Unions 7104:3471 / 7104:3474 are the same fill).
+ */
 export function TokenSumIcon({ size = 20 }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
       <path
-        d="M7 2l1.4 3.8L12.2 7 8.4 8.4 7 12.2 5.6 8.4 1.8 7l3.8-1.2L7 2z"
+        d="M7 2C7.5 5.5 8.5 6.5 12 7C8.5 7.5 7.5 8.5 7 12C6.5 8.5 5.5 7.5 2 7C5.5 6.5 6.5 5.5 7 2Z"
         fill="#515E94"
       />
       <path
-        d="M14 9l1.1 3 3 1.1-3 1.1-1.1 3-1.1-3-3-1.1 3-1.1L14 9z"
-        fill="#6471DF"
+        d="M14 9C14.4 11.8 15.2 12.6 18 13C15.2 13.4 14.4 14.2 14 17C13.6 14.2 12.8 13.4 10 13C12.8 12.6 13.6 11.8 14 9Z"
+        fill="#515E94"
       />
     </svg>
   );
 }
 
-/** Funnel glyph for the 등급 필터 button (btn_2ndary icon, 14px). */
+/**
+ * Funnel glyph for the 등급 필터 button (btn_2ndary icon, 14px).
+ * Figma Icon14-Filter is a SOLID filled funnel (union 8x10) — fill, not stroke.
+ */
 export function FilterIcon({ size = 14, color = 'currentColor' }: StrokeIconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 14 14" fill="none">
-      <path
-        d="M1.8 2.5h10.4L8.4 7.3v4.2l-2.8-1.4V7.3L1.8 2.5z"
-        stroke={color}
-        strokeWidth="1.1"
-        strokeLinejoin="round"
-      />
+      <path d="M3 3h8v1.5L8.2 7.5v4L5.8 9.8V7.5L3 4.5V3z" fill={color} />
+    </svg>
+  );
+}
+
+/**
+ * 14x14 square-i info icon for the 지표 정의 ghost button
+ * (Figma Rectangle 881 13x13 r1 outline + 2x2 dot + 2x5 bar, nodes 221:53776-53778).
+ */
+export function InfoIcon({ size = 14, color = '#767D84' }: StrokeIconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 14 14" fill="none">
+      <rect x="0.5" y="0.5" width="13" height="13" rx="1" stroke={color} />
+      <rect x="6" y="3" width="2" height="2" fill={color} />
+      <rect x="6" y="6" width="2" height="5" fill={color} />
     </svg>
   );
 }

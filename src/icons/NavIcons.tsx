@@ -18,12 +18,20 @@ export function LogoMark({ size = 22 }: { size?: number }) {
   );
 }
 
+/**
+ * Window/layout outline glyph (Figma SVG 7104:14119): 13x13 frame minus a top
+ * band and left/right panel holes, drawn with fillRule=evenodd so the holes
+ * stay transparent and the row background shows through.
+ */
 export function OverviewIcon({ size = 16, color = 'currentColor' }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none">
-      <rect x="1.5" y="1.5" width="12" height="3" rx="0.5" fill={color} />
-      <rect x="1.5" y="4.5" width="4" height="9" rx="0.5" fill={color} />
-      <rect x="5.5" y="4.5" width="8" height="9" rx="0.5" fill={color} />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M1.5 1.5H14.5V14.5H1.5V1.5ZM2.75 2.75V5.25H13.25V2.75H2.75ZM2.75 6.5V13.25H6.25V6.5H2.75ZM7.5 6.5V13.25H13.25V6.5H7.5Z"
+        fill={color}
+      />
     </svg>
   );
 }
@@ -42,12 +50,16 @@ export function ResourceIcon({ size = 16, color = 'currentColor' }: IconProps) {
   );
 }
 
+/** Outline 4-point sparkle (Figma Star 7104:14139 reads as a hollow star). */
 export function TokensIcon({ size = 14, color = 'currentColor' }: IconProps) {
   return (
     <svg width={size} height={(size * 15) / 14} viewBox="0 0 14 15" fill="none">
       <path
         d="M7 1C7.27639 1.00006 7.52296 1.17466 7.61426 1.43555L9.18359 5.91992L12.5723 7.28906C12.8309 7.39353 13 7.64487 13 7.92383C13 8.20277 12.8309 8.45413 12.5723 8.55859L9.18359 9.92676L7.61426 14.4121C7.52295 14.673 7.27638 14.8476 7 14.8477C6.72359 14.8477 6.47709 14.673 6.38574 14.4121L4.81543 9.92676L1.42773 8.55859C1.16915 8.45411 1.00002 8.20273 1 7.92383C1 7.64492 1.16915 7.39356 1.42773 7.28906L4.81543 5.91992L6.38574 1.43555C6.47708 1.17466 6.72358 1 7 1Z"
-        fill={color}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.3"
+        strokeLinejoin="round"
       />
     </svg>
   );

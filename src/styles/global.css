@@ -19,6 +19,18 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
+/* <button>/<input>/<select> never inherit the body face on their own —
+   without this the sidebar nav falls back to the UA font. */
+button,
+input,
+select {
+  font-family: inherit;
+}
+/* Figma search placeholder #90969D (inline CSS can't reach ::placeholder). */
+input::placeholder {
+  color: #90969d;
+  opacity: 1;
+}
 
 /* Inline CSS can't express :hover / media queries — a few shared helpers cover
    the interactive states the design needs. Keep this file minimal. */

@@ -62,6 +62,44 @@ function seriesDot(s: TrendSeries, n: number) {
   };
 }
 
+/**
+ * v2 dark tooltip content (node I7104:14218): rgba(40,48,55,0.9) r6 panel,
+ * 8/16 padding, 400/12 #FAFBFC text; un-bulleted date label above bulleted
+ * '• {name}: {value}' rows, with Slot Util listed ABOVE GPU Util (reverse of
+ * the series declaration order — line z-order stays as declared).
+ */
+function TrendTooltip({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: { name?: string | number; value?: string | number }[];
+  label?: string | number;
+}) {
+  if (!active || !payload || payload.length === 0) return null;
+  return (
+    <div
+      style={{
+        background: 'rgba(40,48,55,0.9)',
+        borderRadius: 6,
+        padding: '8px 16px',
+        ...text.caption,
+        color: '#FAFBFC',
+      }}
+    >
+      <div>{typeof label === 'string' ? label.slice(5) : String(label ?? '')}</div>
+      {[...payload].reverse().map((item) => (
+        <div key={String(item.name)}>
+          {`• ${item.name}: ${
+            typeof item.value === 'number' ? item.value.toFixed(1) : item.value
+          }`}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /** Multi-series line/area chart for 사용추이 (usage trend). Legend rendered externally. */
 export default function TrendChart({
   data,
@@ -122,21 +160,7 @@ export default function TrendChart({
         />
 
         {/* v2 dark tooltip: #283037 @ 90%, r6, 8/16 padding, #FAFBFC 400/12 text */}
-        <Tooltip
-          contentStyle={{
-            background: 'rgba(40,48,55,0.9)',
-            border: 'none',
-            borderRadius: 6,
-            padding: '8px 16px',
-            boxShadow: 'none',
-            ...text.caption,
-            color: '#FAFBFC',
-          }}
-          labelStyle={{ ...text.caption, color: '#FAFBFC' }}
-          itemStyle={{ ...text.caption, color: '#FAFBFC', padding: 0 }}
-          labelFormatter={(v) => (typeof v === 'string' ? v.slice(5) : String(v))}
-          cursor={{ stroke: color.borderStrong }}
-        />
+        <Tooltip content={<TrendTooltip />} cursor={{ stroke: color.borderStrong }} />
 
         {series.map((s) =>
           area ? (
@@ -162,7 +186,13 @@ export default function TrendChart({
               strokeWidth={2}
               strokeDasharray={s.dash ? '5 4' : undefined}
               dot={seriesDot(s, n)}
-              activeDot={{ r: 5, strokeWidth: 0, fill: s.activeColor ?? s.color }}
+              // v2 hover: dashed Slot line fills solid in the darkened hue; the solid
+              // GPU line keeps a hollow white dot with a 2px ring (Ellipse 14, 7104:14216).
+              activeDot={
+                s.dash
+                  ? { r: 5, strokeWidth: 0, fill: s.activeColor ?? s.color }
+                  : { r: 5, fill: color.white, stroke: s.activeColor ?? s.color, strokeWidth: 2 }
+              }
             />
           ),
         )}

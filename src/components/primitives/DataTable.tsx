@@ -25,6 +25,9 @@ export interface DataTableProps<T> {
   vPad?: number;
   /** Header band fill (Figma uses #F6F8FA on Overview rank tables, #FAFBFC on 활용 현황). */
   headerBg?: string;
+  /** v2: Overview rank tables draw no line under the header band — pass false there.
+   *  GPU 활용 현황 keeps the 1px #E4E9ED bottom border (default). */
+  headBorderBottom?: boolean;
   /** Width of the leading caret column (v2 활용 현황 uses 42). */
   caretWidth?: number;
   /** Per-cell style override — use for the v2 expanded-row tint (#F3F8FD/#F0F7FC). */
@@ -37,7 +40,7 @@ export interface DataTableProps<T> {
 /** Static stacked sort triangles from the Figma header spec (5×5 each, #B9BBBE). */
 function SortGlyphs() {
   return (
-    <svg width={5} height={10} viewBox="0 0 5 10" aria-hidden style={{ marginLeft: 4, flexShrink: 0 }}>
+    <svg width={5} height={10} viewBox="0 0 5 10" aria-hidden style={{ flexShrink: 0 }}>
       <path d="M2.5 0L5 4H0L2.5 0Z" fill="#B9BBBE" />
       <path d="M2.5 10L0 6H5L2.5 10Z" fill="#B9BBBE" />
     </svg>
@@ -53,6 +56,7 @@ export default function DataTable<T>({
   compact = false,
   vPad: vPadProp,
   headerBg = color.cardBgAlt,
+  headBorderBottom = true,
   caretWidth = 40,
   rowStyle,
   panelStyle,
@@ -66,6 +70,10 @@ export default function DataTable<T>({
 
   const cellBase = {
     padding: `${vPad}px 10px`,
+    // Pin the row height so inline-flex chips can't grow the line box past spec
+    // (Figma datatable-item rows are 40px + 1px border).
+    height: 40,
+    boxSizing: 'border-box' as const,
     ...text.body,
     color: color.textPrimary,
     verticalAlign: 'middle' as const,
@@ -74,10 +82,12 @@ export default function DataTable<T>({
   const headBase = {
     ...text.label,
     color: color.textTertiary,
-    padding: `${vPad}px 10px`,
+    // Header band is shorter than body rows: 7+14lh+7 = 28px content
+    // (Figma header 7104:16602 / 7104:7505) — deliberately decoupled from vPad.
+    padding: '7px 10px',
     background: headerBg,
     borderTop: `1px solid ${color.border}`,
-    borderBottom: `1px solid ${color.border}`,
+    ...(headBorderBottom ? { borderBottom: `1px solid ${color.border}` } : {}),
   };
 
   return (
@@ -91,7 +101,7 @@ export default function DataTable<T>({
       <thead>
         <tr>
           {expandable && <th style={{ ...headBase, width: caretWidth }} />}
-          {columns.map((c) => (
+          {columns.map((c, ci) => (
             <th
               key={c.key}
               style={{
@@ -99,12 +109,21 @@ export default function DataTable<T>({
                 width: c.width,
                 textAlign: c.align ?? 'left',
                 whiteSpace: 'nowrap',
+                // Figma header uses a 32px leading cell + 8px pad, so the first
+                // label sits ~10px LEFT of the body titles (nodes 7104:7507/7508).
+                ...(expandable && ci === 0 ? { paddingLeft: 0 } : {}),
               }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-                {c.header}
-                {c.sortable && <SortGlyphs />}
-              </span>
+              {c.sortable ? (
+                // Label centered in the column, triangles pinned to the cell's
+                // right padding edge (v2 header spec).
+                <span style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
+                  <span style={{ flex: 1, textAlign: c.align ?? 'left' }}>{c.header}</span>
+                  <SortGlyphs />
+                </span>
+              ) : (
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>{c.header}</span>
+              )}
             </th>
           ))}
         </tr>
@@ -155,7 +174,8 @@ export default function DataTable<T>({
                         aria-hidden
                         style={{
                           display: 'inline-flex',
-                          color: color.textSecondary,
+                          // Open-row chevron turns brand blue (7104:10644, sampled #0077C8)
+                          color: isOpen ? '#0077C8' : color.textSecondary,
                           transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
                           transition: 'transform 120ms ease',
                           lineHeight: 0,

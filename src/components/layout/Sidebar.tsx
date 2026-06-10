@@ -17,6 +17,10 @@ const DEV: { key: NavKey; label: string }[] = [
   { key: 'overlay', label: 'Figma 오버레이' },
 ];
 
+// Dev-harness links are not in the Figma design (Frame 2615547) — hide them
+// unless explicitly requested via ?dev so fidelity screenshots match the spec.
+const SHOW_DEV = new URLSearchParams(window.location.search).has('dev');
+
 /** Left navigation — rebuilt from Figma node 7001:47228 ('Aside'). */
 export default function Sidebar({
   active,
@@ -42,10 +46,10 @@ export default function Sidebar({
         style={{
           height: 56,
           flexShrink: 0,
-          padding: '0 20px',
+          padding: '0 0 0 20px', // right pad 0 so the collapse strip sits flush
           display: 'flex',
           alignItems: 'center',
-          gap: 8,
+          gap: 12, // Figma Frame 2615552 gap12.0
           borderBottom: '1px solid rgba(255,255,255,0.2)',
         }}
       >
@@ -53,10 +57,35 @@ export default function Sidebar({
         <span style={{ fontFamily: font.brand, fontWeight: 700, fontSize: 19, color: '#fff' }}>
           GPU Monitor
         </span>
+        {/* LNB collapse strip (Figma 'LNB _Header-scale_button' 7104:14102, 19x55,
+            #334551 left divider + white left-pointing triangle). Display-only. */}
+        <button
+          type="button"
+          aria-label="사이드바 접기"
+          className="gd-clickable"
+          style={{
+            marginLeft: 'auto',
+            alignSelf: 'stretch',
+            width: 19,
+            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 0,
+            background: 'transparent',
+            border: 'none',
+            borderLeft: '1px solid #334551',
+          }}
+        >
+          <svg width={5} height={8} viewBox="0 0 5 8" aria-hidden>
+            <path d="M5 0L0 4L5 8Z" fill="#FFFFFF" />
+          </svg>
+        </button>
       </div>
 
-      {/* Primary nav (44px rows, icon + label, active = #3392D3) */}
-      <nav style={{ display: 'flex', flexDirection: 'column' }}>
+      {/* Primary nav (44px rows, icon + label, active = #3392D3).
+          20px gap below the header + 1px row gaps (Figma 2615553 gap1.0). */}
+      <nav style={{ display: 'flex', flexDirection: 'column', paddingTop: 20, gap: 1 }}>
         {NAV.map(({ key, label, Icon }) => {
           const on = key === active;
           return (
@@ -74,6 +103,7 @@ export default function Sidebar({
                 background: on ? color.sidebarItemActive : 'transparent',
                 cursor: 'pointer',
                 textAlign: 'left',
+                fontFamily: 'inherit',
               }}
             >
               <span
@@ -83,7 +113,7 @@ export default function Sidebar({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: on ? '#fff' : '#C2CAD3',
+                  color: on ? '#fff' : '#E4E9ED', // inactive icon #E4E9ED (nodes 7104:14127-14130)
                 }}
               >
                 <Icon size={16} color="currentColor" />
@@ -94,58 +124,77 @@ export default function Sidebar({
         })}
       </nav>
 
-      {/* Dev-harness links (not in Figma) */}
-      <div
-        style={{
-          margin: '12px 20px 4px',
-          paddingTop: 12,
-          borderTop: '1px solid rgba(255,255,255,0.08)',
-          ...text.tiny,
-          color: 'rgba(255,255,255,0.4)',
-        }}
-      >
-        DEV
-      </div>
-      <nav style={{ display: 'flex', flexDirection: 'column' }}>
-        {DEV.map(({ key, label }) => {
-          const on = key === active;
-          return (
-            <button
-              key={key}
-              className="gd-clickable gd-nav-item"
-              onClick={() => onNavigate(key)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 7,
-                height: 34,
-                padding: '0 20px',
-                border: 'none',
-                background: on ? color.sidebarItemActive : 'transparent',
-                color: '#fff',
-                ...text.caption,
-                cursor: 'pointer',
-                textAlign: 'left',
-              }}
-            >
-              ◆ {label}
-            </button>
-          );
-        })}
-      </nav>
+      {/* Dev-harness links (not in Figma) — only with ?dev in the URL */}
+      {SHOW_DEV && (
+        <>
+          <div
+            style={{
+              margin: '12px 20px 4px',
+              paddingTop: 12,
+              borderTop: '1px solid rgba(255,255,255,0.08)',
+              ...text.tiny,
+              color: 'rgba(255,255,255,0.4)',
+            }}
+          >
+            DEV
+          </div>
+          <nav style={{ display: 'flex', flexDirection: 'column' }}>
+            {DEV.map(({ key, label }) => {
+              const on = key === active;
+              return (
+                <button
+                  key={key}
+                  className="gd-clickable gd-nav-item"
+                  onClick={() => onNavigate(key)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 7,
+                    height: 34,
+                    padding: '0 20px',
+                    border: 'none',
+                    background: on ? color.sidebarItemActive : 'transparent',
+                    color: '#fff',
+                    ...text.caption,
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  ◆ {label}
+                </button>
+              );
+            })}
+          </nav>
+        </>
+      )}
 
       {/* Bottom: version + policy link + user profile */}
       <div
         style={{ marginTop: 'auto', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}
       >
         <div style={{ ...text.caption, color: '#B2B6BB' }}>v0.35(beta)</div>
-        <div style={{ height: 1, background: 'rgba(255,255,255,0.2)' }} />
+        {/* Full-bleed 224x1 divider (Rectangle 13, 7104:14146) — escape the 20px padding */}
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.2)', margin: '0 -20px' }} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 4, ...text.body, color: '#B2B6BB' }}>
-          정책 안내 <span style={{ fontSize: 11 }}>↗</span>
+          정책 안내{' '}
+          {/* Boxed external-link glyph (Icon/Icon8-Arrow_R_up-#Neu15, 7104:14149) */}
+          <svg width={14} height={14} viewBox="0 0 14 14" fill="none" aria-hidden>
+            <path
+              d="M11 7.5V11.5C11 12.0523 10.5523 12.5 10 12.5H2.5C1.94772 12.5 1.5 12.0523 1.5 11.5V4C1.5 3.44772 1.94772 3 2.5 3H6.5"
+              stroke="#B2B6BB"
+            />
+            <path d="M8.5 1.5H12.5V5.5" stroke="#B2B6BB" />
+            <path d="M12.5 1.5L7 7" stroke="#B2B6BB" />
+          </svg>
         </div>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, ...text.body, color: '#DADFE4' }}>
-            김삼성 <span style={{ fontSize: 10 }}>▾</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 /* Frame 2615597 gap2.0 */ }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, ...text.body, color: '#DADFE4' }}>
+            김삼성{' '}
+            {/* Thin stroked chevron (Icon/Icon14-Chevron-S_Down-#d, 7104:14153) */}
+            <svg width={14} height={14} viewBox="0 0 14 14" fill="none" aria-hidden>
+              <path d="M4 6L7 9L10 6" stroke="#DADFE4" strokeWidth="1.2" />
+            </svg>
           </div>
           <div style={{ ...text.caption, color: '#DADFE4' }}>Samsung.Kim@samsung.com</div>
         </div>

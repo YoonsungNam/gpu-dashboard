@@ -21,7 +21,7 @@ export default function TopBar({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 16px',
+        padding: '0 28px', // Figma: 'Overview' left edge x≈29, right pad ≈29
       }}
     >
       <div style={{ display: 'flex', alignItems: 'baseline', gap: space.lg }}>

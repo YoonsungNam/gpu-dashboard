@@ -85,7 +85,7 @@ export default function GpuResourcePage() {
   const columns: DataTableColumn<ProjectRow>[] = useMemo(() => {
     const utilDefs: MetricDef[] =
       tab === '학습' ? [GPU_UTIL, SLOT_UTIL] : [GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL];
-    const cellColor = (expanded?: boolean) => (expanded ? SELECTED_TEXT : color.textTitle);
+    const cellColor = (expanded?: boolean) => (expanded ? SELECTED_TEXT : color.textPrimary);
     return [
       {
         key: 'project_name',
@@ -185,8 +185,10 @@ export default function GpuResourcePage() {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Tabs tabs={tabs} active={tab} onChange={(k) => onTab(k as TabKey)} />
-          <span style={{ ...text.body, color: color.textTertiary }}>
-            {pageRows.length}/{filtered.length}
+          {/* Two-tone count: shown '15' #565E66, '/30' #767D84 (f2_res_toolbar_l). */}
+          <span style={text.body}>
+            <span style={{ color: color.textSecondary }}>{pageRows.length}</span>
+            <span style={{ color: color.textTertiary }}>/{filtered.length}</span>
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: space.md }}>
@@ -223,41 +225,43 @@ export default function GpuResourcePage() {
           )}
           emptyText="조건에 맞는 과제가 없습니다"
         />
-      </Card>
-      </div>
 
-      {/* Pagination (centered) + threshold legend pills (right). */}
-      <div
-        id="res-footer"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr auto 1fr',
-          alignItems: 'center',
-          gap: space.xl,
-        }}
-      >
-        <div />
-        <Pagination page={safePage} pageCount={pageCount} onChange={setPage} />
+        {/* Footer INSIDE the white table card (7104:8535/8554, pad 12/16):
+            pagination (centered) + threshold legend pills (right). */}
         <div
+          id="res-footer"
           style={{
-            display: 'flex',
-            flexDirection: 'row',
+            display: 'grid',
+            gridTemplateColumns: '1fr auto 1fr',
             alignItems: 'center',
             gap: space.xl,
-            justifySelf: 'end',
+            padding: '12px 16px',
           }}
         >
-          <LegendRow title="GPU Util" items={gpuLegend} />
-          <LegendRow title="Slot Util" items={slotLegend} />
+          <div />
+          <Pagination page={safePage} pageCount={pageCount} onChange={setPage} />
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: space.xl,
+              justifySelf: 'end',
+            }}
+          >
+            <LegendRow title="GPU Util" items={gpuLegend} />
+            <LegendRow title="Slot Util" items={slotLegend} />
+          </div>
         </div>
+      </Card>
       </div>
     </div>
   );
 }
 
 /**
- * One labeled threshold scale as borderless fill-only chips
- * (nodes 7104:9630-9648: 48×16 r2, text 400/11, label 400/12 #767D84).
+ * One labeled threshold scale as 48×16 r2 chips with a 1px semantic border
+ * (audited frame 7104:8539-8552; text 400/11, label 400/12 #767D84).
  */
 function LegendRow({
   title,
@@ -282,6 +286,7 @@ function LegendRow({
               boxSizing: 'border-box',
               borderRadius: radius.cell,
               background: it.lvl.bg,
+              border: `1px solid ${it.lvl.border}`,
               color: it.lvl.text,
               ...text.tiny,
               whiteSpace: 'nowrap',

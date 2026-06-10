@@ -35,13 +35,13 @@ const taskKind = (task: TaskType): 'inference' | 'training' =>
   task === '학습' ? 'training' : 'inference';
 
 /**
- * Per-task accent — v2 keeps the accent only on text: `title` for the
- * headerRight "N Projects" (#007492/#5A49A6) and `metric` for the big numbers
+ * Per-task accent — v2 keeps the accent only on the big metric numbers
  * (inference #007492, training #5A4F8C — nodes 7104:14023/14344/14878).
+ * The headerRight "N Projects" counter is neutral #565E66 per the v2 export.
  */
 const TASK_ACCENT = {
-  inference: { title: '#007492', metric: '#007492' },
-  training: { title: '#5A49A6', metric: '#5A4F8C' },
+  inference: { metric: '#007492' },
+  training: { metric: '#5A4F8C' },
 } as const;
 
 /** Card title: real 20px task icon + neutral "Inference / 추론" text (+ optional caption). */
@@ -159,13 +159,15 @@ function UtilRow({
   );
 }
 
-/** Inline WH/AH substat — '· GPU Util WH 55.2 %' (node 7104:13992 Frame 10). */
+/** Inline WH/AH substat — '· GPU Util WH 55.2 %' (node 7104:13992 Frame 10; gaps 6/3 per Frame 9 / Frame 2615571). */
 function SubStat({ label, value }: { label: string; value: number }) {
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: space.xs }}>
+    <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: space.sm }}>
       <span style={{ ...text.body, color: color.textTertiary }}>· {label}</span>
-      <span style={{ ...text.body, color: color.textTitle }}>{value.toFixed(1)}</span>
-      <span style={{ ...text.body, color: color.textSecondary }}>%</span>
+      <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 3 }}>
+        <span style={{ ...text.body, color: color.textTitle }}>{value.toFixed(1)}</span>
+        <span style={{ ...text.body, color: color.textSecondary }}>%</span>
+      </span>
     </span>
   );
 }
@@ -198,7 +200,7 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
             <div style={{ ...text.metricXl, color: TASK_ACCENT[kind].metric }}>
               {num(gpuCountByTask[kpi.task] ?? 0)}
             </div>
-            <div style={{ ...text.label, color: color.textMuted, marginTop: 2 }}>GPUs</div>
+            <div style={{ ...text.label, color: color.textMuted, marginTop: 4 }}>GPUs</div>
           </div>
           <div>
             <div style={{ ...text.metricLg, fontWeight: 500, color: color.textMuted }}>
@@ -207,13 +209,14 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
             <div style={{ ...text.label, color: color.textMuted, marginTop: 2 }}>Projects</div>
           </div>
         </div>
-        {/* Right (v2): two 95px rows (GPU Util / Slot Util) split by a 1px #E4E9ED divider;
-            inference adds the right-aligned WH/AH substat line below the divider. */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 217 }}>
+        {/* Right (v2): two fixed 95px rows (GPU Util / Slot Util) split by a 1px #E4E9ED divider;
+            inference overlays the right-aligned WH/AH substat INSIDE the GPU Util row, above
+            the divider (node 7104:13985 — substat band y=302-321, divider y=336 @2x). */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: 190 }}>
           <div
             style={{
-              flex: 1,
-              minHeight: 95,
+              position: 'relative',
+              height: 95,
               display: 'flex',
               alignItems: 'center',
               borderBottom: `1px solid ${color.border}`,
@@ -222,21 +225,22 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
             <div style={{ width: '100%' }}>
               <UtilRow label={GPU_UTIL.label} value={kpiVal(kpi, GPU_UTIL.key)} metric={GPU_UTIL.metric} />
             </div>
+            {kind === 'inference' && (
+              <div
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                  bottom: 7,
+                  display: 'flex',
+                  gap: space.lg,
+                }}
+              >
+                <SubStat label={GPU_UTIL_WH.label} value={kpiVal(kpi, GPU_UTIL_WH.key)} />
+                <SubStat label={GPU_UTIL_AH.label} value={kpiVal(kpi, GPU_UTIL_AH.key)} />
+              </div>
+            )}
           </div>
-          {kind === 'inference' && (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: space.lg,
-                paddingTop: space.sm,
-              }}
-            >
-              <SubStat label={GPU_UTIL_WH.label} value={kpiVal(kpi, GPU_UTIL_WH.key)} />
-              <SubStat label={GPU_UTIL_AH.label} value={kpiVal(kpi, GPU_UTIL_AH.key)} />
-            </div>
-          )}
-          <div style={{ flex: 1, minHeight: 95, display: 'flex', alignItems: 'center' }}>
+          <div style={{ height: 95, display: 'flex', alignItems: 'center' }}>
             <div style={{ width: '100%' }}>
               <UtilRow label={SLOT_UTIL.label} value={kpiVal(kpi, SLOT_UTIL.key)} metric={SLOT_UTIL.metric} />
             </div>
@@ -313,7 +317,7 @@ function HoldingsSection() {
   }));
 
   return (
-    <Card>
+    <Card padding={space.xxl} style={{ boxShadow: 'none' }}>
       <div
         style={{
           display: 'grid',
@@ -322,15 +326,15 @@ function HoldingsSection() {
           alignItems: 'start',
         }}
       >
-        {/* Left: GPU 분포 legend + magnitude bars (env label above each bar) */}
+        {/* Left: 'GPU 분포' label left, legend right-aligned to the bar edge (node 7104:14440) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: space.xl }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: space.lg }}>
-            <span style={{ fontSize: 12, lineHeight: '14px', fontWeight: 500, color: color.textMuted }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ ...text.bodyM, color: color.textMuted }}>
               GPU 분포
             </span>
             <Legend items={legendItems} size={12} />
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: space.xl }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: space.xxl }}>
             {envRows.map((row) => (
               <div key={row.label} style={{ display: 'flex', flexDirection: 'column', gap: space.sm }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
@@ -352,12 +356,14 @@ function HoldingsSection() {
           </div>
         </div>
 
-        {/* Right: #FAFBFC total panel (node 7001:47398) */}
+        {/* Right: #FAFBFC total panel (node 7001:47398; hairline #F2F6F9 outline, 20px pad,
+            full-bleed divider, heading→rows gap 8, rows gap 6 per 7104:14394) */}
         <div
           style={{
             background: '#FAFBFC',
             borderRadius: radius.sm,
-            padding: space.xl,
+            border: '1px solid #F2F6F9',
+            padding: space.xxl,
             display: 'flex',
             flexDirection: 'column',
             gap: space.lg,
@@ -372,31 +378,34 @@ function HoldingsSection() {
               <span style={{ ...text.bodyM, color: color.textMuted }}>장</span>
             </span>
           </div>
-          <div style={{ height: 1, background: color.border }} />
-          <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 500, color: color.textMuted }}>
-            모델별 합계
-          </span>
+          <div style={{ height: 1, background: color.border, margin: '0 -20px' }} />
           <div style={{ display: 'flex', flexDirection: 'column', gap: space.md }}>
-            {modelAggregates.map((m) => (
-              <div key={m.model} style={{ display: 'flex', alignItems: 'center', gap: space.sm }}>
-                <span
-                  style={{ width: 12, height: 12, borderRadius: 1, background: m.color, flexShrink: 0 }}
-                />
-                <span style={{ ...text.bodyM, color: color.textSecondary, flex: 1 }}>{m.model}</span>
-                <span style={{ ...text.body, color: color.textTertiary }}>{pct(m.share)}</span>
-                <span
-                  style={{
-                    ...text.bodyM,
-                    fontWeight: 500,
-                    color: color.textSecondary,
-                    width: 48,
-                    textAlign: 'right',
-                  }}
-                >
-                  {num(m.count)}
-                </span>
-              </div>
-            ))}
+            <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 500, color: color.textMuted }}>
+              모델별 합계
+            </span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: space.sm }}>
+              {modelAggregates.map((m) => (
+                <div key={m.model} style={{ display: 'flex', alignItems: 'center', gap: space.sm }}>
+                  <span
+                    style={{ width: 12, height: 12, borderRadius: 1, background: m.color, flexShrink: 0 }}
+                  />
+                  {/* v2 (7104:14400/14401): name #767D84 500/14, percent #565E66 400/14 */}
+                  <span style={{ ...text.bodyM, color: color.textTertiary, flex: 1 }}>{m.model}</span>
+                  <span style={{ ...text.body, color: color.textSecondary }}>{pct(m.share)}</span>
+                  <span
+                    style={{
+                      ...text.bodyM,
+                      fontWeight: 500,
+                      color: color.textSecondary,
+                      width: 48,
+                      textAlign: 'right',
+                    }}
+                  >
+                    {num(m.count)}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -488,14 +497,12 @@ const RANK_COLUMNS: DataTableColumn<RankedProject>[] = [
     key: 'gpu_ut',
     header: GPU_UTIL.label,
     align: 'center',
-    sortable: true,
     render: (r) => <UtilBadge value={r.gpu_ut} metric={GPU_UTIL.metric} size="lg" />,
   },
   {
     key: 'slot_ut',
     header: SLOT_UTIL.label,
     align: 'center',
-    sortable: true,
     render: (r) => <UtilBadge value={r.slot_ut} metric={SLOT_UTIL.metric} size="lg" />,
   },
   {
@@ -503,7 +510,7 @@ const RANK_COLUMNS: DataTableColumn<RankedProject>[] = [
     header: '장 수(H100기준)',
     align: 'center',
     render: (r, _i, expanded) => (
-      <span style={{ ...text.body, color: expanded ? SELECTED.text : color.textTitle }}>
+      <span style={{ ...text.body, color: expanded ? SELECTED.text : color.textSecondary }}>
         {num(r.quota)}
       </span>
     ),
@@ -537,6 +544,7 @@ function OccupancyColumn({ task }: { task: TaskType }) {
       taskType={task}
       isStrategic={r.is_critical === 'Y'}
       bg="#F2F6F9"
+      dense
     />
   );
   const rankTable = (rows: RankedProject[], prefix: string) => (
@@ -544,7 +552,7 @@ function OccupancyColumn({ task }: { task: TaskType }) {
       columns={RANK_COLUMNS}
       rows={rows}
       rowKey={(r) => `${prefix}-${r.project_id}`}
-      vPad={14}
+      vPad={13}
       expandedContent={expandRow}
       rowStyle={(_r, _i, expanded) => (expanded ? { background: SELECTED.rowBg } : undefined)}
       panelStyle={{ padding: 0, background: '#F2F6F9' }}
@@ -553,15 +561,18 @@ function OccupancyColumn({ task }: { task: TaskType }) {
 
   return (
     <Card
+      padding={space.xxl}
       title={<TaskCardTitle kind={kind} />}
       headerStyle={TASK_HEADER_STYLE}
       headerRight={
-        <span style={{ ...text.cardTitle, fontWeight: 500, color: TASK_ACCENT[kind].title }}>
-          {num(projectCount)} Projects
+        /* v2 export ground truth: all-gray #565E66 — '32' 500/16 + ' Projects' 400/16 */
+        <span style={{ fontSize: 16, lineHeight: '20px', color: color.textSecondary }}>
+          <span style={{ fontWeight: 500 }}>{num(projectCount)}</span>
+          <span style={{ fontWeight: 400 }}> Projects</span>
         </span>
       }
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: space.xl }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: space.md }}>
           <RankTitle
             title="우수 활용 과제"
@@ -571,7 +582,7 @@ function OccupancyColumn({ task }: { task: TaskType }) {
           {rankTable(topBottomProjects.good, 'good')}
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: space.md }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg }}>
           <RankTitle
             title="저활용 과제"
             count={topBottomProjects.alert.length}
@@ -653,20 +664,23 @@ function TrendSection() {
             gap: space.xl,
           }}
         >
-          <div style={{ display: 'flex', gap: space.xl }}>
+          {/* Frame 10/9/2615571 gaps: 12 between stats, 6 label→value, 3 value→'%' */}
+          <div style={{ display: 'flex', gap: space.lg }}>
             {([
               ['GPU 평균', 'gpu_ut'],
               ['Slot 평균', 'slot_ut'],
             ] as const).map(([lbl, key]) => (
-              <span key={key} style={{ display: 'inline-flex', alignItems: 'baseline', gap: space.xs }}>
+              <span key={key} style={{ display: 'inline-flex', alignItems: 'baseline', gap: space.sm }}>
                 <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 400, color: color.textTertiary }}>
                   {lbl}
                 </span>
-                <span style={{ fontSize: 16, lineHeight: '20px', fontWeight: 500, color: accent }}>
-                  {trendAvg(pts, key)}
-                </span>
-                <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 400, color: color.textSecondary }}>
-                  %
+                <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 3 }}>
+                  <span style={{ fontSize: 16, lineHeight: '20px', fontWeight: 500, color: accent }}>
+                    {trendAvg(pts, key)}
+                  </span>
+                  <span style={{ fontSize: 14, lineHeight: '20px', fontWeight: 400, color: color.textSecondary }}>
+                    %
+                  </span>
                 </span>
               </span>
             ))}

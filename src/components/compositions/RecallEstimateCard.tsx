@@ -1,19 +1,20 @@
 import { color, radius, text } from '../../tokens';
 import type { ReclaimBasis } from '../../mock/types';
 
-const RED = '#D2362C';
+const RED = '#FF4337';
 const BAR_BELOW = '#FF4337';
 const BAR_MET = '#A5ABB1';
 
 const clamp = (v: number) => Math.max(0, Math.min(100, v));
 
 /**
- * 저활용 회수 예상량 target-vs-current card (nodes 7104:11137-11159, 795×139
- * white r4). Top-left basis label 500/12 #767D84; '현재 X%' (value #D2362C
- * when below target) left / '목표 Y%' 400/14 #3C444B right; 7px r100 bar
- * (track #E4E9ED, fill #FF4337 below target / #A5ABB1 met) with an 8×5 ▼
- * #767D84 marker at target%; 1px #E4E9ED divider; footer either
- * '71개 회수(H100 기준) | 120개 → 잔여 49개' (count red) or '이 기준 회수 없음'.
+ * 저활용 회수 예상량 target-vs-current card (nodes 7104:11137-11159 /
+ * 7104:10610-10632, 795×139 white r4). Top-left basis label 400/12 #767D84;
+ * '현재 X%' (value #FF4337 when below target) left / '목표 Y%' 400/12 #3C444B
+ * right; 7px r100 bar (track #E4E9ED, fill #FF4337 below target / #A5ABB1 met)
+ * with an 8×5 ▼ #767D84 marker at target%; 1px #E4E9ED divider; footer either
+ * '71개 회수(H100 기준) | 120개 → 잔여 49개' 14px (count #FF4337, 잔여 #3C444B)
+ * or '이 기준 회수 없음' 400/12.
  */
 export default function RecallEstimateCard({
   basisLabel,
@@ -37,7 +38,7 @@ export default function RecallEstimateCard({
       }}
     >
       {/* Basis caption */}
-      <div style={{ ...text.label, color: color.textTertiary }}>{basisLabel}</div>
+      <div style={{ ...text.caption, color: color.textTertiary }}>{basisLabel}</div>
 
       {/* 현재 / 목표 row */}
       <div
@@ -46,7 +47,7 @@ export default function RecallEstimateCard({
           alignItems: 'center',
           justifyContent: 'space-between',
           marginTop: 10,
-          ...text.body,
+          ...text.caption,
         }}
       >
         <span style={{ color: color.textTertiary }}>
@@ -103,11 +104,11 @@ export default function RecallEstimateCard({
           </span>
           <span style={{ width: 1, height: 12, background: '#2F363C', margin: '0 8px', flexShrink: 0 }} />
           <span>
-            {basis.total_count}개 → 잔여 <span style={{ color: color.textPrimary }}>{basis.remaining_count}개</span>
+            {basis.total_count}개 → 잔여 <span style={{ color: color.textTitle }}>{basis.remaining_count}개</span>
           </span>
         </div>
       ) : (
-        <div style={{ ...text.body, color: color.textSecondary }}>이 기준 회수 없음</div>
+        <div style={{ ...text.caption, color: color.textSecondary }}>이 기준 회수 없음</div>
       )}
     </div>
   );

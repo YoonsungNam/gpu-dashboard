@@ -4,8 +4,8 @@ import { utilColors, utilLevel, type UtilMetric } from '../../lib/util';
 /**
  * Threshold-colored utilization chip. Color depends on the metric, because
  * GPU Util and Slot Util use different cutoffs (see lib/util.ts).
- * v2 sizes: 'sm' = table row chips (400/12, r2 — GPU 활용 현황 rows);
- * 'lg' = Overview rank-table badges (~60×28, 600/14, r4, bad bg #FFE3E1).
+ * v2 sizes: 'sm' = table row chips (400/12, r2, 60px wide — GPU 활용 현황 rows);
+ * 'lg' = Overview rank-table badges (60×22, 600/12, r2, bad bg #FFE3E1).
  */
 export default function UtilBadge({
   value,
@@ -25,15 +25,15 @@ export default function UtilBadge({
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        minWidth: lg ? 60 : 48,
-        padding: lg ? '4px 10px' : '2px 8px',
-        borderRadius: lg ? radius.sm : radius.cell,
+        minWidth: 60, // both sizes measure 60px wide in the v2 rasters
+        padding: lg ? '2px 10px' : '2px 8px',
+        borderRadius: radius.cell,
         // lg 'bad' uses the lighter #FFE3E1 sampled on the v2 Overview badges.
         background: lg && lvl === 'bad' ? '#FFE3E1' : c.bg,
         border: `1px solid ${c.border}`,
         color: c.text,
-        fontSize: lg ? 14 : 12,
-        lineHeight: lg ? '18px' : '14px',
+        fontSize: 12,
+        lineHeight: lg ? '16px' : '14px',
         fontWeight: lg ? 600 : 400,
         whiteSpace: 'nowrap',
       }}

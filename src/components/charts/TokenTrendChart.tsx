@@ -30,7 +30,8 @@ const TICK = { fontSize: 12, fill: color.textSecondary, fontFamily: font.family 
 export default function TokenTrendChart({
   rows,
   series,
-  title = '그룹 내 상위 5개 서비스 · 일별 토큰 추이',
+  // Double space after '내' matches TEXT node 7104:4069 exactly.
+  title = '그룹 내  상위 5개 서비스 · 일별 토큰 추이',
 }: TokenTrendChartProps) {
   const lines = series.slice(0, 5);
   return (
@@ -38,7 +39,9 @@ export default function TokenTrendChart({
       style={{
         background: tokenScreen.selected.rowBg, // #F3F8FD
         height: 390,
-        padding: '20px 88px',
+        // 19px bottom pad + 1px border keeps the band at exactly 390 (border-box).
+        padding: '20px 88px 19px',
+        borderBottom: '1px solid #ECF1F5', // band bottom separator (7104:3960)
       }}
     >
       <div
@@ -46,6 +49,7 @@ export default function TokenTrendChart({
           height: 350,
           background: color.white,
           borderRadius: 4,
+          border: '1px solid #ECF1F5', // inner card outline (Rectangle 3473606)
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
@@ -58,7 +62,7 @@ export default function TokenTrendChart({
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: 16,
-            padding: '20px 24px 8px',
+            padding: '20px 20px 8px',
           }}
         >
           <span style={{ ...text.bodyM, color: color.textTertiary }}>{title}</span>
@@ -84,9 +88,6 @@ export default function TokenTrendChart({
           </div>
         </div>
 
-        {/* Hairline under the header (node 7104:3960). */}
-        <div aria-hidden style={{ height: 1, background: '#ECF1F5' }} />
-
         <div style={{ flex: 1, padding: '12px 24px 14px', minHeight: 0 }}>
           <ResponsiveContainer width="100%" height={275}>
             <LineChart data={rows} margin={{ top: 6, right: 16, bottom: 0, left: 0 }}>
@@ -108,7 +109,7 @@ export default function TokenTrendChart({
                 tick={TICK}
                 tickLine={false}
                 axisLine={false}
-                width={36}
+                width={48}
               />
 
               {/* White tooltip card per the build spec (#E4E9ED border, caption text). */}
@@ -136,6 +137,8 @@ export default function TokenTrendChart({
                   name={s.service_name}
                   stroke={tokenScreen.series[i]}
                   strokeWidth={2}
+                  // No mount animation — series must paint on first frame.
+                  isAnimationActive={false}
                   // Hollow 8px markers on EVERY point (Ellipse 27-40 per series).
                   dot={{ r: 4, fill: color.white, stroke: tokenScreen.series[i], strokeWidth: 2 }}
                   activeDot={{ r: 5 }}
