@@ -194,6 +194,20 @@ export function policyLevel(
   return 'warn';
 }
 
+/**
+ * 용도의 저활용 규칙 조건 목록 — '저활용 회수 예상량' 게이지 구성용.
+ * 게이지의 목표값 = 그 지표의 저활용 조건 경계값 (이를 넘어서면 기준 탈출).
+ * 예: 생산시스템 연계는 GPU Util 5% · Slot Util 75%, 일반업무 등은
+ * GPU Util WH 30% · Slot Util 75% — 지표 정의 패널의 임계 기준과 항상 일치.
+ */
+export interface ReclaimCond extends GradeCond {
+  label: string;
+}
+export function reclaimConds(task: TaskType, purpose: string): ReclaimCond[] {
+  const rule = GRADE_POLICY[task].reclaim[purpose] ?? GRADE_POLICY[task].reclaim['기타'];
+  return rule ? rule.conds.map((c) => ({ ...c, label: METRIC_LABEL[c.metric] })) : [];
+}
+
 /** 지표 정의 패널의 임계 기준 표 한 칸 — null이면 그 구간이 정의되지 않음('—'). */
 export interface PolicyBand {
   metric: GradeMetric;

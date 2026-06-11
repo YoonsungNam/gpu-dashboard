@@ -140,8 +140,8 @@ export default function ExpandedTaskDetail({
   const re = info.reclaim_estimate;
   const showRecall =
     showReclaim !== undefined
-      ? showReclaim && !!re
-      : !!re && (task === '학습' || re.gpu.reclaim_count > 0 || re.slot.reclaim_count > 0);
+      ? showReclaim && !!re?.length
+      : !!re?.length && (task === '학습' || re.some((x) => x.basis.reclaim_count > 0));
 
   const unitCols = UNIT_UTIL_COLS[task];
 
@@ -291,13 +291,15 @@ export default function ExpandedTaskDetail({
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
             <span style={HEADING}>저활용 회수 예상량</span>
             <span style={{ ...text.caption, color: color.textTertiary }}>
-              · 활용률 목표 미달에 따른 회수 대상 과제(회수 수량:목표치 달성 시의 H100 환산 잉여 자원)
+              · 목표 = 이 과제 용도의 저활용 기준 경계('지표 정의' 임계 기준과 동일) · 회수 수량 = 목표 달성 시의 H100 환산 잉여 자원
             </span>
           </div>
-          {/* Card gap: resource 10 (7104:11137-11159 x-offsets), dense 12 (7104:10610). */}
+          {/* 게이지 = 용도별 저활용 규칙의 조건들 (지표·목표값이 용도마다 다름).
+              Card gap: resource 10 (7104:11137-11159 x-offsets), dense 12 (7104:10610). */}
           <div style={{ display: 'flex', alignItems: 'stretch', gap: dense ? 12 : 10 }}>
-            <RecallEstimateCard basisLabel="GPU Util기준" basis={re.gpu} />
-            <RecallEstimateCard basisLabel="Slot Util 기준" basis={re.slot} />
+            {re.map((item) => (
+              <RecallEstimateCard key={item.metric} basisLabel={item.label} basis={item.basis} />
+            ))}
           </div>
         </div>
       )}

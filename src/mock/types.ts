@@ -79,6 +79,17 @@ export interface ReclaimBasis {
   remaining_count: number;
 }
 
+/**
+ * 회수 게이지 1개 — 기준 지표와 목표값은 (태스크 × 용도)의 저활용 규칙에서
+ * 파생된다 (예: 생산시스템 연계 → GPU Util 목표 5%, 일반업무 등 → GPU Util WH 30%).
+ */
+export interface ReclaimEstimateItem {
+  metric: 'gpu' | 'wh' | 'slot';
+  /** 게이지 제목 (예: 'GPU Util WH 기준'). */
+  label: string;
+  basis: ReclaimBasis;
+}
+
 /** GET /api/project/units?project_id=… */
 export interface ProjectUnitInfo {
   project_name: string;
@@ -90,7 +101,7 @@ export interface ProjectUnitInfo {
   gpu_ut_working?: number;
   gpu_ut_nonworking?: number;
   /** v2: feeds the '저활용 회수 예상량' gauges in the expanded detail. */
-  reclaim_estimate?: { gpu: ReclaimBasis; slot: ReclaimBasis };
+  reclaim_estimate?: ReclaimEstimateItem[];
 }
 export interface ProjectUnit {
   unit_id: string;

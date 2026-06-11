@@ -19,7 +19,7 @@ import type {
   UtilTrendPoint,
   YN,
 } from './types';
-import { gradeOf } from '../lib/gradePolicy';
+import { gradeOf, reclaimConds } from '../lib/gradePolicy';
 
 /* ---- tiny deterministic RNG (mulberry32) ---- */
 function rng(seed: number) {
@@ -286,11 +286,14 @@ export function getProjectUnits(
       gpu_ut: u.gpu,
       gpu_ut_working: u.wh,
       gpu_ut_nonworking: u.ah,
-      // Same window means as the row/KPI strip (gpu target 30, slot target 80).
-      reclaim_estimate: {
-        gpu: reclaimBasis(u.gpu, 30, p.quota),
-        slot: reclaimBasis(u.slot, 80, p.quota),
-      },
+      // 회수 게이지 = 이 과제 (태스크 × 용도)의 저활용 규칙 조건들. 목표값은
+      // 각 조건의 경계값이라 지표 정의 패널의 임계 기준(빨강 구간)과 항상 일치
+      // (생산시스템 연계 GPU 5% · 일반업무 등 GPU Util WH 30% · Slot 공통 75% 등).
+      reclaim_estimate: reclaimConds(task, p.purpose).map((c) => ({
+        metric: c.metric,
+        label: `${c.label} 기준`,
+        basis: reclaimBasis(u[c.metric], c.value, p.quota),
+      })),
     },
     units,
   };
