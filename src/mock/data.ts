@@ -36,9 +36,11 @@ const round1 = (n: number) => Math.round(n * 10) / 10;
 
 const DIVISIONS = ['AI센터', 'DX', 'S.LSI', 'SAIT', '글로벌 제조&인프라총괄', '메모리'];
 const IMPORTANCE = ['전략', '핵심', '일반'];
-// 용도 — 학습계(모델 학습/모델 개발) + 추론계(생산시스템 연계/일반); 등급 정책의 키와 1:1.
+// 용도 — 학습계(모델 학습/모델 개발) + 추론계(일반업무/생산시스템 연계/서비스테스트).
+// 등급 정책(lib/gradePolicy.ts)의 reclaim 키와 연동: 생산시스템 연계는 전용 규칙,
+// 나머지 추론 용도는 '기타' 폴백 규칙을 따른다.
 const TRAIN_PURPOSES = ['모델 학습', '모델 개발'];
-const INFER_PURPOSES = ['생산시스템 연계', '일반'];
+const INFER_PURPOSES = ['일반업무', '생산시스템 연계', '서비스테스트'];
 const PURPOSES = [...TRAIN_PURPOSES, ...INFER_PURPOSES];
 const GPU_MODELS = [
   'H100', 'A100', 'V100', 'H200', 'P100', 'P40', 'B300', 'RTX Pro 6000', 'MI355X',

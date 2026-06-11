@@ -43,7 +43,7 @@ export const GRADE_POLICY: Record<TaskType, TaskGradePolicy> = {
           { metric: 'slot', op: '<=', value: 75 },
         ],
       },
-      // 일반(기타): GPU Util WH < 30% or Slot Util ≤ 75%
+      // 그 외 추론 용도(일반업무·서비스테스트): GPU Util WH < 30% or Slot Util ≤ 75%
       기타: {
         combine: 'or',
         conds: [
@@ -147,6 +147,6 @@ export function goodLabel(task: TaskType): string {
 /** Overview 점검 카드 캡션: 용도별 저활용 기준 ('기타' → '일반' 표기). */
 export function reclaimLabel(task: TaskType): string {
   return Object.entries(GRADE_POLICY[task].reclaim)
-    .map(([purpose, rule]) => `${purpose === '기타' ? '일반' : purpose}: ${ruleLabel(rule)}`)
+    .map(([purpose, rule]) => `${purpose === '기타' ? '일반업무 등' : purpose}: ${ruleLabel(rule)}`)
     .join(', ');
 }

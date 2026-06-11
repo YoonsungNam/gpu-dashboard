@@ -1,0 +1,21 @@
+import { chromium } from 'playwright';
+const port = process.argv[2] || '5173';
+const b = await chromium.launch({ args: ['--no-sandbox','--disable-setuid-sandbox','--disable-gpu'] });
+const ctx = await b.newContext({ viewport: { width: 1920, height: 1300 }, deviceScaleFactor: 1 });
+const p = await ctx.newPage();
+await p.goto(`http://localhost:${port}/?screen=resource`, { waitUntil: 'domcontentloaded' });
+await p.waitForLoadState('networkidle').catch(()=>{});
+await p.waitForTimeout(1300);
+const cardW = async () => (await p.locator('#res-table').boundingBox())?.width;
+const before = await cardW();
+await p.locator('aside button[aria-label*="접기"]').click(); await p.waitForTimeout(500);
+const after = await cardW();
+console.log(`content width: expanded=${before}px → collapsed=${after}px (+${after-before})`);
+const main = await p.locator('main').boundingBox();
+const card = await p.locator('#res-table').boundingBox();
+console.log(`left margin=${(card.x - main.x).toFixed(0)}px right margin=${(main.x + main.width - card.x - card.width).toFixed(0)}px (guide: 28)`);
+await p.screenshot({ path: 'design/shots/v3/r_collapsed_fluid.png', clip: { x: 0, y: 0, width: 1920, height: 700 } });
+// purposes on 추론 tab
+const purposes = [...new Set((await p.locator('#res-table tbody').innerText()).match(/일반업무|생산시스템 연계|서비스테스트|모델 학습|모델 개발/g))];
+console.log('추론탭 용도 values:', purposes.join(', '));
+await b.close().catch(()=>{});

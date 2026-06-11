@@ -242,7 +242,7 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
                   <div key={purpose} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <GradeBadge grade="저활용" />
                     <span style={{ ...text.bodyM, color: color.textTitle, width: 104 }}>
-                      {purpose === '기타' ? '일반(기타)' : purpose}
+                      {purpose === '기타' ? '일반업무 등' : purpose}
                     </span>
                     <span style={{ ...text.body, color: color.textSecondary }}>{ruleLabel(rule)}</span>
                   </div>
