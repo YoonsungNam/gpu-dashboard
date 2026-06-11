@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import { color, radius, text } from '../../tokens';
-import { utilLevel, type UtilMetric } from '../../lib/util';
+import { policyLevel, type PolicyLevel, type PolicyMetric } from '../../lib/gradePolicy';
 import { GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL, type MetricDef } from '../../lib/labels';
 import type {
   ProjectUnit,
@@ -17,8 +17,11 @@ const KPI_GOOD_TEXT = '#145C1C';
 const KPI_BAD_TEXT = '#D2362C';
 const KPI_GOOD_TEXT_DENSE = '#239B2F';
 const KPI_BAD_TEXT_DENSE = '#FF4337';
+const KPI_WARN_TEXT = '#D59638'; // 중간(둘 다 아님) — 점검 카드 warn 숫자색과 동일
 const BAR_GOOD = '#55C961';
+const BAR_WARN = '#FFC46B';
 const BAR_BAD = '#FF4337';
+const BAR_NONE = '#CCD1D6'; // 판정 미사용 지표(GPU AH 등)의 중립 바
 const UNIT_GOOD_TEXT = '#239B2F';
 const UNIT_BAD_TEXT = '#D2362C'; // sampled 7104:10441 — intentionally ≠ KPI strip red
 
@@ -42,13 +45,13 @@ const KPI_METRICS: Record<TaskType, MetricDef[]> = {
 interface UnitColDef {
   key: string;
   label: string;
-  metric: UtilMetric;
+  metric: PolicyMetric;
 }
 const UNIT_UTIL_COLS: Record<TaskType, UnitColDef[]> = {
   추론: [
     { key: 'gpu_ut', label: 'GPU', metric: 'gpu' },
-    { key: 'gpu_ut_working', label: 'GPU WH', metric: 'gpu' },
-    { key: 'gpu_ut_nonworking', label: 'GPU AH', metric: 'gpu' },
+    { key: 'gpu_ut_working', label: 'GPU WH', metric: 'wh' },
+    { key: 'gpu_ut_nonworking', label: 'GPU AH', metric: 'ah' },
     { key: 'slot_ut', label: 'Slot', metric: 'slot' },
   ],
   학습: [
@@ -115,6 +118,14 @@ export default function ExpandedTaskDetail({
   /* ---- Variant-dependent KPI styles (dense = Overview expand) ---- */
   const kpiGood = dense ? KPI_GOOD_TEXT_DENSE : KPI_GOOD_TEXT;
   const kpiBad = dense ? KPI_BAD_TEXT_DENSE : KPI_BAD_TEXT;
+  // (태스크 × 이 과제의 용도) 등급 규칙을 지표 단위로 평가한 색 — 행/배지와 동일 기준.
+  const lvlOf = (metric: PolicyMetric, v: number) => policyLevel(task, info.purpose, metric, v);
+  const kpiText = (lvl: PolicyLevel) =>
+    lvl === 'good' ? kpiGood : lvl === 'bad' ? kpiBad : lvl === 'warn' ? KPI_WARN_TEXT : color.textTitle;
+  const barFill = (lvl: PolicyLevel) =>
+    lvl === 'good' ? BAR_GOOD : lvl === 'bad' ? BAR_BAD : lvl === 'warn' ? BAR_WARN : BAR_NONE;
+  const unitText = (lvl: PolicyLevel) =>
+    lvl === 'good' ? UNIT_GOOD_TEXT : lvl === 'bad' ? UNIT_BAD_TEXT : lvl === 'warn' ? KPI_WARN_TEXT : color.textTitle;
   // Inner card height; +1px strip outline top/bottom = 68 / 90 total.
   const cardH = dense ? 66 : 88;
   const kpiValueFont: CSSProperties = dense
@@ -217,7 +228,7 @@ export default function ExpandedTaskDetail({
           {/* Metric cards: label / value+% / threshold-colored bar */}
           {KPI_METRICS[task].map((def) => {
             const value = utilOf(info, def.key);
-            const good = utilLevel(value, def.metric, task) === 'good';
+            const lvl = lvlOf(def.metric, value);
             return (
               <div
                 key={def.key}
@@ -246,7 +257,7 @@ export default function ExpandedTaskDetail({
                     justifyContent: dense ? 'flex-end' : 'flex-start',
                   }}
                 >
-                  <span style={{ ...kpiValueFont, color: good ? kpiGood : kpiBad }}>
+                  <span style={{ ...kpiValueFont, color: kpiText(lvl) }}>
                     {value.toFixed(1)}
                   </span>
                   <span style={{ ...text.body, color: color.textSecondary }}>%</span>
@@ -264,7 +275,7 @@ export default function ExpandedTaskDetail({
                       width: `${clamp(value)}%`,
                       height: '100%',
                       borderRadius: radius.pill,
-                      background: good ? BAR_GOOD : BAR_BAD,
+                      background: barFill(lvl),
                     }}
                   />
                 </div>
@@ -313,7 +324,8 @@ export default function ExpandedTaskDetail({
           <colgroup>
             <col style={{ width: dense ? undefined : '35%' }} />
             {task !== '학습' && <col style={{ width: dense ? 90 : 120 }} />}
-            <col style={{ width: dense ? 72 : 120 }} />
+            {/* dense 학습은 '수량(H100 기준)' 헤더(≈89px)가 72px 셀을 넘치므로 넓힘. */}
+            <col style={{ width: dense ? (task === '학습' ? 96 : 72) : 120 }} />
             {unitCols.map((c) => (
               <col key={c.key} style={{ width: dense ? 72 : 120 }} />
             ))}
@@ -340,13 +352,12 @@ export default function ExpandedTaskDetail({
                 <td style={td('left')}>{u.gpu_num}</td>
                 {unitCols.map((c) => {
                   const v = utilOf(u, c.key);
-                  const good = utilLevel(v, c.metric, task) === 'good';
                   return (
                     <td
                       key={c.key}
                       style={{
                         ...td(),
-                        color: good ? UNIT_GOOD_TEXT : UNIT_BAD_TEXT,
+                        color: unitText(lvlOf(c.metric, v)),
                       }}
                     >
                       {v.toFixed(1)}%

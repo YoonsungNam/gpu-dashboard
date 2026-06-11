@@ -41,7 +41,6 @@ const IMPORTANCE = ['전략', '핵심', '일반'];
 // 나머지 추론 용도는 '기타' 폴백 규칙을 따른다.
 const TRAIN_PURPOSES = ['모델 학습', '모델 개발'];
 const INFER_PURPOSES = ['일반업무', '생산시스템 연계', '서비스테스트'];
-const PURPOSES = [...TRAIN_PURPOSES, ...INFER_PURPOSES];
 const GPU_MODELS = [
   'H100', 'A100', 'V100', 'H200', 'P100', 'P40', 'B300', 'RTX Pro 6000', 'MI355X',
 ];
@@ -77,45 +76,41 @@ export const DEFAULT_FILTERS: GlobalFilters = {
   taskClass: '전체',
 };
 
-/** The 28-day fact window every aggregate derives from. */
+/** The 28-day fact window every aggregate derives from. 2026-05-04 = 월요일 —
+ *  요일 인덱스 d%7 (5·6 = 토·일)이 주중/주말 사용 패턴을 만든다. */
 export const DAYS = 28;
 export const DATES = Array.from({ length: DAYS }, (_, d) => `2026-05-${String(4 + d).padStart(2, '0')}`);
+const DOW = (d: number) => d % 7;
+const IS_WEEKEND = (d: number) => DOW(d) >= 5;
 
 const mean = (xs: number[]) => (xs.length ? xs.reduce((s, x) => s + x, 0) / xs.length : 0);
 const tail = <T,>(xs: T[], n: number) => xs.slice(Math.max(0, xs.length - n));
 
-/* ---- GET /api/gpu-count-by-task ---- */
-export const gpuCountByTask: GpuCountByTask = { 추론: 1842, 학습: 576 };
-
 /* ---- GET /api/projects ----
-   Sized so that per-task counts MATCH the Overview KPI cards exactly:
-   81 dual-task + 766 추론-only + 153 학습-only → 추론 847 · 학습 234 (총 1,000).
+   Sized per 2026-06-11 운영 피드백: 추론 50개 내외 · 학습 80개 내외.
+   탭별 용도가 겹치지 않도록 듀얼(추론+학습) 과제 없이 51 추론 + 79 학습 (총 130):
+   추론 탭 용도 = 일반업무/생산시스템 연계/서비스테스트만, 학습 탭 = 모델 학습/모델 개발만.
    The first 24 keep the familiar base names; later rows get a numeric suffix.
-   Grade comes from the shared purpose-aware rule in lib/util.ts. */
-const DUAL_TASK = 81;
-const INFERENCE_ONLY = 766;
-const TRAINING_ONLY = 153;
+   Grade comes from the shared purpose-aware rule in lib/gradePolicy.ts. */
+const INFERENCE_ONLY = 51;
+const TRAINING_ONLY = 79;
 
 export const projects: ProjectRow[] = Array.from(
-  { length: DUAL_TASK + INFERENCE_ONLY + TRAINING_ONLY },
+  { length: INFERENCE_ONLY + TRAINING_ONLY },
   (_, i) => {
     const r = rng(1000 + i);
-    const slot = round1(20 + r() * 78);
-    const gpu = round1(8 + r() * 88);
-    const tasks: TaskType[] =
-      i < DUAL_TASK ? ['추론', '학습'] : i < DUAL_TASK + INFERENCE_ONLY ? ['추론'] : ['학습'];
+    // Slot(할당 점유)은 통상 GPU Util(실사용)보다 훨씬 높다: slot 62-98% vs 추론 GPU 6-64%.
+    const slot = round1(62 + r() * 36);
+    const gpu = round1(6 + r() * 58);
+    const tasks: TaskType[] = i < INFERENCE_ONLY ? ['추론'] : ['학습'];
     const base = PROJECT_NAMES[i % PROJECT_NAMES.length];
     const name =
       i < PROJECT_NAMES.length
         ? base
         : `${base} ${String(Math.floor(i / PROJECT_NAMES.length)).padStart(2, '0')}`;
-    // Task-affine 용도: 추론 전용 → 추론계, 학습 전용 → 학습계, 듀얼 → 전체 풀.
-    const purpose =
-      i < DUAL_TASK
-        ? pick(r, PURPOSES)
-        : i < DUAL_TASK + INFERENCE_ONLY
-          ? pick(r, INFER_PURPOSES)
-          : pick(r, TRAIN_PURPOSES);
+    // Task-affine 용도 (2026-06-11 피드백): 추론 → 일반업무/생산시스템 연계/서비스테스트,
+    // 학습 → 모델 학습/모델 개발. 탭과 용도 분류가 1:1로 대응한다.
+    const purpose = i < INFERENCE_ONLY ? pick(r, INFER_PURPOSES) : pick(r, TRAIN_PURPOSES);
     return {
       project_id: `PRJ${String(i + 1).padStart(4, '0')}`,
       project_name: name,
@@ -124,11 +119,15 @@ export const projects: ProjectRow[] = Array.from(
       business_importance: pick(r, IMPORTANCE),
       is_critical: (r() > 0.7 ? 'Y' : 'N') as YN,
       user_id: pick(r, ['hong.gil.dong', 'kim.cs', 'lee.yh', 'park.jm', 'choi.sw']),
-      quota: pick(r, [16, 32, 64, 128, 256]),
+      // 총 GPU 수량도 과제 수 스케일에 맞춤: 추론 전용 4-24장, 학습 관여 8-48장
+      // (전 과제 합계가 보유 2,941장 안에 들어온다).
+      quota: pick(r, tasks.includes('학습') ? [8, 16, 32, 48] : [4, 8, 16, 24]),
       inference_gpu_ut: gpu,
       inference_gpu_ut_working: round1(Math.min(100, gpu + 8)),
       inference_gpu_ut_nonworking: round1(Math.max(0, gpu - 16)),
-      training_gpu_ut: round1(Math.max(0, Math.min(100, gpu + (r() - 0.5) * 24))),
+      // 학습 GPU Util은 추론보다 높은 분포(18-88%)이되 Slot보다는 항상 낮게 —
+      // 'Slot Util ≫ GPU Util' 통상 관계가 어떤 필터 조합에서도 역전되지 않는다.
+      training_gpu_ut: round1(Math.min(18 + r() * 70, slot - 4)),
       slot_ut: slot,
       member_tasks: tasks,
       grade: gradeOf(tasks[0], purpose, {
@@ -151,16 +150,26 @@ export const projectDaily: Record<string, { gpu: number[]; train: number[]; slot
   Object.fromEntries(
     projects.map((p, i) => {
       const r = rng(50_000 + i * 11);
+      // 주말 추론 사용률은 주중의 42-58% 수준으로 가라앉고, 주중은 수요일쯤
+      // 살짝 정점(±5%)을 찍는다. 학습은 연속 수행이라 주말 영향이 작고(-7%),
+      // Slot(할당)은 주말에도 거의 그대로 점유된 채 유지된다.
+      const weekendDip = 0.42 + r() * 0.16;
+      const weekday = (d: number, dip: number) =>
+        IS_WEEKEND(d) ? dip : 1 + 0.05 * Math.sin(((DOW(d) + 1) / 5) * Math.PI);
       const wave = (base: number, d: number, amp: number, phase: number) =>
-        clampPct(base + (r() - 0.5) * amp + Math.sin((d + phase) / 3.1) * (amp / 3));
+        base + (r() - 0.5) * amp + Math.sin((d + phase) / 3.1) * (amp / 3);
       return [
         p.project_id,
         {
-          gpu: Array.from({ length: DAYS }, (_, d) => wave(p.inference_gpu_ut, d, 16, i % 7)),
-          train: Array.from({ length: DAYS }, (_, d) =>
-            wave(p.training_gpu_ut ?? p.inference_gpu_ut, d, 18, (i + 3) % 7),
+          gpu: Array.from({ length: DAYS }, (_, d) =>
+            clampPct(wave(p.inference_gpu_ut, d, 14, i % 7) * weekday(d, weekendDip)),
           ),
-          slot: Array.from({ length: DAYS }, (_, d) => wave(p.slot_ut, d, 12, (i + 5) % 7)),
+          train: Array.from({ length: DAYS }, (_, d) =>
+            clampPct(wave(p.training_gpu_ut ?? p.inference_gpu_ut, d, 16, (i + 3) % 7) * (IS_WEEKEND(d) ? 0.93 : 1)),
+          ),
+          slot: Array.from({ length: DAYS }, (_, d) =>
+            clampPct(wave(p.slot_ut, d, 9, (i + 5) % 7) * (IS_WEEKEND(d) ? 0.985 : 1)),
+          ),
         },
       ];
     }),
@@ -200,6 +209,8 @@ export function getKpiByTask(f: GlobalFilters): KpiByTask[] {
     const u = ps.map((p) => projectUtil(p, task, f));
     return {
       task,
+      // 과제 quota 합 — Overview 'GPUs'와 자원 Summary '총 GPU 수량'의 단일 소스.
+      gpu_total: ps.reduce((t, p) => t + p.quota, 0),
       avg_gpu_ut: round1(mean(u.map((x) => x.gpu))),
       avg_gpu_ut_working: round1(mean(u.map((x) => x.wh))),
       avg_gpu_ut_nonworking: round1(mean(u.map((x) => x.ah))),
@@ -211,6 +222,11 @@ export function getKpiByTask(f: GlobalFilters): KpiByTask[] {
 
 /** Legacy default-filter view (dev gallery etc.). */
 export const kpiByTask: KpiByTask[] = getKpiByTask(DEFAULT_FILTERS);
+
+/* ---- GET /api/gpu-count-by-task — DERIVED: 과제 quota 합 (Overview/자원 동일) ---- */
+export const gpuCountByTask: GpuCountByTask = Object.fromEntries(
+  kpiByTask.map((k) => [k.task, k.gpu_total]),
+);
 
 /** v2: reclaim estimate for one basis — 0 reclaim when current meets target. */
 function reclaimBasis(current: number, target: number, quota: number): ReclaimBasis {
@@ -237,7 +253,11 @@ export function getProjectUnits(
   // Window means — identical to the clicked row's displayed values.
   const u = projectUtil(p, task, f);
   const r = rng(parseInt(projectId.replace(/\D/g, '') || '1', 10) * 7 + 3);
-  const unitCount = 2 + Math.floor(r() * 3);
+  const unitCount = Math.min(2 + Math.floor(r() * 3), p.quota);
+  // Unit별 수량은 과제 quota의 분할 — 합계가 정확히 quota와 일치해, 펼침 상세의
+  // 수량 카드/회수 예상 모수/행의 수량 컬럼이 한 패널 안에서 모순되지 않는다.
+  const base = Math.floor(p.quota / unitCount);
+  const parts = Array.from({ length: unitCount }, (_, i) => base + (i < p.quota % unitCount ? 1 : 0));
   const units = Array.from({ length: unitCount }, (_, i) => {
     // Unit values orbit the project's window mean (deterministic offsets),
     // so they move coherently when the 기간 filter changes.
@@ -248,8 +268,8 @@ export function getProjectUnits(
       unit_name: `ais-${div}사업부-serve-${String(i + 1).padStart(2, '0')}`,
       task: (r() > 0.5 ? '추론' : '학습') as TaskType,
       gpu_model: pick(r, GPU_MODELS),
-      gpu_num: pick(r, [8, 16, 32, 64]),
-      unit_quota: pick(r, [8, 16, 32, 64]),
+      gpu_num: parts[i],
+      unit_quota: parts[i],
       slot_ut: round1(Math.max(0, Math.min(100, u.slot + (r() - 0.5) * 30))),
       gpu_ut: gpu,
       gpu_ut_working: round1(Math.min(100, gpu + 7)),
@@ -266,10 +286,10 @@ export function getProjectUnits(
       gpu_ut: u.gpu,
       gpu_ut_working: u.wh,
       gpu_ut_nonworking: u.ah,
-      // Same window means as the row/KPI strip (gpu target 30, slot target 70).
+      // Same window means as the row/KPI strip (gpu target 30, slot target 80).
       reclaim_estimate: {
         gpu: reclaimBasis(u.gpu, 30, p.quota),
-        slot: reclaimBasis(u.slot, 70, p.quota),
+        slot: reclaimBasis(u.slot, 80, p.quota),
       },
     },
     units,
@@ -299,6 +319,7 @@ export function getRankByTask(f: GlobalFilters): Record<TaskType, TaskRank> {
       project_id: p.project_id,
       project_name: p.project_name,
       division: p.division,
+      purpose: p.purpose,
       is_critical: p.is_critical,
       quota: p.quota,
       slot_ut: u.slot,

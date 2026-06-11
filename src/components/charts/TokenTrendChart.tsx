@@ -20,12 +20,21 @@ export interface TokenTrendChartProps {
 
 const TICK = { fontSize: 12, fill: color.textSecondary, fontFamily: font.family } as const;
 
+/** 1·2·5×10^k 'nice' ceiling — keeps the y-max on a round token count. */
+const niceCeil = (x: number) => {
+  const p = 10 ** Math.floor(Math.log10(Math.max(1, x)));
+  const m = x / p;
+  return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p;
+};
+
 /**
  * Expanded-group chart panel (node 'Chart' 7104:3941, 1640x390): #F3F8FD band
  * with padding 20/88 around a white r4 inner card (1464x350) holding the
  * '그룹 내 상위 5개 서비스 · 일별 토큰 추이' header, ring-dot legend and a
- * 14-day recharts LineChart (solid horizontal #E4E9ED grid, 0–1M Y axis,
- * hollow 8px dots on every point, series colors tokenScreen.series).
+ * 14-day recharts LineChart (solid horizontal #E4E9ED grid, hollow 8px dots
+ * on every point, series colors tokenScreen.series). The y-axis is DATA-DRIVEN
+ * (0 → nice ceiling of the window max in quarter steps) — 토큰 스케일이 바뀌어도
+ * 눈금이 데이터를 따라간다 (시안의 고정 0–1M 축은 스케일 종속이라 대체).
  */
 export default function TokenTrendChart({
   rows,
@@ -33,6 +42,10 @@ export default function TokenTrendChart({
   title,
 }: TokenTrendChartProps) {
   const lines = series.slice(0, 5);
+  const yMax = niceCeil(
+    Math.max(1, ...rows.flatMap((row) => lines.map((s) => Number(row[s.service_id]) || 0))),
+  );
+  const yTicks = [0, 0.25, 0.5, 0.75, 1].map((f) => f * yMax);
   // Figma's '상위 5개' (node 7104:4069) is the cap of a 41-service group, not a
   // constant — show the actual line count. Double space after '내' per the node.
   const heading = title ?? `그룹 내  상위 ${lines.length}개 서비스 · 일별 토큰 추이`;
@@ -105,8 +118,8 @@ export default function TokenTrendChart({
                 padding={{ left: 12, right: 12 }}
               />
               <YAxis
-                domain={[0, 1_000_000]}
-                ticks={[0, 250_000, 500_000, 750_000, 1_000_000]}
+                domain={[0, yMax]}
+                ticks={yTicks}
                 tickFormatter={(v: number) => fmtTokens(v)}
                 tick={TICK}
                 tickLine={false}

@@ -176,12 +176,13 @@ export default function DataTable<T>({
                   style={expandable ? { cursor: 'pointer' } : undefined}
                   onClick={
                     expandable
-                      ? () =>
-                          setExpanded((prev) => {
-                            const next = { ...prev, [key]: !prev[key] };
-                            onExpandChange?.(Object.values(next).some(Boolean));
-                            return next;
-                          })
+                      ? () => {
+                          // onExpandChange는 updater 밖에서 — updater 안에서 부모
+                          // setState를 부르면 React 18이 render 중 갱신으로 경고한다.
+                          const next = { ...expanded, [key]: !expanded[key] };
+                          setExpanded(next);
+                          onExpandChange?.(Object.values(next).some(Boolean));
+                        }
                       : undefined
                   }
                 >

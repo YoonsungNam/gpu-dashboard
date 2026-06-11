@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { chart, color, radius, semantic, space, text, tokenScreen } from '../tokens';
-import { num, pct, utilLevel } from '../lib/util';
-import { GRADE_POLICY, goodLabel, reclaimLabel } from '../lib/gradePolicy';
+import { num, pct } from '../lib/util';
+import { goodLabel, policyLevel, reclaimLabel } from '../lib/gradePolicy';
 import { GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL } from '../lib/labels';
 
 import SectionHeader from '../components/primitives/SectionHeader';
@@ -22,7 +22,6 @@ import {
   getRankByTask,
   getUtilTrend,
   getProjectUnits,
-  gpuCountByTask,
   quotaByEnvGpu,
   trendAvg,
 } from '../mock/data';
@@ -125,8 +124,8 @@ function kpiVal(kpi: KpiByTask, key: string): number {
 
 // Exact bar/value colors from the Figma 활용현황 card (solid bars + colored number;
 // bad = bar #FF8E87 / number #FF4337, per nodes 7001:46388 / 46385).
-const BAR_FILL: Record<string, string> = { good: '#55C961', warn: '#FFC46B', bad: '#FF8E87' };
-const BAR_VALUE: Record<string, string> = { good: '#239B2F', warn: '#D59638', bad: '#FF4337' };
+const BAR_FILL: Record<string, string> = { good: '#55C961', warn: '#FFC46B', bad: '#FF8E87', none: '#CCD1D6' };
+const BAR_VALUE: Record<string, string> = { good: '#239B2F', warn: '#D59638', bad: '#FF4337', none: '#565E66' };
 
 function UtilRow({
   label,
@@ -136,10 +135,11 @@ function UtilRow({
 }: {
   label: string;
   value: number;
-  metric: 'gpu' | 'slot';
+  metric: import('../lib/gradePolicy').PolicyMetric;
   task: TaskType;
 }) {
-  const lvl = utilLevel(value, metric, task);
+  // 태스크 평균(용도 혼합)이라 purpose=null: 어느 용도 규칙이든 저활용 조건에 걸리면 빨강.
+  const lvl = policyLevel(task, null, metric, value);
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: space.lg }}>
       <span
@@ -214,8 +214,9 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
           }}
         >
           <div>
+            {/* 자원 화면 '총 GPU 수량'과 같은 셀렉터(quota 합)에서 파생 — 항상 일치. */}
             <div style={{ ...text.metricXl, color: TASK_ACCENT[kind].metric }}>
-              {num(gpuCountByTask[kpi.task] ?? 0)}
+              {num(kpi.gpu_total)}
             </div>
             <div style={{ ...text.label, color: color.textMuted, marginTop: 4 }}>GPUs</div>
           </div>
@@ -441,19 +442,24 @@ function HoldingsSection() {
 
 const SELECTED = tokenScreen.selected;
 
-/**
- * Badge level per the STATED rank-table criteria — thresholds come from
- * GRADE_POLICY[task].badge (운영 정책과 함께 변경됨).
- */
-const rankLevel = (task: TaskType, value: number, metric: 'gpu' | 'slot') => {
-  const b = GRADE_POLICY[task].badge[metric];
-  return value >= b.good ? 'good' : value <= b.bad ? 'bad' : 'warn';
-};
+/** 점검 배지용 중립 칩 — 해당 용도 판정에 쓰이지 않는 지표 ('none'). */
+const RANK_NONE_CHIP = { bg: '#F7F9FA', border: '#E4E9ED', text: '#767D84' };
 
-/** Rank-table util chip (same 60×22 'lg' chip styles as UtilBadge, colors from rankLevel). */
-function RankUtilBadge({ task, value, metric }: { task: TaskType; value: number; metric: 'gpu' | 'slot' }) {
-  const lvl = rankLevel(task, value, metric);
-  const c = semantic.util[lvl];
+/** Rank-table util chip (same 60×22 'lg' chip styles as UtilBadge) — the color
+ *  is the row's (task × 용도) grade rule evaluated on this metric (policyLevel). */
+function RankUtilBadge({
+  task,
+  purpose,
+  value,
+  metric,
+}: {
+  task: TaskType;
+  purpose: string;
+  value: number;
+  metric: 'gpu' | 'slot';
+}) {
+  const lvl = policyLevel(task, purpose, metric, value);
+  const c = lvl === 'none' ? RANK_NONE_CHIP : semantic.util[lvl];
   return (
     <span
       style={{
@@ -532,14 +538,14 @@ const rankColumnsFor = (task: TaskType): DataTableColumn<RankedProject>[] => [
     header: GPU_UTIL.label,
     align: 'center',
     width: 110, // Figma column packing: 과제 452 + 3×~106-110 (재검증)
-    render: (r) => <RankUtilBadge task={task} value={r.gpu_ut} metric="gpu" />,
+    render: (r) => <RankUtilBadge task={task} purpose={r.purpose} value={r.gpu_ut} metric="gpu" />,
   },
   {
     key: 'slot_ut',
     header: SLOT_UTIL.label,
     align: 'center',
     width: 110,
-    render: (r) => <RankUtilBadge task={task} value={r.slot_ut} metric="slot" />,
+    render: (r) => <RankUtilBadge task={task} purpose={r.purpose} value={r.slot_ut} metric="slot" />,
   },
   {
     key: 'quota',
@@ -558,7 +564,8 @@ const rankColumnsFor = (task: TaskType): DataTableColumn<RankedProject>[] => [
 function RankTitle({ title, count, caption }: { title: string; count: number; caption: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'baseline', gap: space.lg }}>
-      <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: space.xs }}>
+      {/* 캡션(용도별 기준)이 길어도 타이틀은 줄바꿈되지 않게 고정. */}
+      <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: space.xs, whiteSpace: 'nowrap', flexShrink: 0 }}>
         <span style={{ fontSize: 16, lineHeight: '20px', fontWeight: 500, color: color.textTitle }}>
           {title}
         </span>

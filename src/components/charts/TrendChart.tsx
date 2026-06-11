@@ -34,11 +34,13 @@ const tickStyle = {
   fontSize: 10,
 } as const;
 
-/** Index step so ~7 axis labels land on evenly spaced dates (first + every Nth + last). */
-const markerStep = (n: number) => Math.max(1, Math.round((n - 1) / 6));
-
-/** True for the indices that carry an axis label. */
-const isMarkerIndex = (i: number, n: number, step: number) => i % step === 0 || i === n - 1;
+/** 'YYYY-MM-DD' → '5/18' — 일별 x축 라벨 (2026-06-11 피드백: 일 단위 표기). */
+const fmtDay = (v: string | number) => {
+  const s = String(v);
+  const m = s.slice(5, 7);
+  const d = s.slice(8, 10);
+  return m && d ? `${+m}/${+d}` : s;
+};
 
 /**
  * v2 dark tooltip content (node I7104:14218): rgba(40,48,55,0.9) r6 panel,
@@ -87,12 +89,8 @@ export default function TrendChart({
   area = true,
 }: TrendChartProps) {
   const Chart = area ? AreaChart : LineChart;
-  const n = data.length;
-  const step = markerStep(n);
-  // Explicit evenly spaced ticks keep the labels readable on dense windows.
-  const xTicks = data
-    .filter((_, i) => isMarkerIndex(i, n, step))
-    .map((d) => d[xKey]) as (string | number)[];
+  // 일별 라벨을 전부 표시 — 14일 초과 창에서는 라벨을 기울여 겹침을 피한다.
+  const angled = data.length > 14;
 
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -120,13 +118,15 @@ export default function TrendChart({
 
         <XAxis
           dataKey={xKey}
-          tick={{ ...tickStyle, fill: color.textTertiary }}
+          tick={{ ...tickStyle, fontSize: angled ? 9 : 10, fill: color.textTertiary }}
           tickLine={false}
           axisLine={false}
-          ticks={xTicks}
           interval={0}
+          angle={angled ? -45 : 0}
+          textAnchor={angled ? 'end' : 'middle'}
+          height={angled ? 28 : 22}
           padding={{ left: 8, right: 8 }}
-          tickFormatter={(v) => (typeof v === 'string' ? v.slice(5) : String(v))}
+          tickFormatter={fmtDay}
         />
         <YAxis
           domain={[0, 100]}
@@ -151,7 +151,7 @@ export default function TrendChart({
               strokeWidth={2}
               strokeDasharray={s.dash ? '5 4' : undefined}
               fill={`url(#trend-grad-${s.key})`}
-              dot={false}
+              dot={{ r: 2, fill: s.color, strokeWidth: 0 }}
               activeDot={{ r: 3 }}
             />
           ) : (
@@ -163,8 +163,8 @@ export default function TrendChart({
               stroke={s.color}
               strokeWidth={2}
               strokeDasharray={s.dash ? '5 4' : undefined}
-              // No per-date dot markers — clean lines; markers only appear on hover.
-              dot={false}
+              // 일별 Data Point 도트 (2026-06-11 피드백 — 기존 '도트 제거'를 대체).
+              dot={{ r: 2.5, fill: s.color, strokeWidth: 0 }}
               // v2 hover: dashed Slot line fills solid in the darkened hue; the solid
               // GPU line keeps a hollow white dot with a 2px ring (Ellipse 14, 7104:14216).
               activeDot={

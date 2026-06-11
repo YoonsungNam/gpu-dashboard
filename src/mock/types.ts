@@ -16,6 +16,8 @@ export type ProjectGrade = '우수' | '저활용';
 /** GET /api/kpi-by-task */
 export interface KpiByTask {
   task: TaskType;
+  /** 과제별 할당 quota 합 — Overview 'GPUs'와 자원 Summary '총 GPU 수량'의 단일 소스. */
+  gpu_total: number;
   avg_slot_ut: number;
   avg_gpu_ut: number;
   avg_gpu_ut_working?: number;
@@ -31,6 +33,8 @@ export interface RankedProject {
   project_id: string;
   project_name: string;
   division: string;
+  /** 용도 — 점검 배지 색이 (태스크 × 용도) 임계로 판정되므로 필요. */
+  purpose: string;
   is_critical: YN;
   quota: number;
   slot_ut: number;

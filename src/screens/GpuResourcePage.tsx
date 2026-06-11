@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { color, radius, semantic, space, text } from '../tokens';
-import { num, utilThresholds } from '../lib/util';
+import { num } from '../lib/util';
 import { gradeOf } from '../lib/gradePolicy';
 import { downloadCsv } from '../lib/csv';
 import { GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL, type MetricDef } from '../lib/labels';
@@ -216,7 +216,9 @@ export default function GpuResourcePage({
           align: 'center',
           width: 120,
           sortable: true,
-          render: (r) => <UtilBadge value={utilValue(r, def.key, tab, gf)} metric={def.metric} task={tab} />,
+          render: (r) => (
+            <UtilBadge value={utilValue(r, def.key, tab, gf)} metric={def.metric} task={tab} purpose={r.purpose} />
+          ),
         }),
       ),
     ];
@@ -238,7 +240,8 @@ export default function GpuResourcePage({
       projectCount: tabPool.length,
       goodCount: rank.good_count,
       alertCount: rank.alert_count,
-      totalQuota: tabPool.reduce((t, p) => t + p.quota, 0),
+      // Overview 활용현황 카드의 'GPUs'와 같은 셀렉터 값 (kpi.gpu_total).
+      totalQuota: kpi?.gpu_total ?? 0,
       avgGpuUt: kpi?.avg_gpu_ut ?? 0,
       avgSlotUt: kpi?.avg_slot_ut ?? 0,
     };
@@ -248,19 +251,15 @@ export default function GpuResourcePage({
     { key: '학습', label: '학습', count: trainingCount },
   ];
 
-  // Bottom legend — labels derive from the ACTIVE TAB's thresholds
-  // (utilThresholds[tab]; 추론 20/10·80/70, 학습 40/20·75/65).
+  // Bottom legend — 셀 색은 (태스크 × 용도)별 등급 규칙에서 파생되므로 숫자
+  // 구간 대신 의미를 표기. 용도별 수치 구간은 '지표 정의' 패널의 임계 기준 표 참조.
   const u = semantic.util;
-  const legendFor = (metric: 'gpu' | 'slot') => {
-    const t = utilThresholds[tab][metric];
-    return [
-      { label: `≥ ${t.good}%`, lvl: u.good },
-      { label: `${t.warn}-${t.good}%`, lvl: u.warn },
-      { label: `< ${t.warn}%`, lvl: u.bad },
-    ];
-  };
-  const gpuLegend = legendFor('gpu');
-  const slotLegend = legendFor('slot');
+  const colorLegend = [
+    { label: '우수 충족', lvl: u.good },
+    { label: '중간', lvl: u.warn },
+    { label: '저활용 해당', lvl: u.bad },
+    { label: '판정 미사용', lvl: { bg: '#F7F9FA', border: '#E4E9ED', text: '#767D84' } },
+  ];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg /* v2: 12px toolbar→card */ }}>
@@ -375,8 +374,7 @@ export default function GpuResourcePage({
               justifySelf: 'end',
             }}
           >
-            <LegendRow title="GPU Util" items={gpuLegend} />
-            <LegendRow title="Slot Util" items={slotLegend} />
+            <LegendRow title="셀 색상 · 용도별 등급 기준(지표 정의 참조)" items={colorLegend} />
           </div>
         </div>
       </Card>
@@ -407,7 +405,8 @@ function LegendRow({
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 48,
+              minWidth: 48,
+              padding: '0 8px',
               height: 16,
               boxSizing: 'border-box',
               borderRadius: radius.cell,

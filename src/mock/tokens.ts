@@ -51,21 +51,30 @@ export const serviceDaily: Record<string, { input: number[]; output: number[] }>
 
 function genServices(groupId: string, seed: number, count: number, leadNames: string[]): TokenServiceItem[] {
   const r = rng(seed);
+  // 그룹 내 서비스명 중복 방지 — 같은 이름이 두 번 나오면 범례가 모호해진다.
+  const used = new Map<string, number>();
+  const uniqueName = (raw: string) => {
+    const n = used.get(raw) ?? 0;
+    used.set(raw, n + 1);
+    return n === 0 ? raw : `${raw} ${n + 1}`;
+  };
   const items = Array.from({ length: count }, (_, i) => {
-    const baseIn = (60 + r() * 440) * 1_000; // 60K..500K /day
-    const baseOut = (40 + r() * 360) * 1_000; // 40K..400K /day
+    // 일평균 합계가 B 단위에 들어오는 스케일: 서비스당 입력 10-50M · 출력 6-36M/일
+    // → 46개 서비스 합계 ≈ 2.3B/일 (2026-06-11 피드백).
+    const baseIn = (10 + r() * 40) * 1_000_000;
+    const baseOut = (6 + r() * 30) * 1_000_000;
     const id = `${groupId}-S${String(i + 1).padStart(2, '0')}`;
     serviceDaily[id] = {
       input: Array.from({ length: DAYS }, (_, d) =>
-        Math.round(clamp(baseIn * (1 + (r() - 0.5) * 0.5 + Math.sin((d + i) / 3) * 0.18), 20_000, 520_000)),
+        Math.round(clamp(baseIn * (1 + (r() - 0.5) * 0.5 + Math.sin((d + i) / 3) * 0.18), 3_000_000, 60_000_000)),
       ),
       output: Array.from({ length: DAYS }, (_, d) =>
-        Math.round(clamp(baseOut * (1 + (r() - 0.5) * 0.5 + Math.cos((d + i) / 3.4) * 0.18), 10_000, 420_000)),
+        Math.round(clamp(baseOut * (1 + (r() - 0.5) * 0.5 + Math.cos((d + i) / 3.4) * 0.18), 2_000_000, 45_000_000)),
       ),
     };
     return {
       service_id: id,
-      service_name: leadNames[i] ?? `${pick(r, NAME_HEADS)} ${pick(r, NAME_TAILS)}`,
+      service_name: uniqueName(leadNames[i] ?? `${pick(r, NAME_HEADS)} ${pick(r, NAME_TAILS)}`),
       model: pick(r, MODELS),
       share_pct: 0, // filled per-view from the window means
       avg_input: 0,
@@ -77,9 +86,8 @@ function genServices(groupId: string, seed: number, count: number, leadNames: st
 }
 
 /**
- * The four groups visible in the renders. avg_input/avg_output are the design
- * strings where given (group #1: 2.9M / 1.7M); for #2/#3 they are chosen so
- * the DERIVED ioRatio() reproduces the design's I:O strings ('5.2:2', '6.2:6').
+ * The four groups visible in the renders, resized per 2026-06-11 운영 피드백:
+ * 전체 13개 그룹 × 46개 서비스 (lead 4그룹 21개 + filler 9그룹 25개).
  */
 const LEAD_GROUPS: Array<{ name: string; division: string; count: number; leads: string[]; critical?: boolean }> = [
   {
@@ -87,14 +95,14 @@ const LEAD_GROUPS: Array<{ name: string; division: string; count: number; leads:
     leads: ['Moderation Pro', 'Solution Advanced Agent', 'Moderation Pro'],
   },
   {
-    name: 'Contents Moderation SR Platform', division: 'SAIT', count: 35, critical: true,
+    name: 'Contents Moderation SR Platform', division: 'SAIT', count: 8, critical: true,
     leads: [
       'Voice Clone Stream Development Lite', 'Moderation Pro',
       'Voice Clone Contents Solution', 'Voice Clone Edge Platform', 'Moderation Pro',
     ],
   },
   {
-    name: 'DS Health Assistant API', division: 'AI센터', count: 41, critical: true,
+    name: 'DS Health Assistant API', division: 'AI센터', count: 9, critical: true,
     leads: [
       'Health Assistant Platform', 'Moderation Pro', 'API Solution Development',
       'Development Stream Lite Edge', 'Assistant DS Lite',
@@ -106,12 +114,17 @@ const LEAD_GROUPS: Array<{ name: string; division: string; count: number; leads:
   },
 ];
 
-/** rng-seeded filler groups below the fold (KPI says 52 groups exist). */
-const FILLER_GROUPS = [
-  { name: 'MX Vision Inspection Platform', division: '메모리' },
-  { name: 'Foundry Yield Insight API', division: '글로벌 제조&인프라총괄' },
-  { name: 'Global Contents Translation Suite', division: 'S.LSI' },
-  { name: 'Voice Clone Studio Platform', division: 'SAIT' },
+/** Filler groups below the fold — counts are explicit so Σ서비스 = 46 정확히. */
+const FILLER_GROUPS: Array<{ name: string; division: string; count: number }> = [
+  { name: 'MX Vision Inspection Platform', division: '메모리', count: 2 },
+  { name: 'Foundry Yield Insight API', division: '글로벌 제조&인프라총괄', count: 3 },
+  { name: 'Global Contents Translation Suite', division: 'S.LSI', count: 4 },
+  { name: 'Voice Clone Studio Platform', division: 'SAIT', count: 2 },
+  { name: 'Memory Defect Review Assistant', division: '메모리', count: 3 },
+  { name: 'EUV Process Copilot', division: 'S.LSI', count: 4 },
+  { name: 'DX Sales Insight Chat', division: 'DX', count: 2 },
+  { name: 'Infra Ops Agent Platform', division: '글로벌 제조&인프라총괄', count: 3 },
+  { name: 'SAIT Research Paper Search', division: 'SAIT', count: 2 },
 ];
 
 /* ---- Group skeletons (identity + children; values come from the view) ---- */
@@ -137,13 +150,12 @@ const groupSkeletons: GroupSkeleton[] = [
   ...FILLER_GROUPS.map((g, i) => {
     const id = `TG${String(LEAD_GROUPS.length + i + 1).padStart(2, '0')}`;
     const r = rng(3300 + i * 17);
-    const count = 6 + Math.floor(r() * 19);
     return {
       service_group_id: id,
       service_group_name: g.name,
       division: g.division,
       is_critical: (r() > 0.6 ? 'Y' : 'N') as 'Y' | 'N',
-      services: genServices(id, 4400 + i * 29, count, []),
+      services: genServices(id, 4400 + i * 29, g.count, []),
     };
   }),
 ];

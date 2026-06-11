@@ -1,7 +1,6 @@
 import { useEffect, type CSSProperties } from 'react';
 import { color, radius, semantic, shadow, text, tokenScreen } from '../../tokens';
-import { GRADE_POLICY, goodLabel, ruleLabel } from '../../lib/gradePolicy';
-import { utilThresholds } from '../../lib/util';
+import { GRADE_POLICY, goodLabel, policyBands, purposeDisplay, ruleLabel } from '../../lib/gradePolicy';
 import GradeBadge from '../primitives/GradeBadge';
 
 /**
@@ -20,23 +19,15 @@ const DEFS: { name: string; def: string }[] = [
   { name: 'Slot Util', def: '할당된 GPU Slot 중 실제 점유 사용한 비율' },
 ];
 
-type Tone = 'good' | 'warn' | 'bad';
+type Tone = 'good' | 'warn' | 'bad' | 'none';
 
 /** Light legend palette from the design's 임계 기준 chips (7164:7050-7076). */
 const LIGHT_CHIP: Record<Tone, { bg: string; text: string }> = {
   good: { bg: '#F5FBEE', text: '#145C1C' },
   warn: { bg: '#FFF8ED', text: '#AB772A' },
   bad: { bg: '#FFF6F5', text: '#FF4337' },
-};
-
-/** 임계 기준 rows — derived from utilThresholds so the legend == cell colors. */
-const thresholdChips = (task: '추론' | '학습', metric: 'gpu' | 'slot') => {
-  const t = utilThresholds[task][metric];
-  return [
-    { label: `≥ ${t.good}%`, tone: 'good' as Tone },
-    { label: `${t.warn}-${t.good}%`, tone: 'warn' as Tone },
-    { label: `< ${t.warn}%`, tone: 'bad' as Tone },
-  ];
+  // 해당 구간이 정의되지 않은 지표 ('—') — 판정 미사용.
+  none: { bg: '#F7F9FA', text: '#90969D' },
 };
 
 export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
@@ -162,8 +153,10 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
             </tbody>
           </table>
 
-          {/* 임계 기준 — 태스크(추론/학습)별 × 지표별, utilThresholds에서 파생
-              (2026-06-11 디자인 #F6F8FA 박스 + 라이트 칩, node 7164:7048-7085) */}
+          {/* 임계 기준 — 별도 표가 아니라 과제 등급 기준(GRADE_POLICY)을 지표
+              단위로 펼친 것: 초록 = 우수 조건 · 빨강 = 용도별 저활용 조건 ·
+              노랑 = 중간(둘 다 아님). 용도에 따라 구간이 달라 용도별 행으로
+              표시한다. (디자인 #F6F8FA 박스 + 라이트 칩 포맷, node 7164:7048) */}
           <div
             style={{
               marginTop: 20,
@@ -175,7 +168,13 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
               gap: 10,
             }}
           >
-            <span style={{ ...text.body, color: color.textTitle }}>임계 기준</span>
+            <span style={{ ...text.body, color: color.textTitle }}>임계 기준 (지표 색상)</span>
+            <span style={{ ...text.caption, color: color.textTertiary }}>
+              표의 지표 색상은 아래 과제 등급 기준을 지표 단위로 평가한 것입니다 —{' '}
+              <b style={{ fontWeight: 500, color: LIGHT_CHIP.good.text }}>초록</b> 우수 조건 충족 ·{' '}
+              <b style={{ fontWeight: 500, color: LIGHT_CHIP.bad.text }}>빨강</b> 저활용 조건 해당 ·{' '}
+              <b style={{ fontWeight: 500, color: LIGHT_CHIP.warn.text }}>노랑</b> 중간. 과제 용도에 따라 구간이 다릅니다.
+            </span>
             {(['추론', '학습'] as const).map((task, ti) => (
               <div
                 key={task}
@@ -188,47 +187,66 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
                 }}
               >
                 <span style={{ ...text.body, color: color.textTitle }}>{task}</span>
-                {(['gpu', 'slot'] as const).map((metric) => (
-                  <div key={metric} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ width: 60, ...text.caption, color: color.textTertiary }}>
-                      {metric === 'gpu' ? 'GPU Util' : 'Slot Util'}
+                {policyBands(task).map((pb) => (
+                  <div key={pb.purpose} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <span style={{ ...text.caption, color: color.textSecondary, fontWeight: 500 }}>
+                      {pb.display}
                     </span>
-                    {thresholdChips(task, metric).map(({ label, tone }) => (
-                      <span
-                        key={label}
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          minWidth: 48,
-                          height: 18,
-                          boxSizing: 'border-box',
-                          padding: '0 6px',
-                          borderRadius: radius.cell,
-                          background: LIGHT_CHIP[tone].bg,
-                          color: LIGHT_CHIP[tone].text,
-                          fontSize: 11,
-                          lineHeight: '12px',
-                          fontWeight: 400,
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {label}
-                      </span>
+                    {pb.bands.map((b) => (
+                      <div key={b.metric} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ width: 76, flexShrink: 0, ...text.caption, color: color.textTertiary }}>
+                          {b.metricLabel}
+                        </span>
+                        {([
+                          [b.good, 'good'],
+                          [b.warn, 'warn'],
+                          [b.bad, 'bad'],
+                        ] as const).map(([label, tone], i) => {
+                          const t: Tone = label == null ? 'none' : tone;
+                          return (
+                            <span
+                              key={i}
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                minWidth: 56,
+                                height: 18,
+                                boxSizing: 'border-box',
+                                padding: '0 6px',
+                                borderRadius: radius.cell,
+                                background: LIGHT_CHIP[t].bg,
+                                color: LIGHT_CHIP[t].text,
+                                fontSize: 11,
+                                lineHeight: '12px',
+                                fontWeight: 400,
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              {label ?? '—'}
+                            </span>
+                          );
+                        })}
+                      </div>
                     ))}
                   </div>
                 ))}
               </div>
             ))}
+            <span style={{ ...text.caption, color: color.textTertiary }}>
+              · GPU Util AH(비근무)는 참고 지표로, 등급 판정에 사용되지 않습니다 (회색 표시).
+            </span>
           </div>
 
-          {/* 과제 등급 기준 — lib/gradePolicy.ts GRADE_POLICY에서 자동 파생
-              (운영 정책 변경 시 이 모달과 점검 카드 캡션이 함께 갱신됨) */}
+          {/* 과제 등급 기준 — lib/gradePolicy.ts GRADE_POLICY에서 자동 파생.
+              위 임계 기준(지표 색상)과 같은 규칙의 문장형 표기: 등급 태그는
+              규칙 전체(and/or 조합)로, 지표 색상은 지표 단위로 판정된다. */}
           <div style={{ marginTop: 20, ...text.label, color: color.textTertiary }}>
             과제 등급 기준 (태스크 · 용도별)
           </div>
           <div style={{ marginTop: 4, ...text.caption, color: color.textTertiary }}>
             과제 등급(우수/저활용)은 태스크(추론/학습)와 과제 성격(용도)에 따라 기준이 다릅니다.
+            위 임계 기준 표는 이 규칙을 지표 단위 구간으로 펼친 것입니다.
           </div>
           <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 12 }}>
             {(Object.keys(GRADE_POLICY) as Array<keyof typeof GRADE_POLICY>).map((task) => (
@@ -242,7 +260,7 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
                   <div key={purpose} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <GradeBadge grade="저활용" />
                     <span style={{ ...text.bodyM, color: color.textTitle, width: 104 }}>
-                      {purpose === '기타' ? '일반업무 등' : purpose}
+                      {purposeDisplay(task, purpose)}
                     </span>
                     <span style={{ ...text.body, color: color.textSecondary }}>{ruleLabel(rule)}</span>
                   </div>
