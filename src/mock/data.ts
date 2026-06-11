@@ -214,18 +214,18 @@ export const topBottomProjects: TopBottomProjects = {
 
 /* ---- GET /api/quota-by-env-gpu (all 9 GPU models across 4 envs; sums to exactly 2,941) ---- */
 export const quotaByEnvGpu: QuotaByEnvGpu[] = [
-  { environment: 'P1', gpu_model: 'H100', gpu_count: 512 },
-  { environment: 'P1', gpu_model: 'H200', gpu_count: 384 },
-  { environment: 'P1', gpu_model: 'B300', gpu_count: 128 },
-  { environment: 'P2', gpu_model: 'A100', gpu_count: 320 },
-  { environment: 'P2', gpu_model: 'V100', gpu_count: 192 },
-  { environment: 'P2', gpu_model: 'MI355X', gpu_count: 96 },
-  { environment: 'D1', gpu_model: 'A100', gpu_count: 256 },
-  { environment: 'D1', gpu_model: 'P100', gpu_count: 160 },
-  { environment: 'D1', gpu_model: 'P40', gpu_count: 96 },
-  { environment: 'R&D', gpu_model: 'H100', gpu_count: 365 },
-  { environment: 'R&D', gpu_model: 'RTX Pro 6000', gpu_count: 240 },
-  { environment: 'R&D', gpu_model: 'V100', gpu_count: 192 },
+  { environment: 'AIP', gpu_model: 'H100', gpu_count: 512 },
+  { environment: 'AIP', gpu_model: 'H200', gpu_count: 384 },
+  { environment: 'AIP', gpu_model: 'B300', gpu_count: 128 },
+  { environment: 'AIP학습', gpu_model: 'A100', gpu_count: 320 },
+  { environment: 'AIP학습', gpu_model: 'V100', gpu_count: 192 },
+  { environment: 'AIP학습', gpu_model: 'MI355X', gpu_count: 96 },
+  { environment: 'AI 학습 인프라', gpu_model: 'A100', gpu_count: 256 },
+  { environment: 'AI 학습 인프라', gpu_model: 'P100', gpu_count: 160 },
+  { environment: 'AI 학습 인프라', gpu_model: 'P40', gpu_count: 96 },
+  { environment: 'DS Cloud', gpu_model: 'H100', gpu_count: 365 },
+  { environment: 'DS Cloud', gpu_model: 'RTX Pro 6000', gpu_count: 240 },
+  { environment: 'DS Cloud', gpu_model: 'V100', gpu_count: 192 },
 ];
 
 /* ---- GET /api/service/summary ---- */
