@@ -221,7 +221,8 @@ export default function ExpandedTaskDetail({
               <span style={{ ...text.body, color: color.textSecondary }}>장</span>
             </span>
             <span style={{ ...text.caption, color: color.textTertiary }}>
-              {dense ? '수량(H100) 기준' : '수량(H100)기준'}
+              {/* (H100 기준) 환산 표기는 학습만 — 추론은 '수량' (2026-06-11 피드백). */}
+              {task === '학습' ? (dense ? '수량(H100) 기준' : '수량(H100)기준') : '수량'}
             </span>
           </div>
 
