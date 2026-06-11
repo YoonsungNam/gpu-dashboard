@@ -69,10 +69,10 @@ export function fmtTokens(n: number): string {
   return String(Math.round(n));
 }
 
-/** I:O ratio string like '1.6:2' (each side in millions, 1 decimal, trailing .0 dropped). */
+/** I:O ratio normalized to Output = 1 — 'N:1' (e.g. input 2.9M / output 1.7M → '1.7:1'). */
 export function ioRatio(input: number, output: number): string {
-  const f = (v: number) => (v / 1_000_000).toFixed(1).replace(/\.0$/, '');
-  return `${f(input)}:${f(output)}`;
+  if (output <= 0) return input > 0 ? '∞:1' : '-';
+  return `${(input / output).toFixed(1).replace(/\.0$/, '')}:1`;
 }
 
 /** Input share of total I/O traffic, for the I:O bar width (0–100). */

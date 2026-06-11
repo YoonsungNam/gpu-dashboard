@@ -65,6 +65,15 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
   const [tab, setTab] = useState<TabKey>(preset?.tab ?? '추론'); // 추론 default, no 전체
   const [query, setQuery] = useState('');
   const [grade, setGrade] = useState<GradeFilterValue>(preset?.grade ?? '전체');
+  // Column sorting: click cycles desc → asc → none. Sorting happens here
+  // (before pagination), DataTable just renders the header state.
+  const [sort, setSort] = useState<{ key: string; dir: 'asc' | 'desc' } | null>(null);
+  const onSortChange = (key: string) => {
+    setSort((s) =>
+      s?.key !== key ? { key, dir: 'desc' } : s.dir === 'desc' ? { key, dir: 'asc' } : null,
+    );
+    setPage(1);
+  };
 
   // Overview '전체 N건 보기' lands here with the tab+grade pre-applied.
   useEffect(() => {
@@ -101,9 +110,33 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
     });
   }, [tab, query, grade]);
 
-  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const sorted = useMemo(() => {
+    if (!sort) return filtered;
+    const val = (r: ProjectRow): string | number => {
+      switch (sort.key) {
+        case 'project_name': return r.project_name;
+        case 'division': return r.division;
+        case 'purpose': return r.purpose;
+        case 'is_critical': return r.is_critical === 'Y' ? '전략' : '일반';
+        case 'user_id': return r.user_id;
+        case 'quota': return r.quota;
+        default: return utilValue(r, sort.key, tab);
+      }
+    };
+    return [...filtered].sort((a, b) => {
+      const va = val(a);
+      const vb = val(b);
+      const c =
+        typeof va === 'number' && typeof vb === 'number'
+          ? va - vb
+          : String(va).localeCompare(String(vb), 'ko');
+      return sort.dir === 'asc' ? c : -c;
+    });
+  }, [filtered, sort, tab]);
+
+  const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
-  const pageRows = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const pageRows = sorted.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   // Tab-dependent columns: 학습 drops GPU Util WH/AH and the 과제 column widens.
   const columns: DataTableColumn<ProjectRow>[] = useMemo(() => {
@@ -114,6 +147,7 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
       {
         key: 'project_name',
         header: '워크그룹',
+        sortable: true,
         width: tab === '학습' ? 682 : 510,
         render: (r, _i, expanded) => (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 16 /* Header,Box gap16.0 (7104:8604) */, minWidth: 0 }}>
@@ -125,12 +159,14 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
       {
         key: 'division',
         header: '사업부',
+        sortable: true,
         width: 246,
         render: (r, _i, expanded) => <span style={{ color: cellColor(expanded) }}>{r.division}</span>,
       },
       {
         key: 'purpose',
         header: '용도',
+        sortable: true,
         width: 130,
         // nowrap keeps the fixed 41px row height for long strings (글로벌 파운드리 연계).
         render: (r, _i, expanded) => (
@@ -140,6 +176,7 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
       {
         key: 'is_critical',
         header: '전략여부',
+        sortable: true,
         width: 90,
         align: 'center',
         // 전략 pill when Y, '-' dash when N (never empty).
@@ -153,12 +190,14 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
       {
         key: 'user_id',
         header: '담당자',
+        sortable: true,
         width: 80,
         render: (r, _i, expanded) => <span style={{ color: cellColor(expanded) }}>{r.user_id}</span>,
       },
       {
         key: 'quota',
         header: '수량',
+        sortable: true,
         width: 110,
         align: 'right',
         render: (r, _i, expanded) => <span style={{ color: cellColor(expanded) }}>{num(r.quota)}</span>,
@@ -267,6 +306,9 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
           vPad={10}
           headerBg="#FAFBFC"
           caretWidth={42}
+          sortKey={sort?.key ?? null}
+          sortDir={sort?.dir}
+          onSortChange={onSortChange}
           rowStyle={(_r, _i, expanded) => (expanded ? { background: '#F0F7FC' } : undefined)}
           // Full-bleed expand panel: the detail supplies its own bg/padding.
           panelStyle={{ padding: 0, background: '#F6F8FA' }}

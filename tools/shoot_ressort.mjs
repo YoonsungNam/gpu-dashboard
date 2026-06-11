@@ -1,0 +1,18 @@
+import { chromium } from 'playwright';
+const port = process.argv[2] || '5173';
+const b = await chromium.launch({ args: ['--no-sandbox','--disable-setuid-sandbox','--disable-gpu'] });
+const ctx = await b.newContext({ viewport: { width: 1920, height: 1300 }, deviceScaleFactor: 1 });
+const p = await ctx.newPage();
+await p.goto(`http://localhost:${port}/?screen=resource`, { waitUntil: 'domcontentloaded' });
+await p.waitForLoadState('networkidle').catch(()=>{});
+await p.waitForTimeout(1200);
+const firstQuota = async () => (await p.locator('#res-table tr.gd-row').first().innerText()).replace(/\s+/g,' ');
+await p.locator('#res-table thead th', { hasText: '수량' }).click(); await p.waitForTimeout(400);
+console.log('수량 desc:', (await firstQuota()).slice(0, 80));
+await p.locator('#res-table thead th', { hasText: '수량' }).click(); await p.waitForTimeout(400);
+console.log('수량 asc :', (await firstQuota()).slice(0, 80));
+await p.locator('#res-table thead th', { hasText: '워크그룹' }).click(); await p.waitForTimeout(400);
+console.log('워크그룹 desc:', (await firstQuota()).slice(0, 60));
+await p.locator('#res-table thead th', { hasText: /^GPU Util$/ }).click(); await p.waitForTimeout(400);
+console.log('GPU Util desc:', (await firstQuota()).slice(0, 80));
+await b.close().catch(()=>{});

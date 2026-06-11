@@ -25,13 +25,7 @@ const pick = <T,>(r: () => number, arr: T[]) => arr[Math.floor(r() * arr.length)
 const round1 = (n: number) => Math.round(n * 10) / 10;
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
 
-/* ---- GET /api/token/totals (KPI strip — nodes 7104:3455/3465/3478) ---- */
-export const tokenTotals: TokenTotals = {
-  group_count: 52,
-  service_count: 42112,
-  avg_total: 402_000_000, // fmtTokens → '402M'
-  day_count: 28, // '최근 28일 기준' in the 서비스 전체 modal (7104:4624)
-};
+
 
 /** Serving-model sub-labels from the modal rows (7104:4377/4400). */
 const MODELS = ['GPT-OSS', 'Qwne-32B', 'Gemini-9BB'];
@@ -53,22 +47,23 @@ const NAME_TAILS = [
  */
 function genServices(groupId: string, seed: number, count: number, leadNames: string[]): TokenServiceItem[] {
   const r = rng(seed);
-  // Skewed weights so big groups top out around the render's 14%/10%/8.8%…
-  const weights = Array.from({ length: count }, () => 0.25 + Math.pow(r(), 4) * 6).sort((a, b) => b - a);
-  const sum = weights.reduce((s, w) => s + w, 0);
-  return weights.map((w, i) => {
-    const input = Math.round((120 + r() * 830) ) * 1_000; // 120K..950K
-    const output = Math.round((60 + r() * 540)) * 1_000; // 60K..600K
+  const items = Array.from({ length: count }, (_, i) => {
+    const input = Math.round(120 + r() * 830) * 1_000; // 120K..950K
+    const output = Math.round(60 + r() * 540) * 1_000; // 60K..600K
     return {
       service_id: `${groupId}-S${String(i + 1).padStart(2, '0')}`,
       service_name: leadNames[i] ?? `${pick(r, NAME_HEADS)} ${pick(r, NAME_TAILS)}`,
       model: pick(r, MODELS),
-      share_pct: round1((w / sum) * 100),
+      share_pct: 0, // filled below from the DERIVED group total
       avg_input: input,
       avg_output: output,
-      avg_total: Math.round((60 + r() * 840)) * 1_000,
+      // 일평균 합계 = Input + Output — consistent by construction.
+      avg_total: input + output,
     };
-  });
+  }).sort((a, b) => b.avg_total - a.avg_total);
+  const groupTotal = items.reduce((t, x) => t + x.avg_total, 0);
+  for (const x of items) x.share_pct = round1((x.avg_total / groupTotal) * 100);
+  return items;
 }
 
 /**
@@ -76,18 +71,13 @@ function genServices(groupId: string, seed: number, count: number, leadNames: st
  * strings where given (group #1: 2.9M / 1.7M); for #2/#3 they are chosen so
  * the DERIVED ioRatio() reproduces the design's I:O strings ('5.2:2', '6.2:6').
  */
-const LEAD_GROUPS: Array<{
-  name: string; division: string; count: number; share: number;
-  input: number; output: number; total: number; leads: string[];
-}> = [
+const LEAD_GROUPS: Array<{ name: string; division: string; count: number; leads: string[] }> = [
   {
     name: 'Solution 개발실 특화 AI 에이전트 플랫폼', division: 'DX', count: 3,
-    share: 8.3, input: 2_900_000, output: 1_700_000, total: 1_700_000,
     leads: ['Moderation Pro', 'Solution Advanced Agent', 'Moderation Pro'],
   },
   {
     name: 'Contents Moderation SR Platform', division: 'SAIT', count: 35,
-    share: 29.2, input: 5_200_000, output: 2_000_000, total: 1_700_000, // I:O → '5.2:2'
     leads: [
       'Voice Clone Stream Development Lite', 'Moderation Pro',
       'Voice Clone Contents Solution', 'Voice Clone Edge Platform', 'Moderation Pro',
@@ -95,7 +85,6 @@ const LEAD_GROUPS: Array<{
   },
   {
     name: 'DS Health Assistant API', division: 'AI센터', count: 41,
-    share: 12.5, input: 6_200_000, output: 6_000_000, total: 1_700_000, // I:O → '6.2:6'
     leads: [
       'Health Assistant Platform', 'Moderation Pro', 'API Solution Development',
       'Development Stream Lite Edge', 'Assistant DS Lite',
@@ -103,7 +92,6 @@ const LEAD_GROUPS: Array<{
   },
   {
     name: 'Solution 개발실 특화 AI 에이전트 플랫폼', division: 'DX', count: 1,
-    share: 8.3, input: 2_900_000, output: 1_700_000, total: 1_700_000,
     leads: ['Moderation Pro'],
   },
 ];
@@ -116,39 +104,59 @@ const FILLER_GROUPS = [
   { name: 'Voice Clone Studio Platform', division: 'SAIT' },
 ];
 
-/* ---- GET /api/token/groups ---- */
-export const serviceGroups: TokenGroupSummary[] = [
+/* ---- GET /api/token/groups ----
+   Group aggregates are SUMS of their (fully generated) child services, and
+   share_pct is each group's slice of the derived grand total — so the table,
+   the 더보기/modal lists, and the KPI strip can never disagree. */
+const baseGroups: TokenGroupSummary[] = [
   ...LEAD_GROUPS.map((g, i): TokenGroupSummary => {
     const id = `TG${String(i + 1).padStart(2, '0')}`;
+    const services = genServices(id, 2100 + i * 13, g.count, g.leads);
     return {
       service_group_id: id,
       service_group_name: g.name,
       division: g.division,
-      service_count: g.count,
-      share_pct: g.share,
-      avg_input: g.input,
-      avg_output: g.output,
-      avg_total: g.total,
-      services: genServices(id, 2100 + i * 13, g.count, g.leads),
+      service_count: services.length,
+      share_pct: 0, // filled below
+      avg_input: services.reduce((t, x) => t + x.avg_input, 0),
+      avg_output: services.reduce((t, x) => t + x.avg_output, 0),
+      avg_total: services.reduce((t, x) => t + x.avg_total, 0),
+      services,
     };
   }),
   ...FILLER_GROUPS.map((g, i): TokenGroupSummary => {
     const id = `TG${String(LEAD_GROUPS.length + i + 1).padStart(2, '0')}`;
     const r = rng(3300 + i * 17);
     const count = 6 + Math.floor(r() * 19);
+    const services = genServices(id, 4400 + i * 29, count, []);
     return {
       service_group_id: id,
       service_group_name: g.name,
       division: g.division,
-      service_count: count,
-      share_pct: round1(3 + r() * 12),
-      avg_input: Math.round(12 + r() * 58) * 100_000, // 1.2M..7M
-      avg_output: Math.round(8 + r() * 42) * 100_000, // 0.8M..5M
-      avg_total: Math.round(8 + r() * 26) * 100_000, // 0.8M..3.4M
-      services: genServices(id, 4400 + i * 29, count, []),
+      service_count: services.length,
+      share_pct: 0,
+      avg_input: services.reduce((t, x) => t + x.avg_input, 0),
+      avg_output: services.reduce((t, x) => t + x.avg_output, 0),
+      avg_total: services.reduce((t, x) => t + x.avg_total, 0),
+      services,
     };
   }),
 ];
+
+const grandTotal = baseGroups.reduce((t, g) => t + g.avg_total, 0);
+for (const g of baseGroups) g.share_pct = round1((g.avg_total / grandTotal) * 100);
+
+export const serviceGroups: TokenGroupSummary[] = baseGroups;
+
+/* ---- GET /api/token/totals — KPI strip, DERIVED from serviceGroups so the
+   group count, the per-group '서비스 N개' metas, and the 일평균 합계 always
+   reconcile with the table beneath. ---- */
+export const tokenTotals: TokenTotals = {
+  group_count: serviceGroups.length,
+  service_count: serviceGroups.reduce((t, g) => t + g.service_count, 0),
+  avg_total: grandTotal,
+  day_count: 28, // '최근 28일 기준' in the 서비스 전체 modal (7104:4624)
+};
 
 /**
  * GET /api/token/timeseries — per group: top-5 services × 14 days

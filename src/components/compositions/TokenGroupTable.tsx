@@ -1,4 +1,4 @@
-import { Fragment, useState, type CSSProperties, type ReactNode } from 'react';
+import { Fragment, useState, type CSSProperties, type ReactNode, useMemo } from 'react';
 import { color, text, tokenScreen } from '../../tokens';
 import { fmtTokens, ioBarPct, ioRatio } from '../../lib/util';
 import { ChevronRightIcon } from '../../icons/FigureIcons';
@@ -15,15 +15,27 @@ import type { TokenGroupSummary, TokenServiceItem } from '../../mock/types';
 const COLS = [32, 660, 234, 160, 160, 234, 160];
 const TOTAL = COLS.reduce((s, w) => s + w, 0);
 
-const HEADERS: { label: string; align: 'left' | 'center' }[] = [
+type GroupSortKey = 'share_pct' | 'avg_input' | 'avg_output' | 'io' | 'avg_total';
+
+const HEADERS: { label: string; align: 'left' | 'center'; sortKey?: GroupSortKey }[] = [
   { label: '', align: 'left' },
-  { label: '서비스 그룹 · 서비스', align: 'left' },
-  { label: '토큰 점유율', align: 'left' },
-  { label: '일평균 Input', align: 'center' },
-  { label: '일평균 Output', align: 'center' },
-  { label: 'I:O', align: 'left' },
-  { label: '일평균 합계', align: 'center' },
+  { label: '서비스 그룹 · 서비스', align: 'left' }, // 정렬 제외 (사용자 지정)
+  { label: '토큰 점유율', align: 'left', sortKey: 'share_pct' },
+  { label: '일평균 Input', align: 'center', sortKey: 'avg_input' },
+  { label: '일평균 Output', align: 'center', sortKey: 'avg_output' },
+  { label: 'I:O', align: 'left', sortKey: 'io' },
+  { label: '일평균 합계', align: 'center', sortKey: 'avg_total' },
 ];
+
+/** Stacked sort triangles — active direction darkens. */
+function SortGlyphs({ dir }: { dir?: 'asc' | 'desc' }) {
+  return (
+    <svg width={5} height={10} viewBox="0 0 5 10" aria-hidden style={{ flexShrink: 0, marginLeft: 4 }}>
+      <path d="M2.5 0L5 4H0L2.5 0Z" fill={dir === 'asc' ? '#565E66' : tokenScreen.sortGlyph} />
+      <path d="M2.5 10L0 6H5L2.5 10Z" fill={dir === 'desc' ? '#565E66' : tokenScreen.sortGlyph} />
+    </svg>
+  );
+}
 
 /** Hairline above the 더보기 row (border_under I7104:3181;1258:9796). */
 const MORE_HAIRLINE = '#EFF4F8';
@@ -113,6 +125,16 @@ export default function TokenGroupTable({
   renderExpandedPanel,
   emptyText = '조건에 맞는 서비스 그룹이 없습니다',
 }: TokenGroupTableProps) {
+  // Group sorting on the 5 numeric columns (서비스 그룹·서비스 excluded):
+  // click cycles desc → asc → none. Children keep their share-desc order.
+  const [sort, setSort] = useState<{ key: GroupSortKey; dir: 'asc' | 'desc' } | null>(null);
+  const sortedGroups = useMemo(() => {
+    if (!sort) return groups;
+    const val = (g: TokenGroupSummary) =>
+      sort.key === 'io' ? (g.avg_output > 0 ? g.avg_input / g.avg_output : 0) : g[sort.key];
+    return [...groups].sort((a, b) => (sort.dir === 'asc' ? val(a) - val(b) : val(b) - val(a)));
+  }, [groups, sort]);
+
   // Sticky header band: 28px #FAFBFC + 1px #E4E9ED top/bottom borders = 30px.
   const th: CSSProperties = {
     position: 'sticky',
@@ -152,8 +174,34 @@ export default function TokenGroupTable({
       <thead>
         <tr>
           {HEADERS.map((h, i) => (
-            <th key={i} style={{ ...th, textAlign: h.align }}>
-              {h.label}
+            <th
+              key={i}
+              onClick={
+                h.sortKey
+                  ? () =>
+                      setSort((prev) => {
+                        if (!prev || prev.key !== h.sortKey) return { key: h.sortKey!, dir: 'desc' };
+                        return prev.dir === 'desc' ? { key: h.sortKey!, dir: 'asc' } : null;
+                      })
+                  : undefined
+              }
+              aria-sort={
+                sort && sort.key === h.sortKey
+                  ? sort.dir === 'asc'
+                    ? 'ascending'
+                    : 'descending'
+                  : undefined
+              }
+              style={{
+                ...th,
+                textAlign: h.align,
+                ...(h.sortKey ? { cursor: 'pointer', userSelect: 'none' } : {}),
+              }}
+            >
+              <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                {h.label}
+                {h.sortKey && <SortGlyphs dir={sort?.key === h.sortKey ? sort.dir : undefined} />}
+              </span>
             </th>
           ))}
         </tr>
@@ -170,7 +218,7 @@ export default function TokenGroupTable({
             </td>
           </tr>
         ) : (
-          groups.map((g, gi) => {
+          sortedGroups.map((g, gi) => {
             const expanded = g.service_group_id === expandedGroupId;
             // Per the build spec: first 3 children collapsed / 5 expanded,
             // rest behind the 더보기 row.

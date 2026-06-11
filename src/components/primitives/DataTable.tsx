@@ -40,15 +40,20 @@ export interface DataTableProps<T> {
   /** Fires when the number of expanded rows crosses 0 ↔ n — lets a scroll
    *  wrapper release its maxHeight so expanded details are fully visible. */
   onExpandChange?: (anyExpanded: boolean) => void;
+  /** Controlled sorting: the active column key / direction, and the header-click
+   *  handler (the OWNER sorts the rows — required when rows are paginated). */
+  sortKey?: string | null;
+  sortDir?: 'asc' | 'desc';
+  onSortChange?: (key: string) => void;
   emptyText?: string;
 }
 
-/** Static stacked sort triangles from the Figma header spec (5×5 each, #B9BBBE). */
-function SortGlyphs() {
+/** Stacked sort triangles (5×5, #B9BBBE); the active direction darkens. */
+function SortGlyphs({ dir }: { dir?: 'asc' | 'desc' }) {
   return (
     <svg width={5} height={10} viewBox="0 0 5 10" aria-hidden style={{ flexShrink: 0 }}>
-      <path d="M2.5 0L5 4H0L2.5 0Z" fill="#B9BBBE" />
-      <path d="M2.5 10L0 6H5L2.5 10Z" fill="#B9BBBE" />
+      <path d="M2.5 0L5 4H0L2.5 0Z" fill={dir === 'asc' ? '#565E66' : '#B9BBBE'} />
+      <path d="M2.5 10L0 6H5L2.5 10Z" fill={dir === 'desc' ? '#565E66' : '#B9BBBE'} />
     </svg>
   );
 }
@@ -68,6 +73,9 @@ export default function DataTable<T>({
   rowStyle,
   panelStyle,
   onExpandChange,
+  sortKey,
+  sortDir,
+  onSortChange,
   emptyText = 'No data',
 }: DataTableProps<T>) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -112,11 +120,16 @@ export default function DataTable<T>({
           {columns.map((c, ci) => (
             <th
               key={c.key}
+              onClick={c.sortable && onSortChange ? () => onSortChange(c.key) : undefined}
+              aria-sort={
+                sortKey === c.key ? (sortDir === 'asc' ? 'ascending' : 'descending') : undefined
+              }
               style={{
                 ...headBase,
                 width: c.width,
                 textAlign: c.align ?? 'left',
                 whiteSpace: 'nowrap',
+                ...(c.sortable && onSortChange ? { cursor: 'pointer', userSelect: 'none' } : {}),
                 // Figma header uses a 32px leading cell + 8px pad, so the first
                 // label sits ~10px LEFT of the body titles (nodes 7104:7507/7508).
                 ...(expandable && ci === 0 ? { paddingLeft: 0 } : {}),
@@ -127,7 +140,7 @@ export default function DataTable<T>({
                 // right padding edge (v2 header spec).
                 <span style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
                   <span style={{ flex: 1, textAlign: c.align ?? 'left' }}>{c.header}</span>
-                  <SortGlyphs />
+                  <SortGlyphs dir={sortKey === c.key ? sortDir : undefined} />
                 </span>
               ) : (
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>{c.header}</span>
