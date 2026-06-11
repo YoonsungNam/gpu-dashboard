@@ -1,4 +1,4 @@
-import { useEffect, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { color, radius, text, tokenScreen } from '../../tokens';
 import { policyBands } from '../../lib/gradePolicy';
 
@@ -38,6 +38,56 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
+  // 헤더를 잡고 패널을 드래그 — 기본 위치(우상단)가 상단 지표를 가릴 수 있어서
+  // (2026-06-11 피드백) 창처럼 옮길 수 있게 한다. 패널이 화면 밖으로 완전히
+  // 나가지 않도록 헤더가 항상 잡히는 범위로 클램프.
+  const [drag, setDrag] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const dragState = useRef<{
+    startX: number;
+    startY: number;
+    baseLeft: number;
+    baseTop: number;
+    w: number;
+    h: number;
+  } | null>(null);
+
+  const onHeaderPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLElement).closest('button')) return; // X 버튼 클릭은 드래그 아님
+    const rect = panelRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    dragState.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      // 현재 transform(드래그 오프셋)을 뺀, 변환 전 기준 좌표.
+      baseLeft: rect.left - drag.x,
+      baseTop: rect.top - drag.y,
+      w: rect.width,
+      h: rect.height,
+    };
+    setDragging(true);
+  };
+  const onHeaderPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const s = dragState.current;
+    if (!s) return;
+    const minVisible = 60; // 패널이 최소 60px은 화면에 남는다
+    const left = Math.min(
+      Math.max(s.baseLeft + (e.clientX - s.startX), minVisible - s.w),
+      window.innerWidth - minVisible,
+    );
+    const top = Math.min(
+      Math.max(s.baseTop + (e.clientY - s.startY), 8),
+      window.innerHeight - minVisible,
+    );
+    setDrag({ x: left - s.baseLeft, y: top - s.baseTop });
+  };
+  const endDrag = () => {
+    dragState.current = null;
+    setDragging(false);
+  };
+
   // Header band + row styles mirror the ServiceListModal table.
   const th: CSSProperties = {
     height: 30,
@@ -66,6 +116,7 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
       style={{ position: 'fixed', inset: 0, zIndex: 1000 }}
     >
       <div
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label="모니터링 지표 정의"
@@ -77,6 +128,7 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
           width: 380,
           maxWidth: 'calc(100vw - 56px)',
           maxHeight: 'calc(100vh - 84px)',
+          transform: `translate(${drag.x}px, ${drag.y}px)`,
           background: color.white,
           borderRadius: 4,
           boxShadow: '0 4px 16px rgba(0,32,53,0.18), 0 0 2px rgba(40,48,55,0.12)',
@@ -85,8 +137,13 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
           overflow: 'hidden',
         }}
       >
-        {/* HEADER — 52px + 1px #E4E9ED border (kit modal pattern) */}
+        {/* HEADER — 52px + 1px #E4E9ED border (kit modal pattern). 드래그 핸들. */}
         <div
+          title="드래그하여 이동"
+          onPointerDown={onHeaderPointerDown}
+          onPointerMove={onHeaderPointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
           style={{
             height: 52,
             flexShrink: 0,
@@ -95,6 +152,9 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
             justifyContent: 'space-between',
             padding: '0 16px',
             borderBottom: `1px solid ${color.border}`,
+            cursor: dragging ? 'grabbing' : 'grab',
+            userSelect: 'none',
+            touchAction: 'none',
           }}
         >
           <span style={{ fontSize: 16, lineHeight: '20px', fontWeight: 500, color: color.textSecondary }}>
