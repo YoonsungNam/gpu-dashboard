@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { chart, color, radius, semantic, space, text, tokenScreen } from '../tokens';
 import { num, pct, utilLevel } from '../lib/util';
+import { GRADE_POLICY, goodLabel, reclaimLabel } from '../lib/gradePolicy';
 import { GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL } from '../lib/labels';
 
 import SectionHeader from '../components/primitives/SectionHeader';
@@ -16,13 +17,14 @@ import ExpandedTaskDetail from '../components/compositions/ExpandedTaskDetail';
 
 import type { KpiByTask, RankedProject, TaskType } from '../mock/types';
 import {
+  type GlobalFilters,
+  getKpiByTask,
+  getRankByTask,
+  getUtilTrend,
   getProjectUnits,
   gpuCountByTask,
-  kpiByTask,
   quotaByEnvGpu,
-  rankByTask,
   trendAvg,
-  utilTrendByTask,
 } from '../mock/data';
 
 /* ------------------------------------------------------------------ */
@@ -438,25 +440,17 @@ function HoldingsSection() {
 const SELECTED = tokenScreen.selected;
 
 /**
- * Badge level per the STATED rank-table criteria (NOT the global utilThresholds):
- * GPU Util — good ≥66 · bad ≤30 · else warn; Slot Util — good ≥80 · bad ≤75 · else warn.
+ * Badge level per the STATED rank-table criteria — thresholds come from
+ * GRADE_POLICY[task].badge (운영 정책과 함께 변경됨).
  */
-const rankLevel = (value: number, metric: 'gpu' | 'slot') =>
-  metric === 'gpu'
-    ? value >= 66
-      ? 'good'
-      : value <= 30
-        ? 'bad'
-        : 'warn'
-    : value >= 80
-      ? 'good'
-      : value <= 75
-        ? 'bad'
-        : 'warn';
+const rankLevel = (task: TaskType, value: number, metric: 'gpu' | 'slot') => {
+  const b = GRADE_POLICY[task].badge[metric];
+  return value >= b.good ? 'good' : value <= b.bad ? 'bad' : 'warn';
+};
 
 /** Rank-table util chip (same 60×22 'lg' chip styles as UtilBadge, colors from rankLevel). */
-function RankUtilBadge({ value, metric }: { value: number; metric: 'gpu' | 'slot' }) {
-  const lvl = rankLevel(value, metric);
+function RankUtilBadge({ task, value, metric }: { task: TaskType; value: number; metric: 'gpu' | 'slot' }) {
+  const lvl = rankLevel(task, value, metric);
   const c = semantic.util[lvl];
   return (
     <span
@@ -488,7 +482,7 @@ function RankUtilBadge({ value, metric }: { value: number; metric: 'gpu' | 'slot
  * 90px division), criteria-colored util badges, '장 수(H100기준)'.
  * Expanded (selected) rows flip to the blue palette (#E6F1FA box / #0077C8 text).
  */
-const RANK_COLUMNS: DataTableColumn<RankedProject>[] = [
+const rankColumnsFor = (task: TaskType): DataTableColumn<RankedProject>[] => [
   {
     key: 'project',
     header: '과제',
@@ -536,14 +530,14 @@ const RANK_COLUMNS: DataTableColumn<RankedProject>[] = [
     header: GPU_UTIL.label,
     align: 'center',
     width: 110, // Figma column packing: 과제 452 + 3×~106-110 (재검증)
-    render: (r) => <RankUtilBadge value={r.gpu_ut} metric="gpu" />,
+    render: (r) => <RankUtilBadge task={task} value={r.gpu_ut} metric="gpu" />,
   },
   {
     key: 'slot_ut',
     header: SLOT_UTIL.label,
     align: 'center',
     width: 110,
-    render: (r) => <RankUtilBadge value={r.slot_ut} metric="slot" />,
+    render: (r) => <RankUtilBadge task={task} value={r.slot_ut} metric="slot" />,
   },
   {
     key: 'quota',
@@ -621,12 +615,24 @@ function ShowAllRow({ count, onClick }: { count: number; onClick?: () => void })
 
 const RANK_PREVIEW = 10;
 
-function OccupancyColumn({ task, onShowAll }: { task: TaskType; onShowAll?: ShowAllHandler }) {
+function OccupancyColumn({
+  task,
+  onShowAll,
+  rank,
+  projectCount,
+  filters,
+}: {
+  task: TaskType;
+  onShowAll?: ShowAllHandler;
+  rank: import('../mock/data').TaskRank;
+  projectCount: number;
+  filters: GlobalFilters;
+}) {
   const kind = taskKind(task);
-  const projectCount = kpiByTask.find((k) => k.task === task)?.project_count ?? 0;
+  const rankColumns = useMemo(() => rankColumnsFor(task), [task]);
   const expandRow = (showReclaim: boolean) => (r: RankedProject) => (
     <ExpandedTaskDetail
-      data={getProjectUnits(r.project_id, task)}
+      data={getProjectUnits(r.project_id, task, filters)}
       taskType={task}
       isStrategic={r.is_critical === 'Y'}
       bg="#F2F6F9"
@@ -643,7 +649,7 @@ function OccupancyColumn({ task, onShowAll }: { task: TaskType; onShowAll?: Show
     <RankTableScroller>
       {(onExpandChange) => (
         <DataTable
-          columns={RANK_COLUMNS}
+          columns={rankColumns}
           rows={rows}
           rowKey={(r) => `${prefix}-${r.project_id}`}
           vPad={13}
@@ -676,14 +682,14 @@ function OccupancyColumn({ task, onShowAll }: { task: TaskType; onShowAll?: Show
         <div style={{ display: 'flex', flexDirection: 'column', gap: space.md }}>
           <RankTitle
             title="우수 활용 과제"
-            count={rankByTask[task].good_count}
-            caption={task === '학습' ? 'GPU Util ≥ 66% and Slot Util ≥ 80%' : 'GPU Util ≥ 66%'}
+            count={rank.good_count}
+            caption={goodLabel(task)}
           />
-          {rankTable(rankByTask[task].good.slice(0, RANK_PREVIEW), 'good', true, false)}
+          {rankTable(rank.good.slice(0, RANK_PREVIEW), 'good', true, false)}
           <ShowAllRow
-            count={rankByTask[task].good_count}
+            count={rank.good_count}
             onClick={
-              onShowAll && rankByTask[task].good_count > RANK_PREVIEW
+              onShowAll && rank.good_count > RANK_PREVIEW
                 ? () => onShowAll(task, '우수')
                 : undefined
             }
@@ -693,14 +699,14 @@ function OccupancyColumn({ task, onShowAll }: { task: TaskType; onShowAll?: Show
         <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg }}>
           <RankTitle
             title="저활용 과제"
-            count={rankByTask[task].alert_count}
-            caption="모델학습: GPU Util ≤ 30% and Slot Util ≤ 75%, 모델개발: GPU Util ≤ 5% and Slot Util ≤ 75%"
+            count={rank.alert_count}
+            caption={reclaimLabel(task)}
           />
-          {rankTable(rankByTask[task].alert.slice(0, RANK_PREVIEW), 'alert', false, true)}
+          {rankTable(rank.alert.slice(0, RANK_PREVIEW), 'alert', false, true)}
           <ShowAllRow
-            count={rankByTask[task].alert_count}
+            count={rank.alert_count}
             onClick={
-              onShowAll && rankByTask[task].alert_count > RANK_PREVIEW
+              onShowAll && rank.alert_count > RANK_PREVIEW
                 ? () => onShowAll(task, '저활용')
                 : undefined
             }
@@ -761,12 +767,12 @@ function TrendLegend({ color: c }: { color: string }) {
   );
 }
 
-function TrendSection() {
+function TrendSection({ trend }: { trend: Record<TaskType, import('../mock/types').UtilTrendPoint[]> }) {
   const renderCard = (task: TaskType) => {
     const kind = taskKind(task);
     const accent = TASK_ACCENT[kind].metric;
     const series = trendSeriesFor(kind);
-    const pts = utilTrendByTask[task];
+    const pts = trend[task];
     const data = pts.map((p) => ({ ts: p.ts, gpu_ut: p.gpu_ut, slot_ut: p.slot_ut }));
     return (
       <Card title={<TaskCardTitle kind={kind} />} headerStyle={TASK_HEADER_STYLE}>
@@ -824,9 +830,19 @@ export interface ShowAllHandler {
   (task: TaskType, grade: '우수' | '저활용'): void;
 }
 
-export default function OverviewPage({ onShowAll }: { onShowAll?: ShowAllHandler } = {}) {
-  const inference = kpiByTask.find((k) => k.task === '추론') ?? kpiByTask[0];
-  const training = kpiByTask.find((k) => k.task === '학습') ?? kpiByTask[1];
+export default function OverviewPage({
+  onShowAll,
+  filters,
+}: {
+  onShowAll?: ShowAllHandler;
+  filters: GlobalFilters;
+}) {
+  // Every section derives from the SAME filtered window (기간/사업부/과제 구분).
+  const kpis = useMemo(() => getKpiByTask(filters), [filters]);
+  const rank = useMemo(() => getRankByTask(filters), [filters]);
+  const trend = useMemo(() => getUtilTrend(filters), [filters]);
+  const inference = kpis.find((k) => k.task === '추론') ?? kpis[0];
+  const training = kpis.find((k) => k.task === '학습') ?? kpis[1];
 
   return (
     <div>
@@ -843,13 +859,13 @@ export default function OverviewPage({ onShowAll }: { onShowAll?: ShowAllHandler
 
       <Section id="sec-occupancy" title="GPU 활용도 점검" caption="우수 저활용 과제 순위">
         <TwoCol>
-          <OccupancyColumn task="추론" onShowAll={onShowAll} />
-          <OccupancyColumn task="학습" onShowAll={onShowAll} />
+          <OccupancyColumn task="추론" onShowAll={onShowAll} rank={rank['추론']} projectCount={inference.project_count} filters={filters} />
+          <OccupancyColumn task="학습" onShowAll={onShowAll} rank={rank['학습']} projectCount={training.project_count} filters={filters} />
         </TwoCol>
       </Section>
 
-      <Section id="sec-trend" title="GPU 사용추이" caption="최근 28일 · 추론/학습별 Slot Util · GPU Util">
-        <TrendSection />
+      <Section id="sec-trend" title="GPU 사용추이" caption={`${filters.period} · 추론/학습별 Slot Util · GPU Util`}>
+        <TrendSection trend={trend} />
       </Section>
     </div>
   );

@@ -6,7 +6,8 @@ import ServiceCountKpis from '../components/compositions/ServiceCountKpis';
 import TokenGroupTable from '../components/compositions/TokenGroupTable';
 import ServiceListModal from '../components/compositions/ServiceListModal';
 import TokenTrendChart from '../components/charts/TokenTrendChart';
-import { groupTokenTimeseries, pivotTokenSeries, serviceGroups, tokenTotals } from '../mock/tokens';
+import { getGroupSeries, getTokenView, pivotTokenSeries } from '../mock/tokens';
+import type { GlobalFilters } from '../mock/data';
 import { downloadCsv } from '../lib/csv';
 import { ioRatio } from '../lib/util';
 
@@ -16,7 +17,9 @@ import { ioRatio } from '../lib/util';
  * the app bar (see App.tsx); this page is the KPI/toolbar row + the grouped
  * token table card. No pagination exists in this design.
  */
-export default function TokenUsagePage() {
+export default function TokenUsagePage({ filters: gf }: { filters: GlobalFilters }) {
+  // The whole view (KPIs, groups, children, shares) derives from the header filters.
+  const view = useMemo(() => getTokenView(gf), [gf]);
   const [query, setQuery] = useState('');
   // Single-open accordion for the per-group chart panel.
   const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
@@ -25,16 +28,16 @@ export default function TokenUsagePage() {
   // Client-side search across group name OR child service names.
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return serviceGroups;
-    return serviceGroups.filter(
+    if (!q) return view.groups;
+    return view.groups.filter(
       (g) =>
         g.service_group_name.toLowerCase().includes(q) ||
         g.services.some((s) => s.service_name.toLowerCase().includes(q)),
     );
-  }, [query]);
+  }, [query, view]);
 
   const modalGroup = modalGroupId
-    ? serviceGroups.find((g) => g.service_group_id === modalGroupId) ?? null
+    ? view.groups.find((g) => g.service_group_id === modalGroupId) ?? null
     : null;
 
   return (
@@ -50,7 +53,7 @@ export default function TokenUsagePage() {
           gap: space.xl,
         }}
       >
-        <ServiceCountKpis totals={tokenTotals} />
+        <ServiceCountKpis totals={view.totals} />
         <div style={{ display: 'flex', alignItems: 'center', gap: space.md, alignSelf: 'flex-end' }}>
           <SearchInput
             value={query}
@@ -101,7 +104,7 @@ export default function TokenUsagePage() {
           onToggleGroup={(id) => setExpandedGroupId((prev) => (prev === id ? null : id))}
           onMoreServices={setModalGroupId}
           renderExpandedPanel={(g) => {
-            const feed = pivotTokenSeries(groupTokenTimeseries[g.service_group_id] ?? []);
+            const feed = pivotTokenSeries(getGroupSeries(g.service_group_id, gf));
             return <TokenTrendChart rows={feed.rows} series={feed.series} />;
           }}
         />
@@ -110,7 +113,7 @@ export default function TokenUsagePage() {
       {modalGroup && (
         <ServiceListModal
           group={modalGroup}
-          dayCount={tokenTotals.day_count}
+          dayCount={view.totals.day_count}
           onClose={() => setModalGroupId(null)}
         />
       )}

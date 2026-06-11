@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { color, radius, semantic, space, text } from '../tokens';
-import { num, projectGrade } from '../lib/util';
+import { num } from '../lib/util';
+import { gradeOf } from '../lib/gradePolicy';
 import { downloadCsv } from '../lib/csv';
 import { GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL, type MetricDef } from '../lib/labels';
 import type { ProjectRow, TaskType } from '../mock/types';
@@ -15,7 +16,7 @@ import TaskTypeBadge from '../components/primitives/TaskTypeBadge';
 import GradeBadge from '../components/primitives/GradeBadge';
 import GradeFilter, { type GradeFilterValue } from '../components/compositions/GradeFilter';
 import ExpandedTaskDetail from '../components/compositions/ExpandedTaskDetail';
-import { projects, getProjectUnits } from '../mock/data';
+import { filterProjects, getProjectUnits, projectUtil, type GlobalFilters } from '../mock/data';
 
 const PAGE_SIZE = 15;
 
@@ -24,19 +25,15 @@ type TabKey = TaskType; // '추론' | '학습'
 /** v2 selected-row text color (expanded rows tint #F0F7FC + #0077C8 text). */
 const SELECTED_TEXT = '#0077C8';
 
-/** Per-tab value getter for the util columns (학습 GPU Util is training-scoped). */
-function utilValue(r: ProjectRow, key: string, tab: TabKey): number {
+/** Per-tab value getter — window means over the active 기간 (fact table). */
+function utilValue(r: ProjectRow, key: string, tab: TabKey, f: GlobalFilters): number {
+  const u = projectUtil(r, tab, f);
   switch (key) {
-    case 'gpu_ut':
-      return tab === '학습' ? r.training_gpu_ut ?? r.inference_gpu_ut : r.inference_gpu_ut;
-    case 'gpu_ut_working':
-      return r.inference_gpu_ut_working ?? 0;
-    case 'gpu_ut_nonworking':
-      return r.inference_gpu_ut_nonworking ?? 0;
-    case 'slot_ut':
-      return r.slot_ut;
-    default:
-      return 0;
+    case 'gpu_ut': return u.gpu;
+    case 'gpu_ut_working': return u.wh;
+    case 'gpu_ut_nonworking': return u.ah;
+    case 'slot_ut': return u.slot;
+    default: return 0;
   }
 }
 
@@ -46,8 +43,9 @@ function utilValue(r: ProjectRow, key: string, tab: TabKey): number {
  * displayed GPU/Slot Util misses its 용도-specific threshold always carries
  * the matching 우수/저활용 chip, and the chip can differ between tabs.
  */
-function rowGrade(r: ProjectRow, tab: TabKey) {
-  return projectGrade(r.purpose, utilValue(r, 'gpu_ut', tab), r.slot_ut);
+function rowGrade(r: ProjectRow, tab: TabKey, f: GlobalFilters) {
+  const u = projectUtil(r, tab, f);
+  return gradeOf(tab, r.purpose, u);
 }
 
 /**
@@ -61,7 +59,13 @@ export interface ResourcePreset {
   grade: GradeFilterValue;
 }
 
-export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | null }) {
+export default function GpuResourcePage({
+  preset,
+  filters: gf,
+}: {
+  preset?: ResourcePreset | null;
+  filters: GlobalFilters;
+}) {
   const [tab, setTab] = useState<TabKey>(preset?.tab ?? '추론'); // 추론 default, no 전체
   const [query, setQuery] = useState('');
   const [grade, setGrade] = useState<GradeFilterValue>(preset?.grade ?? '전체');
@@ -101,14 +105,14 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
   // user_id, grade via the 등급 필터 popover ('전체' clears).
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return projects.filter((p) => {
+    return filterProjects(gf).filter((p) => {
       if (!p.member_tasks.includes(tab)) return false;
       if (q && !p.project_name.toLowerCase().includes(q) && !p.user_id.toLowerCase().includes(q))
         return false;
-      if (grade !== '전체' && rowGrade(p, tab) !== grade) return false;
+      if (grade !== '전체' && rowGrade(p, tab, gf) !== grade) return false;
       return true;
     });
-  }, [tab, query, grade]);
+  }, [tab, query, grade, gf]);
 
   const sorted = useMemo(() => {
     if (!sort) return filtered;
@@ -120,7 +124,7 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
         case 'is_critical': return r.is_critical === 'Y' ? '전략' : '일반';
         case 'user_id': return r.user_id;
         case 'quota': return r.quota;
-        default: return utilValue(r, sort.key, tab);
+        default: return utilValue(r, sort.key, tab, gf);
       }
     };
     return [...filtered].sort((a, b) => {
@@ -132,7 +136,7 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
           : String(va).localeCompare(String(vb), 'ko');
       return sort.dir === 'asc' ? c : -c;
     });
-  }, [filtered, sort, tab]);
+  }, [filtered, sort, tab, gf]);
 
   const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
@@ -152,7 +156,7 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
         render: (r, _i, expanded) => (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 16 /* Header,Box gap16.0 (7104:8604) */, minWidth: 0 }}>
             <span style={{ ...text.bodyM, color: cellColor(expanded) }}>{r.project_name}</span>
-            <GradeBadge grade={rowGrade(r, tab)} />
+            <GradeBadge grade={rowGrade(r, tab, gf)} />
           </span>
         ),
       },
@@ -210,15 +214,16 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
           align: 'center',
           width: 120,
           sortable: true,
-          render: (r) => <UtilBadge value={utilValue(r, def.key, tab)} metric={def.metric} />,
+          render: (r) => <UtilBadge value={utilValue(r, def.key, tab, gf)} metric={def.metric} />,
         }),
       ),
     ];
-  }, [tab]);
+  }, [tab, gf]);
 
   // Tab counts derived from the full project set.
-  const inferenceCount = projects.filter((p) => p.member_tasks.includes('추론')).length;
-  const trainingCount = projects.filter((p) => p.member_tasks.includes('학습')).length;
+  const pool = useMemo(() => filterProjects(gf), [gf]);
+  const inferenceCount = pool.filter((p) => p.member_tasks.includes('추론')).length;
+  const trainingCount = pool.filter((p) => p.member_tasks.includes('학습')).length;
   const tabs = [
     { key: '추론', label: '추론', count: inferenceCount },
     { key: '학습', label: '학습', count: trainingCount },
@@ -287,8 +292,8 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
                   r.is_critical === 'Y' ? '전략' : '일반',
                   r.user_id,
                   r.quota,
-                  ...utilCols.map(([, k]) => utilValue(r, k, tab)),
-                  rowGrade(r, tab) ?? '',
+                  ...utilCols.map(([, k]) => utilValue(r, k, tab, gf)),
+                  rowGrade(r, tab, gf) ?? '',
                 ]),
               );
             }}
@@ -316,10 +321,10 @@ export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | 
             <ExpandedTaskDetail
               // Task-scoped fetch: the expanded KPI/gauge values match the
               // gpu value displayed on the active tab's row.
-              data={getProjectUnits(r.project_id, tab)}
+              data={getProjectUnits(r.project_id, tab, gf)}
               taskType={tab}
               isStrategic={r.is_critical === 'Y'}
-              showReclaim={rowGrade(r, tab) === '저활용'}
+              showReclaim={rowGrade(r, tab, gf) === '저활용'}
             />
           )}
           emptyText="조건에 맞는 워크그룹이 없습니다"

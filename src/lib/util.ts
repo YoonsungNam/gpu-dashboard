@@ -25,32 +25,7 @@ export function utilColors(value: number, metric: UtilMetric = 'gpu') {
   return semantic.util[utilLevel(value, metric)];
 }
 
-/**
- * 과제 등급 기준 — THE single source for 우수/저활용 judgement.
- * 저활용 thresholds differ by 용도 (the 'GPU 활용도 점검' captions):
- *   모델 학습: GPU Util ≤ 30% AND Slot Util ≤ 75%
- *   모델 개발: GPU Util ≤  5% AND Slot Util ≤ 75%
- * 우수: GPU Util ≥ 66% (용도 무관).
- */
-export const gradeCriteria = {
-  good: { gpu: 66 },
-  reclaim: {
-    '모델 학습': { gpu: 30, slot: 75 },
-    '모델 개발': { gpu: 5, slot: 75 },
-  } as Record<string, { gpu: number; slot: number }>,
-} as const;
-
-/** Purpose-aware project grade. Returns null when neither rule matches. */
-export function projectGrade(
-  purpose: string,
-  gpuUt: number,
-  slotUt: number,
-): '우수' | '저활용' | null {
-  if (gpuUt >= gradeCriteria.good.gpu) return '우수';
-  const r = gradeCriteria.reclaim[purpose] ?? gradeCriteria.reclaim['모델 학습'];
-  if (gpuUt <= r.gpu && slotUt <= r.slot) return '저활용';
-  return null;
-}
+// 과제 등급 규칙은 lib/gradePolicy.ts(GRADE_POLICY)로 이동 — 운영 정책 단일 소스.
 
 export const pct = (n: number, digits = 1) => `${n.toFixed(digits)}%`;
 export const num = (n: number) => n.toLocaleString('en-US');

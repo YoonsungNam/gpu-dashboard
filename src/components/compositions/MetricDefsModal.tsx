@@ -1,6 +1,6 @@
 import { useEffect, type CSSProperties } from 'react';
 import { color, radius, semantic, shadow, text, tokenScreen } from '../../tokens';
-import { gradeCriteria } from '../../lib/util';
+import { GRADE_POLICY, goodLabel, ruleLabel } from '../../lib/gradePolicy';
 import GradeBadge from '../primitives/GradeBadge';
 
 /**
@@ -205,27 +205,31 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
             ))}
           </div>
 
-          {/* 과제 등급 기준 — purpose-aware 우수/저활용 rule (lib/util.ts gradeCriteria) */}
+          {/* 과제 등급 기준 — lib/gradePolicy.ts GRADE_POLICY에서 자동 파생
+              (운영 정책 변경 시 이 모달과 점검 카드 캡션이 함께 갱신됨) */}
           <div style={{ marginTop: 20, ...text.label, color: color.textTertiary }}>
-            과제 등급 기준 (용도별)
+            과제 등급 기준 (태스크 · 용도별)
           </div>
           <div style={{ marginTop: 4, ...text.caption, color: color.textTertiary }}>
-            과제 등급(우수/저활용)은 과제 성격(용도)에 따라 저활용 기준이 다릅니다.
+            과제 등급(우수/저활용)은 태스크(추론/학습)와 과제 성격(용도)에 따라 기준이 다릅니다.
           </div>
-          <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <GradeBadge grade="우수" />
-              <span style={{ ...text.body, color: color.textSecondary }}>
-                GPU Util ≥ {gradeCriteria.good.gpu}% (용도 무관)
-              </span>
-            </div>
-            {Object.entries(gradeCriteria.reclaim).map(([purpose, r]) => (
-              <div key={purpose} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <GradeBadge grade="저활용" />
-                <span style={{ ...text.bodyM, color: color.textTitle, width: 72 }}>{purpose}</span>
-                <span style={{ ...text.body, color: color.textSecondary }}>
-                  GPU Util ≤ {r.gpu}% 그리고 Slot Util ≤ {r.slot}%
-                </span>
+          <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {(Object.keys(GRADE_POLICY) as Array<keyof typeof GRADE_POLICY>).map((task) => (
+              <div key={task} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <span style={{ ...text.bodyM, color: color.textTitle }}>{task}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <GradeBadge grade="우수" />
+                  <span style={{ ...text.body, color: color.textSecondary }}>{goodLabel(task)}</span>
+                </div>
+                {Object.entries(GRADE_POLICY[task].reclaim).map(([purpose, rule]) => (
+                  <div key={purpose} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <GradeBadge grade="저활용" />
+                    <span style={{ ...text.bodyM, color: color.textTitle, width: 104 }}>
+                      {purpose === '기타' ? '일반(기타)' : purpose}
+                    </span>
+                    <span style={{ ...text.body, color: color.textSecondary }}>{ruleLabel(rule)}</span>
+                  </div>
+                ))}
               </div>
             ))}
             <div style={{ ...text.caption, color: color.textTertiary }}>

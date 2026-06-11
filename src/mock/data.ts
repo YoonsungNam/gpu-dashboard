@@ -19,7 +19,7 @@ import type {
   UtilTrendPoint,
   YN,
 } from './types';
-import { projectGrade } from '../lib/util';
+import { gradeOf } from '../lib/gradePolicy';
 
 /* ---- tiny deterministic RNG (mulberry32) ---- */
 function rng(seed: number) {
@@ -36,7 +36,10 @@ const round1 = (n: number) => Math.round(n * 10) / 10;
 
 const DIVISIONS = ['AI센터', 'DX', 'S.LSI', 'SAIT', '글로벌 제조&인프라총괄', '메모리'];
 const IMPORTANCE = ['전략', '핵심', '일반'];
-const PURPOSES = ['모델 학습', '모델 개발'];
+// 용도 — 학습계(모델 학습/모델 개발) + 추론계(생산시스템 연계/일반); 등급 정책의 키와 1:1.
+const TRAIN_PURPOSES = ['모델 학습', '모델 개발'];
+const INFER_PURPOSES = ['생산시스템 연계', '일반'];
+const PURPOSES = [...TRAIN_PURPOSES, ...INFER_PURPOSES];
 const GPU_MODELS = [
   'H100', 'A100', 'V100', 'H200', 'P100', 'P40', 'B300', 'RTX Pro 6000', 'MI355X',
 ];
@@ -48,6 +51,36 @@ const PROJECT_NAMES = [
   '광고 추천 학습', '이상탐지 추론', '수율 예측 학습', '공정 최적화',
   '품질 검사 비전', '재고 예측', '번역 엔진', '리뷰 분석',
 ];
+
+/* ------------------------------------------------------------------ */
+/* Global filters — the Header's 기간/사업부/과제 구분 drive EVERY page.   */
+/* ------------------------------------------------------------------ */
+export type PeriodKey = '최근 1일' | '최근 3일' | '최근 7일' | '최근 14일' | '최근 28일';
+export const PERIOD_DAYS: Record<PeriodKey, number> = {
+  '최근 1일': 1,
+  '최근 3일': 3,
+  '최근 7일': 7,
+  '최근 14일': 14,
+  '최근 28일': 28,
+};
+export type TaskClass = '전체' | '전략' | '일반';
+export interface GlobalFilters {
+  period: PeriodKey;
+  division: string; // '전체' | one of filters.divisions
+  taskClass: TaskClass;
+}
+export const DEFAULT_FILTERS: GlobalFilters = {
+  period: '최근 28일',
+  division: '전체',
+  taskClass: '전체',
+};
+
+/** The 28-day fact window every aggregate derives from. */
+export const DAYS = 28;
+export const DATES = Array.from({ length: DAYS }, (_, d) => `2026-05-${String(4 + d).padStart(2, '0')}`);
+
+const mean = (xs: number[]) => (xs.length ? xs.reduce((s, x) => s + x, 0) / xs.length : 0);
+const tail = <T,>(xs: T[], n: number) => xs.slice(Math.max(0, xs.length - n));
 
 /* ---- GET /api/gpu-count-by-task ---- */
 export const gpuCountByTask: GpuCountByTask = { 추론: 1842, 학습: 576 };
@@ -74,7 +107,13 @@ export const projects: ProjectRow[] = Array.from(
       i < PROJECT_NAMES.length
         ? base
         : `${base} ${String(Math.floor(i / PROJECT_NAMES.length)).padStart(2, '0')}`;
-    const purpose = pick(r, PURPOSES);
+    // Task-affine 용도: 추론 전용 → 추론계, 학습 전용 → 학습계, 듀얼 → 전체 풀.
+    const purpose =
+      i < DUAL_TASK
+        ? pick(r, PURPOSES)
+        : i < DUAL_TASK + INFERENCE_ONLY
+          ? pick(r, INFER_PURPOSES)
+          : pick(r, TRAIN_PURPOSES);
     return {
       project_id: `PRJ${String(i + 1).padStart(4, '0')}`,
       project_name: name,
@@ -90,34 +129,86 @@ export const projects: ProjectRow[] = Array.from(
       training_gpu_ut: round1(Math.max(0, Math.min(100, gpu + (r() - 0.5) * 24))),
       slot_ut: slot,
       member_tasks: tasks,
-      grade: projectGrade(purpose, gpu, slot) as ProjectGrade | null,
+      grade: gradeOf(tasks[0], purpose, {
+        gpu,
+        wh: Math.min(100, gpu + 8),
+        slot,
+      }) as ProjectGrade | null,
     };
   },
 );
 
-/** Per-task project totals — ONE source for Overview cards AND the 활용 현황 tabs. */
-const projectCountByTask = (t: TaskType) =>
-  projects.filter((p) => p.member_tasks.includes(t)).length;
+/**
+ * Per-project DAILY utilization series — the single fact table. The static
+ * ProjectRow fields above are kept as 28-day anchors; every page-visible
+ * number is a window mean over these series, so 기간 changes stay coherent
+ * everywhere (rows, grades, ranks, KPIs, trend lines, expand details).
+ */
+const clampPct = (v: number) => round1(Math.max(0, Math.min(100, v)));
+export const projectDaily: Record<string, { gpu: number[]; train: number[]; slot: number[] }> =
+  Object.fromEntries(
+    projects.map((p, i) => {
+      const r = rng(50_000 + i * 11);
+      const wave = (base: number, d: number, amp: number, phase: number) =>
+        clampPct(base + (r() - 0.5) * amp + Math.sin((d + phase) / 3.1) * (amp / 3));
+      return [
+        p.project_id,
+        {
+          gpu: Array.from({ length: DAYS }, (_, d) => wave(p.inference_gpu_ut, d, 16, i % 7)),
+          train: Array.from({ length: DAYS }, (_, d) =>
+            wave(p.training_gpu_ut ?? p.inference_gpu_ut, d, 18, (i + 3) % 7),
+          ),
+          slot: Array.from({ length: DAYS }, (_, d) => wave(p.slot_ut, d, 12, (i + 5) % 7)),
+        },
+      ];
+    }),
+  );
 
-/* ---- GET /api/kpi-by-task (project_count derived from `projects`) ---- */
-export const kpiByTask: KpiByTask[] = [
-  {
-    task: '추론',
-    avg_slot_ut: 72.3,
-    avg_gpu_ut: 38.5,
-    avg_gpu_ut_working: 45.2,
-    avg_gpu_ut_nonworking: 22.1,
-    project_count: projectCountByTask('추론'),
-  },
-  {
-    task: '학습',
-    avg_slot_ut: 82.1,
-    avg_gpu_ut: 55.3,
-    avg_gpu_ut_working: 64.3,
-    avg_gpu_ut_nonworking: 31.2,
-    project_count: projectCountByTask('학습'),
-  },
-];
+/** Projects passing the 사업부 / 과제 구분 filters. */
+export function filterProjects(f: GlobalFilters): ProjectRow[] {
+  return projects.filter(
+    (p) =>
+      (f.division === '전체' || p.division === f.division) &&
+      (f.taskClass === '전체' || (p.is_critical === 'Y' ? '전략' : '일반') === f.taskClass),
+  );
+}
+
+/** Window-mean utilization for one project/task under the active 기간. */
+export function projectUtil(
+  p: ProjectRow,
+  task: TaskType,
+  f: GlobalFilters,
+): { gpu: number; wh: number; ah: number; slot: number } {
+  const n = PERIOD_DAYS[f.period];
+  const d = projectDaily[p.project_id];
+  const gpu = round1(mean(tail(task === '학습' ? d.train : d.gpu, n)));
+  return {
+    gpu,
+    wh: clampPct(gpu + 8),
+    ah: clampPct(gpu - 16),
+    slot: round1(mean(tail(d.slot, n))),
+  };
+}
+
+/* ---- GET /api/kpi-by-task?filters=… — DERIVED from the daily fact table ---- */
+export function getKpiByTask(f: GlobalFilters): KpiByTask[] {
+  const pool = filterProjects(f);
+  return (['추론', '학습'] as TaskType[]).map((task) => {
+    const ps = pool.filter((p) => p.member_tasks.includes(task));
+    const u = ps.map((p) => projectUtil(p, task, f));
+    return {
+      task,
+      avg_gpu_ut: round1(mean(u.map((x) => x.gpu))),
+      avg_gpu_ut_working: round1(mean(u.map((x) => x.wh))),
+      avg_gpu_ut_nonworking: round1(mean(u.map((x) => x.ah))),
+      avg_slot_ut: round1(mean(u.map((x) => x.slot))),
+      project_count: ps.length,
+    };
+  });
+}
+
+/** Legacy default-filter view (dev gallery etc.). */
+export const kpiByTask: KpiByTask[] = getKpiByTask(DEFAULT_FILTERS);
 
 /** v2: reclaim estimate for one basis — 0 reclaim when current meets target. */
 function reclaimBasis(current: number, target: number, quota: number): ReclaimBasis {
@@ -135,14 +226,20 @@ function reclaimBasis(current: number, target: number, quota: number): ReclaimBa
    task scopes info.gpu_ut (and the reclaim gauges) so the expanded values
    match the row that was clicked: 학습 → training_gpu_ut, 추론 (default) →
    inference_gpu_ut. */
-export function getProjectUnits(projectId: string, task: TaskType = '추론'): ProjectUnitsResponse {
+export function getProjectUnits(
+  projectId: string,
+  task: TaskType = '추론',
+  f: GlobalFilters = DEFAULT_FILTERS,
+): ProjectUnitsResponse {
   const p = projects.find((x) => x.project_id === projectId) ?? projects[0];
-  const gpuUt = task === '학습' ? p.training_gpu_ut ?? p.inference_gpu_ut : p.inference_gpu_ut;
+  // Window means — identical to the clicked row's displayed values.
+  const u = projectUtil(p, task, f);
   const r = rng(parseInt(projectId.replace(/\D/g, '') || '1', 10) * 7 + 3);
   const unitCount = 2 + Math.floor(r() * 3);
   const units = Array.from({ length: unitCount }, (_, i) => {
-    const gpu = round1(10 + r() * 88);
-    // v2 unit naming: 'ais-{사업부}-serve-NN'
+    // Unit values orbit the project's window mean (deterministic offsets),
+    // so they move coherently when the 기간 filter changes.
+    const gpu = round1(Math.max(0, Math.min(100, u.gpu + (r() - 0.5) * 36)));
     const div = pick(r, ['mx', 'vd', 'dx', 'sr']);
     return {
       unit_id: `U${String(i + 1).padStart(3, '0')}`,
@@ -151,7 +248,7 @@ export function getProjectUnits(projectId: string, task: TaskType = '추론'): P
       gpu_model: pick(r, GPU_MODELS),
       gpu_num: pick(r, [8, 16, 32, 64]),
       unit_quota: pick(r, [8, 16, 32, 64]),
-      slot_ut: round1(30 + r() * 68),
+      slot_ut: round1(Math.max(0, Math.min(100, u.slot + (r() - 0.5) * 30))),
       gpu_ut: gpu,
       gpu_ut_working: round1(Math.min(100, gpu + 7)),
       gpu_ut_nonworking: round1(Math.max(0, gpu - 18)),
@@ -163,26 +260,23 @@ export function getProjectUnits(projectId: string, task: TaskType = '추론'): P
       division: p.division,
       purpose: p.purpose,
       business_importance: p.business_importance,
-      slot_ut: p.slot_ut,
-      gpu_ut: gpuUt,
-      gpu_ut_working: p.inference_gpu_ut_working,
-      gpu_ut_nonworking: p.inference_gpu_ut_nonworking,
-      // Same task-scoped gpu value as info.gpu_ut so the gauges' '현재 X%'
-      // equals the KPI strip exactly (gpu target 30, slot target 70).
+      slot_ut: u.slot,
+      gpu_ut: u.gpu,
+      gpu_ut_working: u.wh,
+      gpu_ut_nonworking: u.ah,
+      // Same window means as the row/KPI strip (gpu target 30, slot target 70).
       reclaim_estimate: {
-        gpu: reclaimBasis(gpuUt, 30, p.quota),
-        slot: reclaimBasis(p.slot_ut, 70, p.quota),
+        gpu: reclaimBasis(u.gpu, 30, p.quota),
+        slot: reclaimBasis(u.slot, 70, p.quota),
       },
     },
     units,
   };
 }
 
-/* ---- GET /api/top-bottom-projects?task=… ----
-   Task-scoped ranking so the Overview 점검 cards and the 활용 현황 tabs agree
-   EXACTLY: pool = projects of that task, values = that task's metrics, grade =
-   the shared purpose-aware rule. `good_count`/`alert_count` are the FULL totals
-   (== the 활용 현황 grade-filter counts); the lists contain EVERY graded project, ranked. */
+/* ---- GET /api/top-bottom-projects?task=…&filters=… ----
+   Same pool, same window means, same grade rule as the 활용 현황 rows —
+   counts and lists agree with the grade filter under ANY header filters. */
 export interface TaskRank {
   good_count: number;
   alert_count: number;
@@ -190,37 +284,39 @@ export interface TaskRank {
   alert: RankedProject[];
 }
 
-const taskGpuUt = (p: ProjectRow, t: TaskType) =>
-  t === '학습' ? p.training_gpu_ut ?? p.inference_gpu_ut : p.inference_gpu_ut;
-
-function rankFor(t: TaskType): TaskRank {
-  const toRanked = (p: ProjectRow): RankedProject => ({
-    project_id: p.project_id,
-    project_name: p.project_name,
-    division: p.division,
-    is_critical: p.is_critical,
-    quota: p.quota,
-    slot_ut: p.slot_ut,
-    gpu_ut: taskGpuUt(p, t),
-    reason: `GPU Util ${taskGpuUt(p, t).toFixed(1)}%`,
-  });
-  const pool = projects.filter((p) => p.member_tasks.includes(t));
-  const good = pool.filter((p) => projectGrade(p.purpose, taskGpuUt(p, t), p.slot_ut) === '우수');
-  const alert = pool.filter((p) => projectGrade(p.purpose, taskGpuUt(p, t), p.slot_ut) === '저활용');
-  // FULL lists (no slice): the header total and the table contents must agree —
-  // the ~5-row scroll viewport handles long lists, ranked best→worst.
-  return {
-    good_count: good.length,
-    alert_count: alert.length,
-    good: good.sort((a, b) => taskGpuUt(b, t) - taskGpuUt(a, t)).map(toRanked),
-    alert: alert.sort((a, b) => taskGpuUt(a, t) - taskGpuUt(b, t)).map(toRanked),
+export function getRankByTask(f: GlobalFilters): Record<TaskType, TaskRank> {
+  const pool = filterProjects(f);
+  const rankFor = (t: TaskType): TaskRank => {
+    const graded = pool
+      .filter((p) => p.member_tasks.includes(t))
+      .map((p) => {
+        const u = projectUtil(p, t, f);
+        return { p, u, g: gradeOf(t, p.purpose, u) };
+      });
+    const toRanked = ({ p, u }: { p: ProjectRow; u: { gpu: number; slot: number } }): RankedProject => ({
+      project_id: p.project_id,
+      project_name: p.project_name,
+      division: p.division,
+      is_critical: p.is_critical,
+      quota: p.quota,
+      slot_ut: u.slot,
+      gpu_ut: u.gpu,
+      reason: `GPU Util ${u.gpu.toFixed(1)}%`,
+    });
+    const good = graded.filter((x) => x.g === '우수').sort((a, b) => b.u.gpu - a.u.gpu);
+    const alert = graded.filter((x) => x.g === '저활용').sort((a, b) => a.u.gpu - b.u.gpu);
+    return {
+      good_count: good.length,
+      alert_count: alert.length,
+      good: good.map(toRanked),
+      alert: alert.map(toRanked),
+    };
   };
+  return { 추론: rankFor('추론'), 학습: rankFor('학습') };
 }
 
-export const rankByTask: Record<TaskType, TaskRank> = {
-  추론: rankFor('추론'),
-  학습: rankFor('학습'),
-};
+/** Legacy default-filter view. */
+export const rankByTask: Record<TaskType, TaskRank> = getRankByTask(DEFAULT_FILTERS);
 
 /* ---- GET /api/quota-by-env-gpu (all 9 GPU models across 4 envs; sums to exactly 2,941) ---- */
 export const quotaByEnvGpu: QuotaByEnvGpu[] = [
@@ -270,24 +366,28 @@ export const filters: Filters = {
   is_critical: ['Y', 'N'],
 };
 
-/* ---- util-over-time for 사용추이 (assumed shape; no endpoint sample) ----
-   Most recent 28 days (2026-05-04..2026-05-31) — matches the '최근 28일' default. */
-function genTrend(seed: number, gpuAvg: number, slotAvg: number): UtilTrendPoint[] {
-  const r = rng(700 + seed);
-  return Array.from({ length: 28 }, (_, d) => {
-    const day = String(d + 4).padStart(2, '0');
-    return {
-      ts: `2026-05-${day}`,
-      gpu_ut: round1(Math.max(0, Math.min(100, gpuAvg + (r() - 0.5) * 22 + Math.sin(d / 5) * 6))),
-      slot_ut: round1(Math.max(0, Math.min(100, slotAvg + (r() - 0.5) * 16 + Math.cos(d / 6) * 5))),
-    };
-  });
+/* ---- 사용추이 — DERIVED: per day, the mean across the filtered pool ----
+   (one fact table → the chart, its 평균 stats, the KPI cards and the rank
+   lists all describe the same projects over the same 기간 window). */
+export function getUtilTrend(f: GlobalFilters): Record<TaskType, UtilTrendPoint[]> {
+  const n = PERIOD_DAYS[f.period];
+  const pool = filterProjects(f);
+  const trendFor = (t: TaskType): UtilTrendPoint[] => {
+    const ps = pool.filter((p) => p.member_tasks.includes(t));
+    const dayIdx = Array.from({ length: DAYS }, (_, d) => d).slice(DAYS - n);
+    return dayIdx.map((d) => ({
+      ts: DATES[d],
+      gpu_ut: round1(
+        mean(ps.map((p) => (t === '학습' ? projectDaily[p.project_id].train : projectDaily[p.project_id].gpu)[d])),
+      ),
+      slot_ut: round1(mean(ps.map((p) => projectDaily[p.project_id].slot[d]))),
+    }));
+  };
+  return { 추론: trendFor('추론'), 학습: trendFor('학습') };
 }
 
-export const utilTrendByTask: Record<TaskType, UtilTrendPoint[]> = {
-  추론: genTrend(1, 46.4, 61.2),
-  학습: genTrend(2, 55.3, 82.1),
-};
+/** Legacy default-filter view. */
+export const utilTrendByTask: Record<TaskType, UtilTrendPoint[]> = getUtilTrend(DEFAULT_FILTERS);
 
 /** Mean of a numeric field across a trend series (for the chart's stat header). */
 export const trendAvg = (pts: UtilTrendPoint[], key: 'gpu_ut' | 'slot_ut') =>

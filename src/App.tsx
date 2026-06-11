@@ -8,7 +8,7 @@ import GpuResourcePage, { type ResourcePreset } from './screens/GpuResourcePage'
 import TokenUsagePage from './screens/TokenUsagePage';
 import { color, radius, semantic, space, text } from './tokens';
 import { InfoIcon } from './icons/FigureIcons';
-import { filters } from './mock/data';
+import { DEFAULT_FILTERS, filters, PERIOD_DAYS, type GlobalFilters } from './mock/data';
 import MetricDefsModal from './components/compositions/MetricDefsModal';
 
 const TITLES: Record<NavKey, string> = {
@@ -87,10 +87,13 @@ function ToolbarSelect({
  * App-bar filter cluster for GPU 자원 (Live pill + 기간/사업부/핵심 + 지표 정의).
  * Display-only in the kit; wire these to global filter state when porting.
  */
-function ResourceTopActions() {
-  const [period, setPeriod] = useState('최근 28일');
-  const [division, setDivision] = useState('전체');
-  const [critical, setCritical] = useState('전체');
+function ResourceTopActions({
+  value,
+  onChange,
+}: {
+  value: GlobalFilters;
+  onChange: (f: GlobalFilters) => void;
+}) {
   const [defsOpen, setDefsOpen] = useState(false);
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 13 /* Figma Frame 52 gap13.0 */ }}>
@@ -130,20 +133,20 @@ function ResourceTopActions() {
       </span>
       <ToolbarSelect
         label="기간"
-        value={period}
-        onChange={setPeriod}
-        options={['최근 1일', '최근 3일', '최근 7일', '최근 14일', '최근 28일']}
+        value={value.period}
+        onChange={(v) => onChange({ ...value, period: v as GlobalFilters['period'] })}
+        options={Object.keys(PERIOD_DAYS)}
       />
       <ToolbarSelect
         label="사업부"
-        value={division}
-        onChange={setDivision}
+        value={value.division}
+        onChange={(v) => onChange({ ...value, division: v })}
         options={['전체', ...filters.divisions]}
       />
       <ToolbarSelect
         label="과제 구분"
-        value={critical}
-        onChange={setCritical}
+        value={value.taskClass}
+        onChange={(v) => onChange({ ...value, taskClass: v as GlobalFilters['taskClass'] })}
         options={['전체', '전략', '일반']}
       />
       <button
@@ -184,6 +187,8 @@ function ResourceTopActions() {
 }
 
 export default function App() {
+  // Global header filters (기간/사업부/과제 구분) — every page derives from these.
+  const [globalFilters, setGlobalFilters] = useState<GlobalFilters>(DEFAULT_FILTERS);
   // Overview '전체 N건 보기 →' hands the 활용 현황 page a tab+grade preset.
   const [resourcePreset, setResourcePreset] = useState<ResourcePreset | null>(null);
   const [nav, setNav] = useState<NavKey>(() => {
@@ -200,7 +205,7 @@ export default function App() {
       subtitle={SUBTITLES[nav]}
       actions={
         nav === 'resource' || nav === 'overview' || nav === 'tokens' ? (
-          <ResourceTopActions />
+          <ResourceTopActions value={globalFilters} onChange={setGlobalFilters} />
         ) : undefined
       }
     >
@@ -208,14 +213,15 @@ export default function App() {
       {nav === 'overlay' && <OverlayCompare />}
       {nav === 'overview' && (
         <OverviewPage
+          filters={globalFilters}
           onShowAll={(task, grade) => {
             setResourcePreset({ tab: task, grade });
             setNav('resource');
           }}
         />
       )}
-      {nav === 'resource' && <GpuResourcePage preset={resourcePreset} />}
-      {nav === 'tokens' && <TokenUsagePage />}
+      {nav === 'resource' && <GpuResourcePage preset={resourcePreset} filters={globalFilters} />}
+      {nav === 'tokens' && <TokenUsagePage filters={globalFilters} />}
     </AppShell>
   );
 }
