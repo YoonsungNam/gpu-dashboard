@@ -1,7 +1,6 @@
 import { useEffect, type CSSProperties } from 'react';
-import { color, radius, semantic, shadow, text, tokenScreen } from '../../tokens';
-import { GRADE_POLICY, goodLabel, policyBands, purposeDisplay, ruleLabel } from '../../lib/gradePolicy';
-import GradeBadge from '../primitives/GradeBadge';
+import { color, radius, text, tokenScreen } from '../../tokens';
+import { policyBands } from '../../lib/gradePolicy';
 
 /**
  * '지표 정의' modal — opened from the app-bar ⓘ 지표 정의 button.
@@ -168,12 +167,12 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
               gap: 10,
             }}
           >
-            <span style={{ ...text.body, color: color.textTitle }}>임계 기준 (지표 색상)</span>
+            <span style={{ ...text.body, color: color.textTitle }}>임계 기준 (지표 색상 · 과제 등급)</span>
             <span style={{ ...text.caption, color: color.textTertiary }}>
-              표의 지표 색상은 아래 과제 등급 기준을 지표 단위로 평가한 것입니다 —{' '}
-              <b style={{ fontWeight: 500, color: LIGHT_CHIP.good.text }}>초록</b> 우수 조건 충족 ·{' '}
-              <b style={{ fontWeight: 500, color: LIGHT_CHIP.bad.text }}>빨강</b> 저활용 조건 해당 ·{' '}
-              <b style={{ fontWeight: 500, color: LIGHT_CHIP.warn.text }}>노랑</b> 중간. 과제 용도에 따라 구간이 다릅니다.
+              <b style={{ fontWeight: 500, color: LIGHT_CHIP.good.text }}>초록</b> 우수 ·{' '}
+              <b style={{ fontWeight: 500, color: LIGHT_CHIP.warn.text }}>노랑</b> 중간 ·{' '}
+              <b style={{ fontWeight: 500, color: LIGHT_CHIP.bad.text }}>빨강</b> 저활용. 과제
+              용도에 따라 구간이 다르며, 행의 우수/저활용 태그도 같은 기준으로 판정됩니다.
             </span>
             {(['추론', '학습'] as const).map((task, ti) => (
               <div
@@ -237,40 +236,8 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
               · GPU Util AH(비근무)는 참고 지표로, 등급 판정에 사용되지 않습니다 (회색 표시).
             </span>
           </div>
-
-          {/* 과제 등급 기준 — lib/gradePolicy.ts GRADE_POLICY에서 자동 파생.
-              위 임계 기준(지표 색상)과 같은 규칙의 문장형 표기: 등급 태그는
-              규칙 전체(and/or 조합)로, 지표 색상은 지표 단위로 판정된다. */}
-          <div style={{ marginTop: 20, ...text.label, color: color.textTertiary }}>
-            과제 등급 기준 (태스크 · 용도별)
-          </div>
-          <div style={{ marginTop: 4, ...text.caption, color: color.textTertiary }}>
-            과제 등급(우수/저활용)은 태스크(추론/학습)와 과제 성격(용도)에 따라 기준이 다릅니다.
-            위 임계 기준 표는 이 규칙을 지표 단위 구간으로 펼친 것입니다.
-          </div>
-          <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {(Object.keys(GRADE_POLICY) as Array<keyof typeof GRADE_POLICY>).map((task) => (
-              <div key={task} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <span style={{ ...text.bodyM, color: color.textTitle }}>{task}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <GradeBadge grade="우수" />
-                  <span style={{ ...text.body, color: color.textSecondary }}>{goodLabel(task)}</span>
-                </div>
-                {Object.entries(GRADE_POLICY[task].reclaim).map(([purpose, rule]) => (
-                  <div key={purpose} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <GradeBadge grade="저활용" />
-                    <span style={{ ...text.bodyM, color: color.textTitle, width: 104 }}>
-                      {purposeDisplay(task, purpose)}
-                    </span>
-                    <span style={{ ...text.body, color: color.textSecondary }}>{ruleLabel(rule)}</span>
-                  </div>
-                ))}
-              </div>
-            ))}
-            <div style={{ ...text.caption, color: color.textTertiary }}>
-              · 저활용 과제는 회수 대상이며, 펼침 상세의 '저활용 회수 예상량'에서 기준별 회수 수량을 확인할 수 있습니다.
-            </div>
-          </div>
+          {/* 문장형 '과제 등급 기준' 섹션은 위 그리드와 중복이라 제거
+              (2026-06-11 피드백: 복잡해 보임). 규칙 원본은 GRADE_POLICY. */}
         </div>
       </div>
     </div>
