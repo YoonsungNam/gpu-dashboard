@@ -182,7 +182,7 @@ export function getProjectUnits(projectId: string, task: TaskType = '추론'): P
    Task-scoped ranking so the Overview 점검 cards and the 활용 현황 tabs agree
    EXACTLY: pool = projects of that task, values = that task's metrics, grade =
    the shared purpose-aware rule. `good_count`/`alert_count` are the FULL totals
-   (== the 활용 현황 grade-filter counts); the lists are the top 10 / worst 12. */
+   (== the 활용 현황 grade-filter counts); the lists contain EVERY graded project, ranked. */
 export interface TaskRank {
   good_count: number;
   alert_count: number;
@@ -207,17 +207,13 @@ function rankFor(t: TaskType): TaskRank {
   const pool = projects.filter((p) => p.member_tasks.includes(t));
   const good = pool.filter((p) => projectGrade(p.purpose, taskGpuUt(p, t), p.slot_ut) === '우수');
   const alert = pool.filter((p) => projectGrade(p.purpose, taskGpuUt(p, t), p.slot_ut) === '저활용');
+  // FULL lists (no slice): the header total and the table contents must agree —
+  // the ~5-row scroll viewport handles long lists, ranked best→worst.
   return {
     good_count: good.length,
     alert_count: alert.length,
-    good: good
-      .sort((a, b) => taskGpuUt(b, t) - taskGpuUt(a, t))
-      .slice(0, 10)
-      .map(toRanked),
-    alert: alert
-      .sort((a, b) => taskGpuUt(a, t) - taskGpuUt(b, t))
-      .slice(0, 12)
-      .map(toRanked),
+    good: good.sort((a, b) => taskGpuUt(b, t) - taskGpuUt(a, t)).map(toRanked),
+    alert: alert.sort((a, b) => taskGpuUt(a, t) - taskGpuUt(b, t)).map(toRanked),
   };
 }
 
