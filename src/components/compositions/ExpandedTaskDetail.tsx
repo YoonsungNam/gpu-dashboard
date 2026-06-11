@@ -217,7 +217,7 @@ export default function ExpandedTaskDetail({
           {/* Metric cards: label / value+% / threshold-colored bar */}
           {KPI_METRICS[task].map((def) => {
             const value = utilOf(info, def.key);
-            const good = utilLevel(value, def.metric) === 'good';
+            const good = utilLevel(value, def.metric, task) === 'good';
             return (
               <div
                 key={def.key}
@@ -340,7 +340,7 @@ export default function ExpandedTaskDetail({
                 <td style={td('left')}>{u.gpu_num}</td>
                 {unitCols.map((c) => {
                   const v = utilOf(u, c.key);
-                  const good = utilLevel(v, c.metric) === 'good';
+                  const good = utilLevel(v, c.metric, task) === 'good';
                   return (
                     <td
                       key={c.key}

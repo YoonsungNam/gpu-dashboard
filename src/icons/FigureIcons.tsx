@@ -111,56 +111,39 @@ export function CaretDownIcon({ size = 16, color = 'currentColor' }: StrokeIconP
 /* 토큰 활용 현황 KPI glyphs (node 7104:3444 'ServiceCount' icon set)     */
 /* ------------------------------------------------------------------ */
 
-/**
- * ① 서비스 그룹 — three #3A4571 squares (top-left / bottom-left / bottom-right)
- * + a concave 4-point sparkle (#8092DC) in the top-right cell (node 7104:3447,
- * Union 7104:3451 8x9 fill #8092DC).
- */
+/** ① 서비스 그룹 — 리스트 글리프: 3×(4×4 사각 + 10×4 막대), #E4E9ED (2026-06-11, node 7164:6715). */
 export function ServiceGroupIcon({ size = 20 }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
-      <rect x="2" y="2" width="6" height="6" rx="1" fill="#3A4571" />
-      <rect x="2" y="11" width="6" height="6" rx="1" fill="#3A4571" />
-      <rect x="11" y="11" width="6" height="6" rx="1" fill="#3A4571" />
-      <path
-        d="M14 1.5C14.4 4.3 15.2 5.1 18 5.5C15.2 5.9 14.4 6.7 14 9.5C13.6 6.7 12.8 5.9 10 5.5C12.8 5.1 13.6 4.3 14 1.5Z"
-        fill="#8092DC"
-      />
+      {[2, 8, 14].map((y) => (
+        <g key={y}>
+          <rect x="2" y={y} width="4" height="4" fill="#E4E9ED" />
+          <rect x="8" y={y} width="10" height="4" fill="#E4E9ED" />
+        </g>
+      ))}
     </svg>
   );
 }
 
-/**
- * ② 서비스 — one solid 14x14 #515E94 square with a white concave sparkle
- * centered inside it (node 7104:3459, Union 7104:3461 fill #F9FAFE).
- */
+/** ② 서비스 — 6×6 사각 3개 + 인디고 플러스 (node 7164:6727). */
 export function ServiceIcon({ size = 20 }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
-      <rect x="3" y="3" width="14" height="14" fill="#515E94" />
-      <path
-        d="M10 5.5C10.4 8.3 11.2 9.1 14 9.5C11.2 9.9 10.4 10.7 10 13.5C9.6 10.7 8.8 9.9 6 9.5C8.8 9.1 9.6 8.3 10 5.5Z"
-        fill="#F9FAFE"
-      />
+      <rect x="2" y="2" width="6" height="6" fill="#E4E9ED" />
+      <rect x="11" y="2" width="6" height="6" fill="#E4E9ED" />
+      <rect x="2" y="11" width="6" height="6" fill="#E4E9ED" />
+      <path d="M13 11v9M9.5 15.5h8" stroke="#6471DF" strokeWidth="3" />
     </svg>
   );
 }
 
-/**
- * ③ 일평균 토큰 합계 — twin concave sparkles, BOTH #515E94
- * (node 7104:3469; Unions 7104:3471 / 7104:3474 are the same fill).
- */
+/** ③ 일평균 토큰 합계 — 14×14 외곽 박스 + 인디고/그레이 플러스 (node 7164:6739). */
 export function TokenSumIcon({ size = 20 }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
-      <path
-        d="M7 2C7.5 5.5 8.5 6.5 12 7C8.5 7.5 7.5 8.5 7 12C6.5 8.5 5.5 7.5 2 7C5.5 6.5 6.5 5.5 7 2Z"
-        fill="#515E94"
-      />
-      <path
-        d="M14 9C14.4 11.8 15.2 12.6 18 13C15.2 13.4 14.4 14.2 14 17C13.6 14.2 12.8 13.4 10 13C12.8 12.6 13.6 11.8 14 9Z"
-        fill="#515E94"
-      />
+      <rect x="2.5" y="2.5" width="13" height="13" stroke="#E4E9ED" strokeWidth="1.5" />
+      <path d="M12.5 8v10M8 12.5h9.5" stroke="#6471DF" strokeWidth="3.2" />
+      <path d="M6 4v6M3 7h6" stroke="#767D84" strokeWidth="2.2" />
     </svg>
   );
 }

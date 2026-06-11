@@ -132,12 +132,14 @@ function UtilRow({
   label,
   value,
   metric,
+  task,
 }: {
   label: string;
   value: number;
   metric: 'gpu' | 'slot';
+  task: TaskType;
 }) {
-  const lvl = utilLevel(value, metric);
+  const lvl = utilLevel(value, metric, task);
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: space.lg }}>
       <span
@@ -238,7 +240,7 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
             }}
           >
             <div style={{ width: '100%' }}>
-              <UtilRow label={GPU_UTIL.label} value={kpiVal(kpi, GPU_UTIL.key)} metric={GPU_UTIL.metric} />
+              <UtilRow label={GPU_UTIL.label} value={kpiVal(kpi, GPU_UTIL.key)} metric={GPU_UTIL.metric} task={kpi.task} />
             </div>
             {kind === 'inference' && (
               <div
@@ -257,7 +259,7 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
           </div>
           <div style={{ height: 95, display: 'flex', alignItems: 'center' }}>
             <div style={{ width: '100%' }}>
-              <UtilRow label={SLOT_UTIL.label} value={kpiVal(kpi, SLOT_UTIL.key)} metric={SLOT_UTIL.metric} />
+              <UtilRow label={SLOT_UTIL.label} value={kpiVal(kpi, SLOT_UTIL.key)} metric={SLOT_UTIL.metric} task={kpi.task} />
             </div>
           </div>
         </div>

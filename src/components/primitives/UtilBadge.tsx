@@ -1,5 +1,6 @@
 import { radius } from '../../tokens';
 import { utilColors, utilLevel, type UtilMetric } from '../../lib/util';
+import type { TaskType } from '../../mock/types';
 
 /**
  * Threshold-colored utilization chip. Color depends on the metric, because
@@ -10,14 +11,17 @@ import { utilColors, utilLevel, type UtilMetric } from '../../lib/util';
 export default function UtilBadge({
   value,
   metric = 'gpu',
+  task = '추론',
   size = 'sm',
 }: {
   value: number;
   metric?: UtilMetric;
+  /** 셀 색상 임계가 태스크별로 다름 (utilThresholds). */
+  task?: TaskType;
   size?: 'sm' | 'lg';
 }) {
-  const c = utilColors(value, metric);
-  const lvl = utilLevel(value, metric);
+  const c = utilColors(value, metric, task);
+  const lvl = utilLevel(value, metric, task);
   const lg = size === 'lg';
   return (
     <span

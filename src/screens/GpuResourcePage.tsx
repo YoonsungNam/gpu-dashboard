@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { color, radius, semantic, space, text } from '../tokens';
-import { num } from '../lib/util';
+import { num, utilThresholds } from '../lib/util';
 import { gradeOf } from '../lib/gradePolicy';
 import { downloadCsv } from '../lib/csv';
 import { GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL, type MetricDef } from '../lib/labels';
@@ -15,6 +15,8 @@ import UtilBadge from '../components/primitives/UtilBadge';
 import TaskTypeBadge from '../components/primitives/TaskTypeBadge';
 import GradeBadge from '../components/primitives/GradeBadge';
 import GradeFilter, { type GradeFilterValue } from '../components/compositions/GradeFilter';
+import ResourceSummary from '../components/compositions/ResourceSummary';
+import { getKpiByTask, getRankByTask } from '../mock/data';
 import ExpandedTaskDetail from '../components/compositions/ExpandedTaskDetail';
 import { filterProjects, getProjectUnits, projectUtil, type GlobalFilters } from '../mock/data';
 
@@ -214,7 +216,7 @@ export default function GpuResourcePage({
           align: 'center',
           width: 120,
           sortable: true,
-          render: (r) => <UtilBadge value={utilValue(r, def.key, tab, gf)} metric={def.metric} />,
+          render: (r) => <UtilBadge value={utilValue(r, def.key, tab, gf)} metric={def.metric} task={tab} />,
         }),
       ),
     ];
@@ -224,27 +226,45 @@ export default function GpuResourcePage({
   const pool = useMemo(() => filterProjects(gf), [gf]);
   const inferenceCount = pool.filter((p) => p.member_tasks.includes('추론')).length;
   const trainingCount = pool.filter((p) => p.member_tasks.includes('학습')).length;
+
+  // 상단 Summary (2026-06-11): 과제 수(우수·저활용) / 총 GPU 수량 / 평균 GPU·Slot Util
+  // — 동일 셀렉터에서 파생되므로 Overview·점검 수치와 항상 일치.
+  const summary = useMemo(() => {
+    const tabPool = pool.filter((p) => p.member_tasks.includes(tab));
+    const rank = getRankByTask(gf)[tab];
+    const kpi = getKpiByTask(gf).find((k) => k.task === tab);
+    return {
+      task: tab,
+      projectCount: tabPool.length,
+      goodCount: rank.good_count,
+      alertCount: rank.alert_count,
+      totalQuota: tabPool.reduce((t, p) => t + p.quota, 0),
+      avgGpuUt: kpi?.avg_gpu_ut ?? 0,
+      avgSlotUt: kpi?.avg_slot_ut ?? 0,
+    };
+  }, [pool, tab, gf]);
   const tabs = [
     { key: '추론', label: '추론', count: inferenceCount },
     { key: '학습', label: '학습', count: trainingCount },
   ];
 
-  // Bottom legend: two metric-specific scales (good/warn/bad).
+  // Bottom legend — labels derive from the ACTIVE TAB's thresholds
+  // (utilThresholds[tab]; 추론 20/10·80/70, 학습 40/20·75/65).
   const u = semantic.util;
-  const gpuLegend = [
-    { label: '≥ 20%', lvl: u.good },
-    { label: '10-20%', lvl: u.warn },
-    { label: '< 10%', lvl: u.bad },
-  ];
-  const slotLegend = [
-    { label: '≥ 80%', lvl: u.good },
-    { label: '70-80%', lvl: u.warn },
-    { label: '< 70%', lvl: u.bad },
-  ];
+  const legendFor = (metric: 'gpu' | 'slot') => {
+    const t = utilThresholds[tab][metric];
+    return [
+      { label: `≥ ${t.good}%`, lvl: u.good },
+      { label: `${t.warn}-${t.good}%`, lvl: u.warn },
+      { label: `< ${t.warn}%`, lvl: u.bad },
+    ];
+  };
+  const gpuLegend = legendFor('gpu');
+  const slotLegend = legendFor('slot');
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg /* v2: 12px toolbar→card */ }}>
-      {/* Page toolbar: Tabs + count (left) · 등급 필터 + Search + 다운로드 (right) */}
+      {/* 2026-06-11 layout — row 1: Summary 수치 · 우측 컨트롤; row 2: Tabs + count */}
       <div
         id="res-toolbar"
         style={{
@@ -255,14 +275,7 @@ export default function GpuResourcePage({
           flexWrap: 'wrap',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Tabs tabs={tabs} active={tab} onChange={(k) => onTab(k as TabKey)} />
-          {/* Two-tone count: shown '15' #565E66, '/30' #767D84 (f2_res_toolbar_l). */}
-          <span style={text.body}>
-            <span style={{ color: color.textSecondary }}>{pageRows.length}</span>
-            <span style={{ color: color.textTertiary }}>/{filtered.length}</span>
-          </span>
-        </div>
+        <ResourceSummary data={summary} />
         <div style={{ display: 'flex', alignItems: 'center', gap: space.md }}>
           <GradeFilter value={grade} onChange={onGrade} />
           <SearchInput
@@ -299,6 +312,15 @@ export default function GpuResourcePage({
             }}
           />
         </div>
+      </div>
+
+      {/* Row 2 — tabs + page count */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <Tabs tabs={tabs} active={tab} onChange={(k) => onTab(k as TabKey)} />
+        <span style={text.body}>
+          <span style={{ color: color.textSecondary }}>{pageRows.length}</span>
+          <span style={{ color: color.textTertiary }}>/{sorted.length}</span>
+        </span>
       </div>
 
       {/* Main expandable data table. */}

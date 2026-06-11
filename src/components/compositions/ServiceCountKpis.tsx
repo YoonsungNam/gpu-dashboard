@@ -26,7 +26,7 @@ export default function ServiceCountKpis({ totals }: { totals: TokenTotals }) {
             <span
               aria-hidden
               // 1x12 stick centered in the 31px-wide divider frame.
-              style={{ width: 1, height: 12, background: color.textPrimary, margin: '0 15px' }}
+              style={{ width: 1, height: 12, background: color.textTertiary /* #767D84 (7164:6724) */, margin: '0 15px' }}
             />
           )}
           <span style={{ display: 'inline-flex', flexShrink: 0 }}>{it.icon}</span>

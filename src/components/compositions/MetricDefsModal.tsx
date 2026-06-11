@@ -1,6 +1,7 @@
 import { useEffect, type CSSProperties } from 'react';
 import { color, radius, semantic, shadow, text, tokenScreen } from '../../tokens';
 import { GRADE_POLICY, goodLabel, ruleLabel } from '../../lib/gradePolicy';
+import { utilThresholds } from '../../lib/util';
 import GradeBadge from '../primitives/GradeBadge';
 
 /**
@@ -11,33 +12,32 @@ import GradeBadge from '../primitives/GradeBadge';
  * pill colors so the legend matches the table badges 1:1.
  */
 
+// 2026-06-11 디자인 '모니터링 지표 정의' (node 7164:7033-7044) 문안
 const DEFS: { name: string; def: string }[] = [
-  { name: 'GPU Util', def: '전체 시간 평균 GPU 사용률' },
-  { name: 'GPU Util WH', def: '근무시간(09~18시) 평균 GPU 사용률' },
-  { name: 'GPU Util AH', def: '비근무시간 평균 GPU 사용률' },
-  { name: 'Slot Util', def: '할당 슬롯 점유율' },
+  { name: 'GPU Util', def: '점유된 GPU 시간 중 실제 GPU가 activate된 시간의 비율' },
+  { name: 'GPU Util WH', def: '근무시간 (Working Hours, 09:00~18:00) 중 실제 GPU가 activate된 시간의 비율' },
+  { name: 'GPU Util AH', def: '비근무시간 (After Hours, 18:00~익일 09:00) 중 실제 GPU가 activate된 시간의 비율' },
+  { name: 'Slot Util', def: '할당된 GPU Slot 중 실제 점유 사용한 비율' },
 ];
 
-type Tone = keyof typeof semantic.util; // 'good' | 'warn' | 'bad'
+type Tone = 'good' | 'warn' | 'bad';
 
-const THRESHOLDS: { metric: string; chips: { label: string; tone: Tone }[] }[] = [
-  {
-    metric: 'GPU Util',
-    chips: [
-      { label: '≥ 20% 정상', tone: 'good' },
-      { label: '10~20% 주의', tone: 'warn' },
-      { label: '< 10% 저활용', tone: 'bad' },
-    ],
-  },
-  {
-    metric: 'Slot Util',
-    chips: [
-      { label: '≥ 80% 정상', tone: 'good' },
-      { label: '70~80% 주의', tone: 'warn' },
-      { label: '< 70% 저활용', tone: 'bad' },
-    ],
-  },
-];
+/** Light legend palette from the design's 임계 기준 chips (7164:7050-7076). */
+const LIGHT_CHIP: Record<Tone, { bg: string; text: string }> = {
+  good: { bg: '#F5FBEE', text: '#145C1C' },
+  warn: { bg: '#FFF8ED', text: '#AB772A' },
+  bad: { bg: '#FFF6F5', text: '#FF4337' },
+};
+
+/** 임계 기준 rows — derived from utilThresholds so the legend == cell colors. */
+const thresholdChips = (task: '추론' | '학습', metric: 'gpu' | 'slot') => {
+  const t = utilThresholds[task][metric];
+  return [
+    { label: `≥ ${t.good}%`, tone: 'good' as Tone },
+    { label: `${t.warn}-${t.good}%`, tone: 'warn' as Tone },
+    { label: `< ${t.warn}%`, tone: 'bad' as Tone },
+  ];
+};
 
 export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
@@ -69,32 +69,27 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    /* Overlay — fixed inset 0, rgba(0,32,53,0.4); click closes. */
+    /* Transparent backdrop + right-anchored popover under the 지표 정의 button
+       (2026-06-11 design: 'Popover' 380×560 r4, top-right — node 7164:7031). */
     <div
       onClick={onClose}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,32,53,0.4)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-        padding: 24,
-      }}
+      style={{ position: 'fixed', inset: 0, zIndex: 1000 }}
     >
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="지표 정의"
+        aria-label="모니터링 지표 정의"
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: 560,
-          maxWidth: '100%',
-          maxHeight: '80vh',
+          position: 'absolute',
+          top: 60,
+          right: 28,
+          width: 380,
+          maxWidth: 'calc(100vw - 56px)',
+          maxHeight: 'calc(100vh - 84px)',
           background: color.white,
-          borderRadius: 8,
-          boxShadow: shadow.card,
+          borderRadius: 4,
+          boxShadow: '0 4px 16px rgba(0,32,53,0.18), 0 0 2px rgba(40,48,55,0.12)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
@@ -113,7 +108,7 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
           }}
         >
           <span style={{ fontSize: 16, lineHeight: '20px', fontWeight: 500, color: color.textSecondary }}>
-            지표 정의
+            모니터링 지표 정의
           </span>
           <button
             type="button"
@@ -167,40 +162,62 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
             </tbody>
           </table>
 
-          {/* Threshold legend — semantic.util chip colors (Badge Color guide) */}
-          <div style={{ marginTop: 20, ...text.label, color: color.textTertiary }}>
-            판정 기준 (지표별 셀 색상)
-          </div>
-          <div style={{ marginTop: 4, ...text.caption, color: color.textTertiary }}>
-            테이블의 지표 셀 색상은 지표별 기준으로 판정합니다.
-          </div>
-          <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {THRESHOLDS.map(({ metric, chips }) => (
-              <div key={metric} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ width: 80, ...text.bodyM, color: color.textTitle }}>{metric}</span>
-                {chips.map(({ label, tone }) => {
-                  const c = semantic.util[tone];
-                  return (
-                    <span
-                      key={label}
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        height: 20,
-                        boxSizing: 'border-box',
-                        padding: '0 6px',
-                        borderRadius: radius.cell,
-                        background: c.bg,
-                        border: `1px solid ${c.border}`,
-                        color: c.text,
-                        ...text.label,
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {label}
+          {/* 임계 기준 — 태스크(추론/학습)별 × 지표별, utilThresholds에서 파생
+              (2026-06-11 디자인 #F6F8FA 박스 + 라이트 칩, node 7164:7048-7085) */}
+          <div
+            style={{
+              marginTop: 20,
+              background: '#F6F8FA',
+              borderRadius: radius.cell,
+              padding: '12px 16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 10,
+            }}
+          >
+            <span style={{ ...text.body, color: color.textTitle }}>임계 기준</span>
+            {(['추론', '학습'] as const).map((task, ti) => (
+              <div
+                key={task}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 8,
+                  paddingTop: ti > 0 ? 10 : 0,
+                  borderTop: ti > 0 ? `1px solid ${color.border}` : undefined,
+                }}
+              >
+                <span style={{ ...text.body, color: color.textTitle }}>{task}</span>
+                {(['gpu', 'slot'] as const).map((metric) => (
+                  <div key={metric} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ width: 60, ...text.caption, color: color.textTertiary }}>
+                      {metric === 'gpu' ? 'GPU Util' : 'Slot Util'}
                     </span>
-                  );
-                })}
+                    {thresholdChips(task, metric).map(({ label, tone }) => (
+                      <span
+                        key={label}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          minWidth: 48,
+                          height: 18,
+                          boxSizing: 'border-box',
+                          padding: '0 6px',
+                          borderRadius: radius.cell,
+                          background: LIGHT_CHIP[tone].bg,
+                          color: LIGHT_CHIP[tone].text,
+                          fontSize: 11,
+                          lineHeight: '12px',
+                          fontWeight: 400,
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                ))}
               </div>
             ))}
           </div>

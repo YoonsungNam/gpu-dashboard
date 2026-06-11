@@ -2,27 +2,35 @@ import { semantic } from '../tokens';
 
 export type UtilMetric = 'gpu' | 'slot';
 
+import type { TaskType } from '../mock/types';
+
 /**
- * Real threshold cutoffs taken from the Figma legend (metric-SPECIFIC).
- * GPU Util and Slot Util use DIFFERENT scales. Change them here only — every
- * threshold-colored cell/badge derives from this.
+ * ★지표 셀 색상 임계 — 태스크별(2026-06-11 디자인 '모니터링 지표 정의' 표)★
+ * 운영 정책에 따라 숫자만 바꾸면 테이블 셀 색, 하단 범례, 지표 정의 패널이
+ * 함께 갱신됩니다. (과제 등급 기준은 lib/gradePolicy.ts)
  */
-export const utilThresholds: Record<UtilMetric, { good: number; warn: number }> = {
-  gpu: { good: 20, warn: 10 }, // GPU Util: ≥20 good · 10–20 warn · <10 bad
-  slot: { good: 80, warn: 70 }, // Slot Util: ≥80 good · 70–80 warn · <70 bad
+export const utilThresholds: Record<TaskType, Record<UtilMetric, { good: number; warn: number }>> = {
+  추론: {
+    gpu: { good: 20, warn: 10 }, // ≥20 정상 · 10-20 주의 · <10 저활용
+    slot: { good: 80, warn: 70 },
+  },
+  학습: {
+    gpu: { good: 40, warn: 20 },
+    slot: { good: 75, warn: 65 },
+  },
 };
 
 export type UtilLevel = 'good' | 'warn' | 'bad';
 
-export function utilLevel(value: number, metric: UtilMetric = 'gpu'): UtilLevel {
-  const t = utilThresholds[metric];
+export function utilLevel(value: number, metric: UtilMetric = 'gpu', task: TaskType = '추론'): UtilLevel {
+  const t = utilThresholds[task][metric];
   if (value >= t.good) return 'good';
   if (value >= t.warn) return 'warn';
   return 'bad';
 }
 
-export function utilColors(value: number, metric: UtilMetric = 'gpu') {
-  return semantic.util[utilLevel(value, metric)];
+export function utilColors(value: number, metric: UtilMetric = 'gpu', task: TaskType = '추론') {
+  return semantic.util[utilLevel(value, metric, task)];
 }
 
 // 과제 등급 규칙은 lib/gradePolicy.ts(GRADE_POLICY)로 이동 — 운영 정책 단일 소스.

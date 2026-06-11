@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const port = process.argv[2] || '5173';
+const b = await chromium.launch({ args: ['--no-sandbox','--disable-setuid-sandbox','--disable-gpu'] });
+const ctx = await b.newContext({ viewport: { width: 1920, height: 1400 }, deviceScaleFactor: 1 });
+const p = await ctx.newPage();
+await p.goto(`http://localhost:${port}/?screen=overview`, { waitUntil: 'domcontentloaded' });
+await p.waitForLoadState('networkidle').catch(()=>{});
+await p.waitForTimeout(1200);
+await p.getByRole('button', { name: /지표 정의/ }).click(); await p.waitForTimeout(500);
+await p.locator('[role="dialog"]').screenshot({ path: 'design/shots/feedback/policy_modal.png' });
+console.log('shot policy_modal');
+await b.close().catch(()=>{});
