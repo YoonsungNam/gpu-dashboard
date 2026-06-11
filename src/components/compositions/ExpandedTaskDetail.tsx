@@ -293,7 +293,11 @@ export default function ExpandedTaskDetail({
 
       {/* ---- Unit 구성 sub-table ---- */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: dense ? 10 : 8 }}>
-        <span style={HEADING}>Unit 구성</span>
+        {/* Heading + unit count, e.g. 'Unit 구성 3개' */}
+        <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 6 }}>
+          <span style={HEADING}>Unit 구성</span>
+          <span style={{ ...text.body, color: color.textTertiary }}>{units.length}개</span>
+        </span>
         <table
           style={{
             width: '100%',

@@ -1,0 +1,20 @@
+import { chromium } from 'playwright';
+const port = process.argv[2] || '5173';
+const b = await chromium.launch({ args: ['--no-sandbox','--disable-setuid-sandbox','--disable-gpu'] });
+const ctx = await b.newContext({ viewport: { width: 1920, height: 1500 }, deviceScaleFactor: 1 });
+const p = await ctx.newPage();
+await p.goto(`http://localhost:${port}/?screen=overview`, { waitUntil: 'domcontentloaded' });
+await p.waitForLoadState('networkidle').catch(()=>{});
+await p.waitForTimeout(1200);
+await p.locator('#sec-occupancy tr.gd-row').first().click(); await p.waitForTimeout(600);
+const t = (await p.locator('#sec-occupancy').innerText()).replace(/\s+/g,' ');
+const i = t.indexOf('Unit 구성');
+console.log('OVERVIEW:', t.slice(i, i + 40));
+// count actual unit rows for equality check
+const rowsTxt = t.slice(i);
+const unitRows = (rowsTxt.match(/ais-/g) || []).length;
+console.log('actual unit rows:', unitRows);
+const box = await p.locator('#sec-occupancy').getByText(/^Unit 구성$/).first().boundingBox();
+if (box) await p.screenshot({ path: 'design/shots/feedback/unit_count.png', clip: { x: box.x - 20, y: box.y - 12, width: 800, height: 220 } });
+console.log('shot unit_count');
+await b.close().catch(()=>{});
