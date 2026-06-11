@@ -34,32 +34,11 @@ const tickStyle = {
   fontSize: 10,
 } as const;
 
-/** Index step so ~7 markers/labels land on evenly spaced dates (first + every Nth + last). */
+/** Index step so ~7 axis labels land on evenly spaced dates (first + every Nth + last). */
 const markerStep = (n: number) => Math.max(1, Math.round((n - 1) / 6));
 
-/** True for the indices that carry an axis label and a series marker. */
+/** True for the indices that carry an axis label. */
 const isMarkerIndex = (i: number, n: number, step: number) => i % step === 0 || i === n - 1;
-
-/**
- * Per-series tick-date markers (v2 trend spec): 10px dia dots only at the
- * labeled dates — hollow (white fill, 2px series stroke) on the solid GPU Util
- * line, filled in series color on the dashed Slot Util line.
- */
-function seriesDot(s: TrendSeries, n: number) {
-  const step = markerStep(n);
-  return (props: { cx?: number; cy?: number; index?: number }) => {
-    const { cx, cy, index } = props;
-    const key = `${s.key}-dot-${index}`;
-    if (index == null || cx == null || cy == null || !isMarkerIndex(index, n, step)) {
-      return <g key={key} />;
-    }
-    return s.dash ? (
-      <circle key={key} cx={cx} cy={cy} r={5} fill={s.color} />
-    ) : (
-      <circle key={key} cx={cx} cy={cy} r={5} fill={color.white} stroke={s.color} strokeWidth={2} />
-    );
-  };
-}
 
 /**
  * v2 dark tooltip content (node I7104:14218): rgba(40,48,55,0.9) r6 panel,
@@ -110,7 +89,7 @@ export default function TrendChart({
   const Chart = area ? AreaChart : LineChart;
   const n = data.length;
   const step = markerStep(n);
-  // Explicit ticks so the line markers land exactly on the labeled dates.
+  // Explicit evenly spaced ticks keep the labels readable on dense windows.
   const xTicks = data
     .filter((_, i) => isMarkerIndex(i, n, step))
     .map((d) => d[xKey]) as (string | number)[];
@@ -184,7 +163,8 @@ export default function TrendChart({
               stroke={s.color}
               strokeWidth={2}
               strokeDasharray={s.dash ? '5 4' : undefined}
-              dot={seriesDot(s, n)}
+              // No per-date dot markers — clean lines; markers only appear on hover.
+              dot={false}
               // v2 hover: dashed Slot line fills solid in the darkened hue; the solid
               // GPU line keeps a hollow white dot with a 2px ring (Ellipse 14, 7104:14216).
               activeDot={

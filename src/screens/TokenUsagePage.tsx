@@ -60,9 +60,25 @@ export default function TokenUsagePage() {
         </div>
       </div>
 
-      {/* Grouped token table card (Frame 26096792, white r6). overflow 'clip'
-          keeps the r6 corner clipping without breaking the sticky header. */}
-      <div id="tok-table" style={{ background: color.cardBg, borderRadius: 6, overflow: 'clip' }}>
+      {/* Grouped token table card (Frame 26096792, white r6). The card itself
+          is the scrollport: the table carries a 1100px minWidth, so narrow
+          viewports scroll horizontally HERE, and maxHeight bounds the card so
+          the thead's position:sticky sticks within it. An inner overflow-x
+          wrapper around the table cannot work — a scroll value on one axis
+          forces the used overflow-y to 'auto', making the (height-
+          unconstrained, never-vertically-scrolling) wrapper the th's
+          scrollport, i.e. the header would never stick. overflow:auto still
+          clips the r6 corners like the previous 'clip' did. */}
+      <div
+        id="tok-table"
+        style={{
+          background: color.cardBg,
+          borderRadius: 6,
+          overflow: 'auto',
+          // 100vh − (topbar 56 + main padding 16×2 + toolbar row 56 + page gap 12)
+          maxHeight: 'calc(100vh - 156px)',
+        }}
+      >
         <TokenGroupTable
           groups={filtered}
           expandedGroupId={expandedGroupId}

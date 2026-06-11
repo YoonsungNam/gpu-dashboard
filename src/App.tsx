@@ -9,6 +9,7 @@ import TokenUsagePage from './screens/TokenUsagePage';
 import { color, radius, semantic, space, text } from './tokens';
 import { InfoIcon } from './icons/FigureIcons';
 import { filters } from './mock/data';
+import MetricDefsModal from './components/compositions/MetricDefsModal';
 
 const TITLES: Record<NavKey, string> = {
   overview: 'Overview',
@@ -87,9 +88,10 @@ function ToolbarSelect({
  * Display-only in the kit; wire these to global filter state when porting.
  */
 function ResourceTopActions() {
-  const [period, setPeriod] = useState('최근 30일');
+  const [period, setPeriod] = useState('최근 28일');
   const [division, setDivision] = useState('전체');
   const [critical, setCritical] = useState('전체');
+  const [defsOpen, setDefsOpen] = useState(false);
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 13 /* Figma Frame 52 gap13.0 */ }}>
       <span
@@ -130,7 +132,7 @@ function ResourceTopActions() {
         label="기간"
         value={period}
         onChange={setPeriod}
-        options={['최근 7일', '최근 30일', '최근 90일']}
+        options={['최근 1일', '최근 3일', '최근 7일', '최근 14일', '최근 28일']}
       />
       <ToolbarSelect
         label="사업부"
@@ -139,12 +141,15 @@ function ResourceTopActions() {
         options={['전체', ...filters.divisions]}
       />
       <ToolbarSelect
-        label="전략"
+        label="과제 구분"
         value={critical}
         onChange={setCritical}
-        options={['전체', ...filters.is_critical]}
+        options={['전체', '전략', '일반']}
       />
-      <span
+      <button
+        type="button"
+        className="gd-clickable"
+        onClick={() => setDefsOpen(true)}
         style={{
           ...text.bodyM,
           fontWeight: 500,
@@ -154,6 +159,9 @@ function ResourceTopActions() {
           alignItems: 'center',
           gap: space.xs,
           padding: '4px 8px', // btn_ghost pad 4/8 (node 7104:14059)
+          border: 'none',
+          background: 'transparent',
+          fontFamily: 'inherit',
         }}
       >
         {/* 14x14 square-i info icon in a 16x16 slot (nodes 221:53776-53778) */}
@@ -169,7 +177,8 @@ function ResourceTopActions() {
           <InfoIcon size={14} />
         </span>
         지표 정의
-      </span>
+      </button>
+      {defsOpen && <MetricDefsModal onClose={() => setDefsOpen(false)} />}
     </div>
   );
 }

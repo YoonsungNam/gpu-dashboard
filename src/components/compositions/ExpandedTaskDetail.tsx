@@ -32,10 +32,10 @@ function utilOf(obj: ProjectUnitInfo | ProjectUnit, key: string): number {
   return (obj as unknown as Record<string, number | undefined>)[key] ?? 0;
 }
 
-/** KPI strip metric set per task (추론 = 4 metrics, 학습 = GPU Util + GPU Util WH only). */
+/** KPI strip metric set per task (추론 = 4 metrics, 학습 = GPU Util + Slot Util only). */
 const KPI_METRICS: Record<TaskType, MetricDef[]> = {
   추론: [GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL],
-  학습: [GPU_UTIL, GPU_UTIL_WH],
+  학습: [GPU_UTIL, SLOT_UTIL],
 };
 
 /** Unit 구성 util columns — SHORT header labels (추론: GPU/GPU WH/GPU AH/Slot; 학습: GPU/Slot). */
@@ -68,6 +68,13 @@ export interface ExpandedTaskDetailProps {
   /** Legacy alias of isStrategic. */
   isCritical?: boolean;
   leadCount?: number;
+  /**
+   * Explicit control over the '저활용 회수 예상량' section. When provided it
+   * OVERRIDES the internal heuristic entirely: the section renders iff
+   * showReclaim && data.info.reclaim_estimate exists. Callers pass it per row
+   * (resource: grade === '저활용'; overview: false/true per table).
+   */
+  showReclaim?: boolean;
   /** Panel background — overview passes '#F2F6F9', resource default '#F6F8FA'. */
   bg?: string;
   /**
@@ -96,6 +103,7 @@ export default function ExpandedTaskDetail({
   isStrategic,
   isCritical,
   leadCount,
+  showReclaim,
   bg = '#F6F8FA',
   dense = false,
 }: ExpandedTaskDetailProps) {
@@ -116,10 +124,13 @@ export default function ExpandedTaskDetail({
     ? { fontSize: 20, lineHeight: '24px', fontWeight: 600 }
     : text.metricLg;
 
-  // 저활용 회수 예상량 — shown on 학습 expands and whenever any basis reclaims.
+  // 저활용 회수 예상량 — explicit showReclaim prop wins; otherwise fall back to
+  // the heuristic (학습 expands, or whenever any basis reclaims).
   const re = info.reclaim_estimate;
   const showRecall =
-    !!re && (task === '학습' || re.gpu.reclaim_count > 0 || re.slot.reclaim_count > 0);
+    showReclaim !== undefined
+      ? showReclaim && !!re
+      : !!re && (task === '학습' || re.gpu.reclaim_count > 0 || re.slot.reclaim_count > 0);
 
   const unitCols = UNIT_UTIL_COLS[task];
 

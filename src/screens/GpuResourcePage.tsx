@@ -89,7 +89,7 @@ export default function GpuResourcePage() {
     return [
       {
         key: 'project_name',
-        header: '과제',
+        header: '워크그룹',
         width: tab === '학습' ? 682 : 510,
         render: (r, _i, expanded) => (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 16 /* Header,Box gap16.0 (7104:8604) */, minWidth: 0 }}>
@@ -200,7 +200,7 @@ export default function GpuResourcePage() {
           <SearchInput
             value={query}
             onChange={onQuery}
-            placeholder="과제명/담당자 검색"
+            placeholder="워크그룹/담당자 검색"
             width={200}
           />
           <DownloadButton />
@@ -222,12 +222,15 @@ export default function GpuResourcePage() {
           panelStyle={{ padding: 0, background: '#F6F8FA' }}
           expandedContent={(r) => (
             <ExpandedTaskDetail
-              data={getProjectUnits(r.project_id)}
+              // Task-scoped fetch: the expanded KPI/gauge values match the
+              // gpu value displayed on the active tab's row.
+              data={getProjectUnits(r.project_id, tab)}
               taskType={tab}
               isStrategic={r.is_critical === 'Y'}
+              showReclaim={r.grade === '저활용'}
             />
           )}
-          emptyText="조건에 맞는 과제가 없습니다"
+          emptyText="조건에 맞는 워크그룹이 없습니다"
         />
 
         {/* Footer INSIDE the white table card (7104:8535/8554, pad 12/16):

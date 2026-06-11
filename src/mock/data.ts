@@ -35,8 +35,10 @@ const round1 = (n: number) => Math.round(n * 10) / 10;
 
 const DIVISIONS = ['DX', 'Platform', 'Security', 'Foundry', 'Memory'];
 const IMPORTANCE = ['전략', '핵심', '일반'];
-const PURPOSES = ['생산시스템 연계', '글로벌 파운드리 연계', '연구 개발', '서비스 운영', 'AI 모델 학습'];
-const GPU_MODELS = ['H100', 'A100', 'A800', 'L40S'];
+const PURPOSES = ['모델 학습', '모델 개발'];
+const GPU_MODELS = [
+  'H100', 'A100', 'V100', 'H200', 'P100', 'P40', 'B300', 'RTX Pro 6000', 'MI355X',
+];
 const PROJECT_NAMES = [
   'AI Vision Platform', 'Data Pipeline', '추천 엔진 RT', '이미지 생성 서빙',
   'Solution 개발용 학습', '파운드리 API 서빙', '메모리 검증 AI', 'Foundry 시뮬레이션',
@@ -69,10 +71,10 @@ export const kpiByTask: KpiByTask[] = [
 /* ---- GET /api/gpu-count-by-task ---- */
 export const gpuCountByTask: GpuCountByTask = { 추론: 1842, 학습: 576 };
 
-/** v2: derive the utilization grade from GPU/Slot Util (회수 = flagged subset of 저활용). */
-function gradeOf(gpu: number, slot: number, r: () => number): ProjectGrade | null {
+/** v2: derive the utilization grade from GPU/Slot Util ('우수' | '저활용' | none). */
+function gradeOf(gpu: number, slot: number): ProjectGrade | null {
   if (gpu >= 66) return '우수';
-  if (gpu <= 30 && slot <= 75) return r() > 0.5 ? '저활용 회수' : '저활용';
+  if (gpu <= 30 && slot <= 75) return '저활용';
   return null;
 }
 
@@ -97,14 +99,13 @@ export const projects: ProjectRow[] = Array.from({ length: 24 }, (_, i) => {
     training_gpu_ut: round1(Math.max(0, Math.min(100, gpu + (r() - 0.5) * 24))),
     slot_ut: slot,
     member_tasks: tasks,
-    grade: gradeOf(gpu, slot, r),
+    grade: gradeOf(gpu, slot),
   };
 });
 
 /** v2: reclaim estimate for one basis — 0 reclaim when current meets target. */
 function reclaimBasis(current: number, target: number, quota: number): ReclaimBasis {
-  const reclaim =
-    current >= target ? 0 : Math.max(1, Math.round(quota * (1 - current / target)));
+  const reclaim = current >= target ? 0 : Math.round(quota * (1 - current / target));
   return {
     current_pct: current,
     target_pct: target,
@@ -114,9 +115,13 @@ function reclaimBasis(current: number, target: number, quota: number): ReclaimBa
   };
 }
 
-/* ---- GET /api/project/units?project_id=… ---- */
-export function getProjectUnits(projectId: string): ProjectUnitsResponse {
+/* ---- GET /api/project/units?project_id=…&task=… ----
+   task scopes info.gpu_ut (and the reclaim gauges) so the expanded values
+   match the row that was clicked: 학습 → training_gpu_ut, 추론 (default) →
+   inference_gpu_ut. */
+export function getProjectUnits(projectId: string, task: TaskType = '추론'): ProjectUnitsResponse {
   const p = projects.find((x) => x.project_id === projectId) ?? projects[0];
+  const gpuUt = task === '학습' ? p.training_gpu_ut ?? p.inference_gpu_ut : p.inference_gpu_ut;
   const r = rng(parseInt(projectId.replace(/\D/g, '') || '1', 10) * 7 + 3);
   const unitCount = 2 + Math.floor(r() * 3);
   const units = Array.from({ length: unitCount }, (_, i) => {
@@ -143,11 +148,13 @@ export function getProjectUnits(projectId: string): ProjectUnitsResponse {
       purpose: p.purpose,
       business_importance: p.business_importance,
       slot_ut: p.slot_ut,
-      gpu_ut: p.inference_gpu_ut,
+      gpu_ut: gpuUt,
       gpu_ut_working: p.inference_gpu_ut_working,
       gpu_ut_nonworking: p.inference_gpu_ut_nonworking,
+      // Same task-scoped gpu value as info.gpu_ut so the gauges' '현재 X%'
+      // equals the KPI strip exactly (gpu target 30, slot target 70).
       reclaim_estimate: {
-        gpu: reclaimBasis(p.inference_gpu_ut, 30, p.quota),
+        gpu: reclaimBasis(gpuUt, 30, p.quota),
         slot: reclaimBasis(p.slot_ut, 70, p.quota),
       },
     },
@@ -155,11 +162,11 @@ export function getProjectUnits(projectId: string): ProjectUnitsResponse {
   };
 }
 
-/* ---- GET /api/top-bottom-projects ---- */
+/* ---- GET /api/top-bottom-projects (good = top 10, alert = bottom 12) ---- */
 export const topBottomProjects: TopBottomProjects = {
   good: [...projects]
     .sort((a, b) => b.inference_gpu_ut - a.inference_gpu_ut)
-    .slice(0, 5)
+    .slice(0, 10)
     .map((p) => ({
       project_id: p.project_id,
       project_name: p.project_name,
@@ -172,8 +179,8 @@ export const topBottomProjects: TopBottomProjects = {
     })),
   alert: [...projects]
     .sort((a, b) => a.inference_gpu_ut - b.inference_gpu_ut)
-    .slice(0, 5)
-    .map((p, i) => ({
+    .slice(0, 12)
+    .map((p) => ({
       project_id: p.project_id,
       project_name: p.project_name,
       division: p.division,
@@ -182,23 +189,23 @@ export const topBottomProjects: TopBottomProjects = {
       slot_ut: p.slot_ut,
       gpu_ut: p.inference_gpu_ut,
       reason: `Slot Util ${p.slot_ut.toFixed(1)}%`,
-      // v2 design flags 저활용 ranks 1 and 4 with the '저활용 회수' tag.
-      is_reclaim_target: (i === 0 || i === 3 ? 'Y' : 'N') as YN,
     })),
 };
 
-/* ---- GET /api/quota-by-env-gpu (sums ≈ 2,941) ---- */
+/* ---- GET /api/quota-by-env-gpu (all 9 GPU models across 4 envs; sums to exactly 2,941) ---- */
 export const quotaByEnvGpu: QuotaByEnvGpu[] = [
   { environment: 'P1', gpu_model: 'H100', gpu_count: 512 },
-  { environment: 'P1', gpu_model: 'A100', gpu_count: 384 },
-  { environment: 'P2', gpu_model: 'H100', gpu_count: 320 },
-  { environment: 'P2', gpu_model: 'A100', gpu_count: 256 },
-  { environment: 'P2', gpu_model: 'A800', gpu_count: 192 },
-  { environment: 'D1', gpu_model: 'A100', gpu_count: 288 },
-  { environment: 'D1', gpu_model: 'L40S', gpu_count: 224 },
-  { environment: 'R&D', gpu_model: 'H100', gpu_count: 256 },
-  { environment: 'R&D', gpu_model: 'A800', gpu_count: 165 },
-  { environment: 'R&D', gpu_model: 'L40S', gpu_count: 344 },
+  { environment: 'P1', gpu_model: 'H200', gpu_count: 384 },
+  { environment: 'P1', gpu_model: 'B300', gpu_count: 128 },
+  { environment: 'P2', gpu_model: 'A100', gpu_count: 320 },
+  { environment: 'P2', gpu_model: 'V100', gpu_count: 192 },
+  { environment: 'P2', gpu_model: 'MI355X', gpu_count: 96 },
+  { environment: 'D1', gpu_model: 'A100', gpu_count: 256 },
+  { environment: 'D1', gpu_model: 'P100', gpu_count: 160 },
+  { environment: 'D1', gpu_model: 'P40', gpu_count: 96 },
+  { environment: 'R&D', gpu_model: 'H100', gpu_count: 365 },
+  { environment: 'R&D', gpu_model: 'RTX Pro 6000', gpu_count: 240 },
+  { environment: 'R&D', gpu_model: 'V100', gpu_count: 192 },
 ];
 
 /* ---- GET /api/service/summary ---- */
@@ -233,11 +240,12 @@ export const filters: Filters = {
   is_critical: ['Y', 'N'],
 };
 
-/* ---- util-over-time for 사용추이 (assumed shape; no endpoint sample) ---- */
+/* ---- util-over-time for 사용추이 (assumed shape; no endpoint sample) ----
+   Most recent 28 days (2026-05-04..2026-05-31) — matches the '최근 28일' default. */
 function genTrend(seed: number, gpuAvg: number, slotAvg: number): UtilTrendPoint[] {
   const r = rng(700 + seed);
-  return Array.from({ length: 30 }, (_, d) => {
-    const day = String(d + 1).padStart(2, '0');
+  return Array.from({ length: 28 }, (_, d) => {
+    const day = String(d + 4).padStart(2, '0');
     return {
       ts: `2026-05-${day}`,
       gpu_ut: round1(Math.max(0, Math.min(100, gpuAvg + (r() - 0.5) * 22 + Math.sin(d / 5) * 6))),

@@ -7,24 +7,51 @@ import { CaretDownIcon } from '../../icons/FigureIcons';
  * Mirrors the Figma `btn_2ndary` instance (fill #FFFFFF, r2, 14px chevron glyph);
  * the magenta `#FF54EE` square in the node tree is a design-system guide overlay,
  * not part of the rendered output.
+ *
+ * When `onToggle` is provided it renders as a real <button> that collapses /
+ * expands the section: chevron points down when open, right when collapsed.
  */
-function SectionMarker() {
-  return (
+function SectionMarker({
+  collapsed = false,
+  onToggle,
+}: {
+  collapsed?: boolean;
+  onToggle?: () => void;
+}) {
+  const boxStyle = {
+    width: 24,
+    height: 24,
+    flexShrink: 0,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 0,
+    background: color.cardBg,
+    border: `1px solid ${color.borderSubtle}`, // #DADFE4 (btn_2ndary edge, re-verified)
+    borderRadius: radius.cell,
+  } as const;
+  const chevron = (
     <span
       style={{
-        width: 24,
-        height: 24,
-        flexShrink: 0,
         display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: color.cardBg,
-        border: `1px solid ${color.borderSubtle}`, // #DADFE4 (btn_2ndary edge, re-verified)
-        borderRadius: radius.cell,
+        transform: collapsed ? 'rotate(-90deg)' : 'none',
+        transition: 'transform 0.15s ease',
       }}
     >
       <CaretDownIcon size={14} color={color.textSecondary} />
     </span>
+  );
+  if (!onToggle) return <span style={boxStyle}>{chevron}</span>;
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={!collapsed}
+      title={collapsed ? '섹션 펼치기' : '섹션 접기'}
+      style={{ ...boxStyle, cursor: 'pointer' }}
+    >
+      {chevron}
+    </button>
   );
 }
 
@@ -34,12 +61,18 @@ export default function SectionHeader({
   caption,
   right,
   icon,
+  collapsed,
+  onToggle,
 }: {
   title: string;
   caption?: string;
   right?: ReactNode;
   /** Overrides the default chevron marker. */
   icon?: ReactNode;
+  /** Collapse state shown by the marker chevron (down = open, right = collapsed). */
+  collapsed?: boolean;
+  /** When provided, the marker becomes a button that toggles the section. */
+  onToggle?: () => void;
 }) {
   return (
     <div
@@ -53,7 +86,7 @@ export default function SectionHeader({
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: space.lg }}>
-        {icon ?? <SectionMarker />}
+        {icon ?? <SectionMarker collapsed={collapsed} onToggle={onToggle} />}
         <span style={{ ...text.sectionTitle, color: color.textTitle }}>{title}</span>
         {caption && <span style={{ ...text.body, color: color.textSecondary }}>{caption}</span>}
       </div>

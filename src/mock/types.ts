@@ -10,8 +10,8 @@
 export type YN = 'Y' | 'N';
 export type TaskType = '추론' | '학습';
 
-/** v2 design: per-project utilization grade (drives 과제-cell chips + 등급 필터). */
-export type ProjectGrade = '우수' | '저활용' | '저활용 회수';
+/** v2 design: per-project utilization grade (drives 워크그룹-cell chips + 등급 필터). */
+export type ProjectGrade = '우수' | '저활용';
 
 /** GET /api/kpi-by-task */
 export interface KpiByTask {
@@ -36,8 +36,6 @@ export interface RankedProject {
   slot_ut: number;
   gpu_ut: number;
   reason: string;
-  /** v2: flags rows that show the red '저활용 회수' tag. */
-  is_reclaim_target?: YN;
 }
 export interface TopBottomProjects {
   good: RankedProject[];

@@ -59,6 +59,16 @@ export default function ServiceListModal({
     padding: '0 11px',
     borderBottom: '1px solid #ECF1F5',
     verticalAlign: 'middle',
+    // Clip at the cell edge — values must never overlap the next column.
+    overflow: 'hidden',
+  };
+  const num: CSSProperties = {
+    ...td,
+    ...text.body,
+    color: color.textTitle,
+    textAlign: 'center',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
   };
 
   return (
@@ -131,8 +141,10 @@ export default function ServiceListModal({
           </button>
         </div>
 
-        {/* BODY — group heading + stat strip + full service table (scrolls) */}
-        <div style={{ padding: '24px 20px', overflowY: 'auto', flex: 1, minHeight: 0 }}>
+        {/* BODY — group heading + stat strip + full service table. Scrolls
+            both axes: vertically past ~11 rows, horizontally when the modal
+            shrinks under the table's 962px design-grid minWidth. */}
+        <div style={{ padding: '24px 20px', overflow: 'auto', flex: 1, minHeight: 0 }}>
           <div
             style={{
               display: 'flex',
@@ -163,6 +175,9 @@ export default function ServiceListModal({
           <table
             style={{
               width: '100%',
+              // Pin the Figma grid sum so the %-share columns never collapse
+              // below their design widths; the modal body scrolls instead.
+              minWidth: 962,
               borderCollapse: 'separate',
               borderSpacing: 0,
               tableLayout: 'fixed',
@@ -215,23 +230,23 @@ export default function ServiceListModal({
                     {/* 90px bar + 2px gap + 46px right-aligned % (Container 7104:4382). */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <MeterBar pct={s.share_pct} fill={tokenScreen.bar.group} width={90} />
-                      <span style={{ ...text.body, color: color.textTitle, width: 46, textAlign: 'right' }}>
+                      <span
+                        style={{
+                          ...text.body,
+                          color: color.textTitle,
+                          width: 46,
+                          textAlign: 'right',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
                         {s.share_pct.toFixed(1)}%
                       </span>
                     </div>
                   </td>
-                  <td style={{ ...td, ...text.body, color: color.textTitle, textAlign: 'center' }}>
-                    {fmtTokens(s.avg_input)}
-                  </td>
-                  <td style={{ ...td, ...text.body, color: color.textTitle, textAlign: 'center' }}>
-                    {fmtTokens(s.avg_output)}
-                  </td>
-                  <td style={{ ...td, ...text.body, color: color.textTitle, textAlign: 'center' }}>
-                    {ioRatio(s.avg_input, s.avg_output)}
-                  </td>
-                  <td style={{ ...td, ...text.body, color: color.textTitle, textAlign: 'center' }}>
-                    {fmtTokens(s.avg_total)}
-                  </td>
+                  <td style={num}>{fmtTokens(s.avg_input)}</td>
+                  <td style={num}>{fmtTokens(s.avg_output)}</td>
+                  <td style={num}>{ioRatio(s.avg_input, s.avg_output)}</td>
+                  <td style={num}>{fmtTokens(s.avg_total)}</td>
                 </tr>
               ))}
             </tbody>

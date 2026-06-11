@@ -132,6 +132,11 @@ export default function TokenGroupTable({
     <table
       style={{
         width: '100%',
+        // Columns are %-shares of the 1640 Figma grid; under ~1100px the
+        // 160-share value columns collapse below the digit width and adjacent
+        // numbers overlap. minWidth pins the grid — below it the #tok-table
+        // card (the scrollport, see TokenUsagePage) scrolls horizontally.
+        minWidth: 1100,
         // 'separate' keeps the th borders attached while the header sticks.
         borderCollapse: 'separate',
         borderSpacing: 0,
@@ -252,12 +257,17 @@ function GroupRow({
     background: expanded ? sel.rowBg : undefined,
     verticalAlign: 'middle',
     position: 'relative',
+    // Anything outgrowing its column clips at the cell edge — values must
+    // never bleed into (and overlap) the neighbouring column.
+    overflow: 'hidden',
   };
   const num: CSSProperties = {
     ...td,
     textAlign: 'center',
     ...text.body,
     color: valueColor,
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
   };
 
   return (
@@ -320,7 +330,9 @@ function GroupRow({
       <td style={td}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20, paddingLeft: 6 }}>
           <MeterBar pct={g.share_pct} fill={tokenScreen.bar.group} />
-          <span style={{ ...text.body, color: valueColor }}>{g.share_pct.toFixed(1)}%</span>
+          <span style={{ ...text.body, color: valueColor, whiteSpace: 'nowrap' }}>
+            {g.share_pct.toFixed(1)}%
+          </span>
         </div>
       </td>
 
@@ -332,7 +344,9 @@ function GroupRow({
       <td style={td}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20, paddingLeft: 12 }}>
           <MeterBar pct={ioBarPct(g.avg_input, g.avg_output)} fill={tokenScreen.bar.group} />
-          <span style={{ ...text.body, color: valueColor }}>{ioRatio(g.avg_input, g.avg_output)}</span>
+          <span style={{ ...text.body, color: valueColor, whiteSpace: 'nowrap' }}>
+            {ioRatio(g.avg_input, g.avg_output)}
+          </span>
         </div>
       </td>
 
@@ -352,12 +366,16 @@ function ServiceRow({ service: s }: { service: TokenServiceItem; indexInGroup: n
     padding: 0,
     background: color.white,
     verticalAlign: 'middle',
+    // Clip at the cell edge — values must never overlap the next column.
+    overflow: 'hidden',
   };
   const num: CSSProperties = {
     ...td,
     textAlign: 'center',
     ...text.body,
     color: color.textTertiary,
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
   };
 
   return (
@@ -379,7 +397,9 @@ function ServiceRow({ service: s }: { service: TokenServiceItem; indexInGroup: n
       <td style={td}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20, paddingLeft: 6 }}>
           <MeterBar pct={s.share_pct} fill={tokenScreen.bar.service} />
-          <span style={{ ...text.body, color: color.textTertiary }}>{s.share_pct.toFixed(1)}%</span>
+          <span style={{ ...text.body, color: color.textTertiary, whiteSpace: 'nowrap' }}>
+            {s.share_pct.toFixed(1)}%
+          </span>
         </div>
       </td>
       <td style={num}>{fmtTokens(s.avg_input)}</td>
@@ -387,7 +407,7 @@ function ServiceRow({ service: s }: { service: TokenServiceItem; indexInGroup: n
       <td style={td}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20, paddingLeft: 12 }}>
           <MeterBar pct={ioBarPct(s.avg_input, s.avg_output)} fill={tokenScreen.bar.service} />
-          <span style={{ ...text.body, color: color.textTertiary }}>
+          <span style={{ ...text.body, color: color.textTertiary, whiteSpace: 'nowrap' }}>
             {ioRatio(s.avg_input, s.avg_output)}
           </span>
         </div>

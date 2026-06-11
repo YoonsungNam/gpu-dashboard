@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import {useState, useEffect } from 'react';
 import { color, radius, text } from '../../tokens';
 import { FilterIcon } from '../../icons/FigureIcons';
 import type { ProjectGrade } from '../../mock/types';
 
 export type GradeFilterValue = '전체' | ProjectGrade;
 
-const OPTIONS: GradeFilterValue[] = ['전체', '우수', '저활용', '저활용 회수'];
+const OPTIONS: GradeFilterValue[] = ['전체', '우수', '저활용'];
 
 /**
  * 등급 필터 trigger button + single-select popover (nodes 7104:12152-12164).
@@ -13,9 +13,9 @@ const OPTIONS: GradeFilterValue[] = ['전체', '우수', '저활용', '저활용
  *  - Enabled   → white bg, 1px #DADFE4 border, icon #767D84, label '등급 필터' #3C444B
  *  - Open      → white bg, 1px #3392D3 border, icon + label #0077C8 (7104:12155)
  *  - Activated → bg #E6F1FA, 1px #CCD1D6 border, icon + label #0077C8, label = active value (7104:12153)
- * Popover: 120×116, white, r2, padding 6px 1px, subtle drop shadow; four
- * 118×26 items (전체/우수/저활용/저활용 회수) 400/14 #2F363C, hover/selected
- * bg #ECF1F5. '전체' clears the filter (button returns to Enabled).
+ * Popover: 120px wide, white, r2, padding 6px 1px, subtle drop shadow; three
+ * 118×26 items (전체/우수/저활용) 400/14 #2F363C, hover/selected bg #ECF1F5.
+ * '전체' clears the filter (button returns to Enabled).
  */
 export default function GradeFilter({
   value,
@@ -25,6 +25,14 @@ export default function GradeFilter({
   onChange: (v: GradeFilterValue) => void;
 }) {
   const [open, setOpen] = useState(false);
+
+  // Esc closes the popover (matches the modals' behavior).
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
   const [hover, setHover] = useState<GradeFilterValue | null>(null);
 
   const activated = value !== '전체';

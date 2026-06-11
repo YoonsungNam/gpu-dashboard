@@ -1,12 +1,11 @@
-import { useMemo } from 'react';
-import { chart, color, radius, space, text, tokenScreen } from '../tokens';
+import { useMemo, useState } from 'react';
+import { chart, color, radius, semantic, space, text, tokenScreen } from '../tokens';
 import { num, pct, utilLevel } from '../lib/util';
 import { GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL } from '../lib/labels';
 
 import SectionHeader from '../components/primitives/SectionHeader';
 import Card from '../components/primitives/Card';
 import ProgressBar from '../components/primitives/ProgressBar';
-import UtilBadge from '../components/primitives/UtilBadge';
 import Legend from '../components/primitives/Legend';
 import DataTable, { type DataTableColumn } from '../components/primitives/DataTable';
 import { TaskIcon } from '../icons/FigureIcons';
@@ -77,7 +76,8 @@ function TwoCol({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Section wrapper: SectionHeader + content, with vertical rhythm. */
+/** Section wrapper: SectionHeader + content, with vertical rhythm. Clicking the
+ *  header marker button collapses/expands the section content (local state only). */
 function Section({
   id,
   title,
@@ -89,10 +89,16 @@ function Section({
   caption?: string;
   children: React.ReactNode;
 }) {
+  const [collapsed, setCollapsed] = useState(false);
   return (
     <section id={id} style={{ marginBottom: space.xxl + space.lg }}>
-      <SectionHeader title={title} caption={caption} />
-      {children}
+      <SectionHeader
+        title={title}
+        caption={caption}
+        collapsed={collapsed}
+        onToggle={() => setCollapsed((c) => !c)}
+      />
+      {!collapsed && children}
     </section>
   );
 }
@@ -428,34 +434,55 @@ function HoldingsSection() {
 
 const SELECTED = tokenScreen.selected;
 
-/** Red '저활용 회수' alert chip after the project name (nodes 7104:15317/15318, 66×18). */
-function ReclaimTag() {
+/**
+ * Badge level per the STATED rank-table criteria (NOT the global utilThresholds):
+ * GPU Util — good ≥66 · bad ≤30 · else warn; Slot Util — good ≥80 · bad ≤75 · else warn.
+ */
+const rankLevel = (value: number, metric: 'gpu' | 'slot') =>
+  metric === 'gpu'
+    ? value >= 66
+      ? 'good'
+      : value <= 30
+        ? 'bad'
+        : 'warn'
+    : value >= 80
+      ? 'good'
+      : value <= 75
+        ? 'bad'
+        : 'warn';
+
+/** Rank-table util chip (same 60×22 'lg' chip styles as UtilBadge, colors from rankLevel). */
+function RankUtilBadge({ value, metric }: { value: number; metric: 'gpu' | 'slot' }) {
+  const lvl = rankLevel(value, metric);
+  const c = semantic.util[lvl];
   return (
     <span
       style={{
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        width: 66,
-        height: 18,
-        boxSizing: 'border-box',
-        background: '#FFECEB',
-        border: '1px solid #FFD0CD',
+        verticalAlign: 'top',
+        minWidth: 60,
+        padding: '2px 10px',
         borderRadius: radius.cell,
-        ...text.caption,
-        color: '#D2362C',
+        // lg 'bad' uses the lighter #FFE3E1 sampled on the v2 Overview badges.
+        background: lvl === 'bad' ? '#FFE3E1' : c.bg,
+        border: `1px solid ${c.border}`,
+        color: c.text,
+        fontSize: 12,
+        lineHeight: '16px',
+        fontWeight: 600,
         whiteSpace: 'nowrap',
-        flexShrink: 0,
       }}
     >
-      저활용 회수
+      {value.toFixed(1)}%
     </span>
   );
 }
 
 /**
- * v2 rank columns: one merged '과제' column (22×22 rank box + name + optional
- * ReclaimTag + trailing 90px division), sortable util badges, '장 수(H100기준)'.
+ * v2 rank columns: one merged '과제' column (22×22 rank box + name + trailing
+ * 90px division), criteria-colored util badges, '장 수(H100기준)'.
  * Expanded (selected) rows flip to the blue palette (#E6F1FA box / #0077C8 text).
  */
 const RANK_COLUMNS: DataTableColumn<RankedProject>[] = [
@@ -494,7 +521,6 @@ const RANK_COLUMNS: DataTableColumn<RankedProject>[] = [
           >
             {r.project_name}
           </span>
-          {r.is_reclaim_target === 'Y' && <ReclaimTag />}
         </span>
         <span style={{ ...text.body, color: expanded ? SELECTED.text : color.textSecondary, flex: '0 0 90px' }}>
           {r.division}
@@ -507,14 +533,14 @@ const RANK_COLUMNS: DataTableColumn<RankedProject>[] = [
     header: GPU_UTIL.label,
     align: 'center',
     width: 110, // Figma column packing: 과제 452 + 3×~106-110 (재검증)
-    render: (r) => <UtilBadge value={r.gpu_ut} metric={GPU_UTIL.metric} size="lg" />,
+    render: (r) => <RankUtilBadge value={r.gpu_ut} metric="gpu" />,
   },
   {
     key: 'slot_ut',
     header: SLOT_UTIL.label,
     align: 'center',
     width: 110,
-    render: (r) => <UtilBadge value={r.slot_ut} metric={SLOT_UTIL.metric} size="lg" />,
+    render: (r) => <RankUtilBadge value={r.slot_ut} metric="slot" />,
   },
   {
     key: 'quota',
@@ -550,28 +576,37 @@ function RankTitle({ title, count, caption }: { title: string; count: number; ca
 function OccupancyColumn({ task }: { task: TaskType }) {
   const kind = taskKind(task);
   const projectCount = kpiByTask.find((k) => k.task === task)?.project_count ?? 0;
-  const expandRow = (r: RankedProject) => (
+  const expandRow = (showReclaim: boolean) => (r: RankedProject) => (
     <ExpandedTaskDetail
       data={getProjectUnits(r.project_id)}
       taskType={task}
       isStrategic={r.is_critical === 'Y'}
       bg="#F2F6F9"
       dense
+      showReclaim={showReclaim}
     />
   );
-  const rankTable = (rows: RankedProject[], prefix: string, first = false) => (
-    <DataTable
-      columns={RANK_COLUMNS}
-      rows={rows}
-      rowKey={(r) => `${prefix}-${r.project_id}`}
-      vPad={13}
-      // 재검증: no line under the header band; table-top border on the FIRST table only.
-      headBorderBottom={false}
-      headBorderTop={first}
-      expandedContent={expandRow}
-      rowStyle={(_r, _i, expanded) => (expanded ? { background: SELECTED.rowBg } : undefined)}
-      panelStyle={{ padding: 0, background: '#F2F6F9' }}
-    />
+  const rankTable = (
+    rows: RankedProject[],
+    prefix: string,
+    first = false,
+    showReclaim = false,
+  ) => (
+    // Scroll viewport: ~5 rows visible (5×49px rows + 30px header ≈ 275px).
+    <div style={{ maxHeight: 275, overflowY: 'auto' }}>
+      <DataTable
+        columns={RANK_COLUMNS}
+        rows={rows}
+        rowKey={(r) => `${prefix}-${r.project_id}`}
+        vPad={13}
+        // 재검증: no line under the header band; table-top border on the FIRST table only.
+        headBorderBottom={false}
+        headBorderTop={first}
+        expandedContent={expandRow(showReclaim)}
+        rowStyle={(_r, _i, expanded) => (expanded ? { background: SELECTED.rowBg } : undefined)}
+        panelStyle={{ padding: 0, background: '#F2F6F9' }}
+      />
+    </div>
   );
 
   return (
@@ -594,7 +629,7 @@ function OccupancyColumn({ task }: { task: TaskType }) {
             count={topBottomProjects.good.length}
             caption={task === '학습' ? 'GPU Util ≥ 66% and Slot Util ≥ 80%' : 'GPU Util ≥ 66%'}
           />
-          {rankTable(topBottomProjects.good, 'good', true)}
+          {rankTable(topBottomProjects.good, 'good', true, false)}
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg }}>
@@ -603,7 +638,7 @@ function OccupancyColumn({ task }: { task: TaskType }) {
             count={topBottomProjects.alert.length}
             caption="모델학습: GPU Util ≤ 30% and Slot Util ≤ 75%, 모델개발: GPU Util ≤ 5% and Slot Util ≤ 75%"
           />
-          {rankTable(topBottomProjects.alert, 'alert')}
+          {rankTable(topBottomProjects.alert, 'alert', false, true)}
         </div>
       </div>
     </Card>
@@ -743,7 +778,7 @@ export default function OverviewPage() {
         </TwoCol>
       </Section>
 
-      <Section id="sec-trend" title="GPU 사용추이" caption="최근 30일 · 추론/학습별 Slot Util · GPU Util">
+      <Section id="sec-trend" title="GPU 사용추이" caption="최근 28일 · 추론/학습별 Slot Util · GPU Util">
         <TrendSection />
       </Section>
     </div>
