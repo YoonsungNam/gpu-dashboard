@@ -1,5 +1,7 @@
 import { useEffect, type CSSProperties } from 'react';
 import { color, radius, semantic, shadow, text, tokenScreen } from '../../tokens';
+import { gradeCriteria } from '../../lib/util';
+import GradeBadge from '../primitives/GradeBadge';
 
 /**
  * '지표 정의' modal — opened from the app-bar ⓘ 지표 정의 button.
@@ -166,7 +168,12 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
           </table>
 
           {/* Threshold legend — semantic.util chip colors (Badge Color guide) */}
-          <div style={{ marginTop: 20, ...text.label, color: color.textTertiary }}>판정 기준</div>
+          <div style={{ marginTop: 20, ...text.label, color: color.textTertiary }}>
+            판정 기준 (지표별 셀 색상)
+          </div>
+          <div style={{ marginTop: 4, ...text.caption, color: color.textTertiary }}>
+            테이블의 지표 셀 색상은 지표별 기준으로 판정합니다.
+          </div>
           <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
             {THRESHOLDS.map(({ metric, chips }) => (
               <div key={metric} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -196,6 +203,34 @@ export default function MetricDefsModal({ onClose }: { onClose: () => void }) {
                 })}
               </div>
             ))}
+          </div>
+
+          {/* 과제 등급 기준 — purpose-aware 우수/저활용 rule (lib/util.ts gradeCriteria) */}
+          <div style={{ marginTop: 20, ...text.label, color: color.textTertiary }}>
+            과제 등급 기준 (용도별)
+          </div>
+          <div style={{ marginTop: 4, ...text.caption, color: color.textTertiary }}>
+            과제 등급(우수/저활용)은 과제 성격(용도)에 따라 저활용 기준이 다릅니다.
+          </div>
+          <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <GradeBadge grade="우수" />
+              <span style={{ ...text.body, color: color.textSecondary }}>
+                GPU Util ≥ {gradeCriteria.good.gpu}% (용도 무관)
+              </span>
+            </div>
+            {Object.entries(gradeCriteria.reclaim).map(([purpose, r]) => (
+              <div key={purpose} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <GradeBadge grade="저활용" />
+                <span style={{ ...text.bodyM, color: color.textTitle, width: 72 }}>{purpose}</span>
+                <span style={{ ...text.body, color: color.textSecondary }}>
+                  GPU Util ≤ {r.gpu}% 그리고 Slot Util ≤ {r.slot}%
+                </span>
+              </div>
+            ))}
+            <div style={{ ...text.caption, color: color.textTertiary }}>
+              · 저활용 과제는 회수 대상이며, 펼침 상세의 '저활용 회수 예상량'에서 기준별 회수 수량을 확인할 수 있습니다.
+            </div>
           </div>
         </div>
       </div>

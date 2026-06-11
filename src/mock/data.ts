@@ -19,6 +19,7 @@ import type {
   UtilTrendPoint,
   YN,
 } from './types';
+import { projectGrade } from '../lib/util';
 
 /* ---- tiny deterministic RNG (mulberry32) ---- */
 function rng(seed: number) {
@@ -48,7 +49,57 @@ const PROJECT_NAMES = [
   '품질 검사 비전', '재고 예측', '번역 엔진', '리뷰 분석',
 ];
 
-/* ---- GET /api/kpi-by-task ---- */
+/* ---- GET /api/gpu-count-by-task ---- */
+export const gpuCountByTask: GpuCountByTask = { 추론: 1842, 학습: 576 };
+
+/* ---- GET /api/projects ----
+   Sized so that per-task counts MATCH the Overview KPI cards exactly:
+   81 dual-task + 766 추론-only + 153 학습-only → 추론 847 · 학습 234 (총 1,000).
+   The first 24 keep the familiar base names; later rows get a numeric suffix.
+   Grade comes from the shared purpose-aware rule in lib/util.ts. */
+const DUAL_TASK = 81;
+const INFERENCE_ONLY = 766;
+const TRAINING_ONLY = 153;
+
+export const projects: ProjectRow[] = Array.from(
+  { length: DUAL_TASK + INFERENCE_ONLY + TRAINING_ONLY },
+  (_, i) => {
+    const r = rng(1000 + i);
+    const slot = round1(20 + r() * 78);
+    const gpu = round1(8 + r() * 88);
+    const tasks: TaskType[] =
+      i < DUAL_TASK ? ['추론', '학습'] : i < DUAL_TASK + INFERENCE_ONLY ? ['추론'] : ['학습'];
+    const base = PROJECT_NAMES[i % PROJECT_NAMES.length];
+    const name =
+      i < PROJECT_NAMES.length
+        ? base
+        : `${base} ${String(Math.floor(i / PROJECT_NAMES.length)).padStart(2, '0')}`;
+    const purpose = pick(r, PURPOSES);
+    return {
+      project_id: `PRJ${String(i + 1).padStart(4, '0')}`,
+      project_name: name,
+      division: pick(r, DIVISIONS),
+      purpose,
+      business_importance: pick(r, IMPORTANCE),
+      is_critical: (r() > 0.7 ? 'Y' : 'N') as YN,
+      user_id: pick(r, ['hong.gil.dong', 'kim.cs', 'lee.yh', 'park.jm', 'choi.sw']),
+      quota: pick(r, [16, 32, 64, 128, 256]),
+      inference_gpu_ut: gpu,
+      inference_gpu_ut_working: round1(Math.min(100, gpu + 8)),
+      inference_gpu_ut_nonworking: round1(Math.max(0, gpu - 16)),
+      training_gpu_ut: round1(Math.max(0, Math.min(100, gpu + (r() - 0.5) * 24))),
+      slot_ut: slot,
+      member_tasks: tasks,
+      grade: projectGrade(purpose, gpu, slot) as ProjectGrade | null,
+    };
+  },
+);
+
+/** Per-task project totals — ONE source for Overview cards AND the 활용 현황 tabs. */
+const projectCountByTask = (t: TaskType) =>
+  projects.filter((p) => p.member_tasks.includes(t)).length;
+
+/* ---- GET /api/kpi-by-task (project_count derived from `projects`) ---- */
 export const kpiByTask: KpiByTask[] = [
   {
     task: '추론',
@@ -56,7 +107,7 @@ export const kpiByTask: KpiByTask[] = [
     avg_gpu_ut: 38.5,
     avg_gpu_ut_working: 45.2,
     avg_gpu_ut_nonworking: 22.1,
-    project_count: 847,
+    project_count: projectCountByTask('추론'),
   },
   {
     task: '학습',
@@ -64,44 +115,9 @@ export const kpiByTask: KpiByTask[] = [
     avg_gpu_ut: 55.3,
     avg_gpu_ut_working: 64.3,
     avg_gpu_ut_nonworking: 31.2,
-    project_count: 234,
+    project_count: projectCountByTask('학습'),
   },
 ];
-
-/* ---- GET /api/gpu-count-by-task ---- */
-export const gpuCountByTask: GpuCountByTask = { 추론: 1842, 학습: 576 };
-
-/** v2: derive the utilization grade from GPU/Slot Util ('우수' | '저활용' | none). */
-function gradeOf(gpu: number, slot: number): ProjectGrade | null {
-  if (gpu >= 66) return '우수';
-  if (gpu <= 30 && slot <= 75) return '저활용';
-  return null;
-}
-
-/* ---- GET /api/projects ---- */
-export const projects: ProjectRow[] = Array.from({ length: 24 }, (_, i) => {
-  const r = rng(1000 + i);
-  const slot = round1(20 + r() * 78);
-  const gpu = round1(8 + r() * 88);
-  const tasks: TaskType[] = r() > 0.6 ? ['추론', '학습'] : r() > 0.5 ? ['학습'] : ['추론'];
-  return {
-    project_id: `PRJ${String(i + 1).padStart(3, '0')}`,
-    project_name: PROJECT_NAMES[i % PROJECT_NAMES.length],
-    division: pick(r, DIVISIONS),
-    purpose: pick(r, PURPOSES),
-    business_importance: pick(r, IMPORTANCE),
-    is_critical: (r() > 0.7 ? 'Y' : 'N') as YN,
-    user_id: pick(r, ['hong.gil.dong', 'kim.cs', 'lee.yh', 'park.jm', 'choi.sw']),
-    quota: pick(r, [16, 32, 64, 128, 256]),
-    inference_gpu_ut: gpu,
-    inference_gpu_ut_working: round1(Math.min(100, gpu + 8)),
-    inference_gpu_ut_nonworking: round1(Math.max(0, gpu - 16)),
-    training_gpu_ut: round1(Math.max(0, Math.min(100, gpu + (r() - 0.5) * 24))),
-    slot_ut: slot,
-    member_tasks: tasks,
-    grade: gradeOf(gpu, slot),
-  };
-});
 
 /** v2: reclaim estimate for one basis — 0 reclaim when current meets target. */
 function reclaimBasis(current: number, target: number, quota: number): ReclaimBasis {
@@ -162,9 +178,12 @@ export function getProjectUnits(projectId: string, task: TaskType = '추론'): P
   };
 }
 
-/* ---- GET /api/top-bottom-projects (good = top 10, alert = bottom 12) ---- */
+/* ---- GET /api/top-bottom-projects ----
+   Lists are sourced from the SAME grade rule as the 활용 현황 chips:
+   good = graded 우수 (top 10 by GPU Util), alert = graded 저활용 (worst 12). */
 export const topBottomProjects: TopBottomProjects = {
-  good: [...projects]
+  good: projects
+    .filter((p) => p.grade === '우수')
     .sort((a, b) => b.inference_gpu_ut - a.inference_gpu_ut)
     .slice(0, 10)
     .map((p) => ({
@@ -177,7 +196,8 @@ export const topBottomProjects: TopBottomProjects = {
       gpu_ut: p.inference_gpu_ut,
       reason: `GPU Util ${p.inference_gpu_ut.toFixed(1)}%`,
     })),
-  alert: [...projects]
+  alert: projects
+    .filter((p) => p.grade === '저활용')
     .sort((a, b) => a.inference_gpu_ut - b.inference_gpu_ut)
     .slice(0, 12)
     .map((p) => ({

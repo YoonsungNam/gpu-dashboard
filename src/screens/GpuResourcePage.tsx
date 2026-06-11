@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { color, radius, semantic, space, text } from '../tokens';
-import { num } from '../lib/util';
+import { num, projectGrade } from '../lib/util';
+import { downloadCsv } from '../lib/csv';
 import { GPU_UTIL, GPU_UTIL_WH, GPU_UTIL_AH, SLOT_UTIL, type MetricDef } from '../lib/labels';
 import type { ProjectRow, TaskType } from '../mock/types';
 import Card from '../components/primitives/Card';
@@ -40,6 +41,16 @@ function utilValue(r: ProjectRow, key: string, tab: TabKey): number {
 }
 
 /**
+ * Grade shown on this page is derived from the ACTIVE TAB's values via the
+ * shared purpose-aware rule (lib/util.ts projectGrade) — so a row whose
+ * displayed GPU/Slot Util misses its 용도-specific threshold always carries
+ * the matching 우수/저활용 chip, and the chip can differ between tabs.
+ */
+function rowGrade(r: ProjectRow, tab: TabKey) {
+  return projectGrade(r.purpose, utilValue(r, 'gpu_ut', tab), r.slot_ut);
+}
+
+/**
  * GPU 활용 현황 page (v2 — Figma frames 7104:7375/8555/9862). The Live pill +
  * 기간/사업부/전략 filters + 지표 정의 link live in the app bar (see App.tsx);
  * this page's toolbar is Tabs + count (left) and 등급 필터 + Search + 다운로드
@@ -72,7 +83,7 @@ export default function GpuResourcePage() {
       if (!p.member_tasks.includes(tab)) return false;
       if (q && !p.project_name.toLowerCase().includes(q) && !p.user_id.toLowerCase().includes(q))
         return false;
-      if (grade !== '전체' && p.grade !== grade) return false;
+      if (grade !== '전체' && rowGrade(p, tab) !== grade) return false;
       return true;
     });
   }, [tab, query, grade]);
@@ -94,7 +105,7 @@ export default function GpuResourcePage() {
         render: (r, _i, expanded) => (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 16 /* Header,Box gap16.0 (7104:8604) */, minWidth: 0 }}>
             <span style={{ ...text.bodyM, color: cellColor(expanded) }}>{r.project_name}</span>
-            <GradeBadge grade={r.grade} />
+            <GradeBadge grade={rowGrade(r, tab)} />
           </span>
         ),
       },
@@ -203,7 +214,33 @@ export default function GpuResourcePage() {
             placeholder="워크그룹/담당자 검색"
             width={200}
           />
-          <DownloadButton />
+          <DownloadButton
+            onClick={() => {
+              const utilCols =
+                tab === '학습'
+                  ? ([['GPU Util(%)', 'gpu_ut'], ['Slot Util(%)', 'slot_ut']] as const)
+                  : ([
+                      ['GPU Util(%)', 'gpu_ut'],
+                      ['GPU Util WH(%)', 'gpu_ut_working'],
+                      ['GPU Util AH(%)', 'gpu_ut_nonworking'],
+                      ['Slot Util(%)', 'slot_ut'],
+                    ] as const);
+              downloadCsv(
+                `GPU활용현황_${tab}`,
+                ['워크그룹', '사업부', '용도', '과제 구분', '담당자', '수량(H100기준)', ...utilCols.map(([h]) => h), '등급'],
+                filtered.map((r) => [
+                  r.project_name,
+                  r.division,
+                  r.purpose,
+                  r.is_critical === 'Y' ? '전략' : '일반',
+                  r.user_id,
+                  r.quota,
+                  ...utilCols.map(([, k]) => utilValue(r, k, tab)),
+                  rowGrade(r, tab) ?? '',
+                ]),
+              );
+            }}
+          />
         </div>
       </div>
 
@@ -227,7 +264,7 @@ export default function GpuResourcePage() {
               data={getProjectUnits(r.project_id, tab)}
               taskType={tab}
               isStrategic={r.is_critical === 'Y'}
-              showReclaim={r.grade === '저활용'}
+              showReclaim={rowGrade(r, tab) === '저활용'}
             />
           )}
           emptyText="조건에 맞는 워크그룹이 없습니다"

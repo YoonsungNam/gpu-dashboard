@@ -7,6 +7,8 @@ import TokenGroupTable from '../components/compositions/TokenGroupTable';
 import ServiceListModal from '../components/compositions/ServiceListModal';
 import TokenTrendChart from '../components/charts/TokenTrendChart';
 import { groupTokenTimeseries, pivotTokenSeries, serviceGroups, tokenTotals } from '../mock/tokens';
+import { downloadCsv } from '../lib/csv';
+import { ioRatio } from '../lib/util';
 
 /**
  * 토큰 활용 현황 page (v2 — Figma frames 7104:2731 collapse / ~7104:3480
@@ -56,7 +58,21 @@ export default function TokenUsagePage() {
             placeholder="과제명/담당자 검색"
             width={200}
           />
-          <DownloadButton />
+          <DownloadButton
+            onClick={() =>
+              downloadCsv(
+                '토큰활용현황',
+                ['구분', '서비스 그룹', '서비스', '사업부', '모델', '토큰 점유율(%)', '일평균 Input', '일평균 Output', 'I:O', '일평균 합계'],
+                filtered.flatMap((g) => [
+                  ['그룹', g.service_group_name, '', g.division, '', g.share_pct, g.avg_input, g.avg_output, ioRatio(g.avg_input, g.avg_output), g.avg_total],
+                  ...g.services.map((sv) => [
+                    '서비스', g.service_group_name, sv.service_name, g.division, sv.model,
+                    sv.share_pct, sv.avg_input, sv.avg_output, ioRatio(sv.avg_input, sv.avg_output), sv.avg_total,
+                  ]),
+                ]),
+              )
+            }
+          />
         </div>
       </div>
 
