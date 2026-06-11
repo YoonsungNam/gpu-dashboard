@@ -37,6 +37,9 @@ export interface DataTableProps<T> {
   rowStyle?: (row: T, i: number, expanded: boolean) => CSSProperties | undefined;
   /** Style for the expanded panel cell (bg/padding). */
   panelStyle?: CSSProperties;
+  /** Fires when the number of expanded rows crosses 0 ↔ n — lets a scroll
+   *  wrapper release its maxHeight so expanded details are fully visible. */
+  onExpandChange?: (anyExpanded: boolean) => void;
   emptyText?: string;
 }
 
@@ -64,6 +67,7 @@ export default function DataTable<T>({
   caretWidth = 40,
   rowStyle,
   panelStyle,
+  onExpandChange,
   emptyText = 'No data',
 }: DataTableProps<T>) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -160,7 +164,11 @@ export default function DataTable<T>({
                   onClick={
                     expandable
                       ? () =>
-                          setExpanded((p) => ({ ...p, [key]: !p[key] }))
+                          setExpanded((prev) => {
+                            const next = { ...prev, [key]: !prev[key] };
+                            onExpandChange?.(Object.values(next).some(Boolean));
+                            return next;
+                          })
                       : undefined
                   }
                 >

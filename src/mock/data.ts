@@ -11,11 +11,11 @@ import type {
   ProjectRow,
   ProjectUnitsResponse,
   QuotaByEnvGpu,
+  RankedProject,
   ReclaimBasis,
   ServiceSummary,
   ServiceTimeseriesPoint,
   TaskType,
-  TopBottomProjects,
   UtilTrendPoint,
   YN,
 } from './types';
@@ -34,7 +34,7 @@ function rng(seed: number) {
 const pick = <T,>(r: () => number, arr: T[]) => arr[Math.floor(r() * arr.length)];
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
-const DIVISIONS = ['DX', 'Platform', 'Security', 'Foundry', 'Memory'];
+const DIVISIONS = ['AI센터', 'DX', 'S.LSI', 'SAIT', '글로벌 제조&인프라총괄', '메모리'];
 const IMPORTANCE = ['전략', '핵심', '일반'];
 const PURPOSES = ['모델 학습', '모델 개발'];
 const GPU_MODELS = [
@@ -178,38 +178,52 @@ export function getProjectUnits(projectId: string, task: TaskType = '추론'): P
   };
 }
 
-/* ---- GET /api/top-bottom-projects ----
-   Lists are sourced from the SAME grade rule as the 활용 현황 chips:
-   good = graded 우수 (top 10 by GPU Util), alert = graded 저활용 (worst 12). */
-export const topBottomProjects: TopBottomProjects = {
-  good: projects
-    .filter((p) => p.grade === '우수')
-    .sort((a, b) => b.inference_gpu_ut - a.inference_gpu_ut)
-    .slice(0, 10)
-    .map((p) => ({
-      project_id: p.project_id,
-      project_name: p.project_name,
-      division: p.division,
-      is_critical: p.is_critical,
-      quota: p.quota,
-      slot_ut: p.slot_ut,
-      gpu_ut: p.inference_gpu_ut,
-      reason: `GPU Util ${p.inference_gpu_ut.toFixed(1)}%`,
-    })),
-  alert: projects
-    .filter((p) => p.grade === '저활용')
-    .sort((a, b) => a.inference_gpu_ut - b.inference_gpu_ut)
-    .slice(0, 12)
-    .map((p) => ({
-      project_id: p.project_id,
-      project_name: p.project_name,
-      division: p.division,
-      is_critical: p.is_critical,
-      quota: p.quota,
-      slot_ut: p.slot_ut,
-      gpu_ut: p.inference_gpu_ut,
-      reason: `Slot Util ${p.slot_ut.toFixed(1)}%`,
-    })),
+/* ---- GET /api/top-bottom-projects?task=… ----
+   Task-scoped ranking so the Overview 점검 cards and the 활용 현황 tabs agree
+   EXACTLY: pool = projects of that task, values = that task's metrics, grade =
+   the shared purpose-aware rule. `good_count`/`alert_count` are the FULL totals
+   (== the 활용 현황 grade-filter counts); the lists are the top 10 / worst 12. */
+export interface TaskRank {
+  good_count: number;
+  alert_count: number;
+  good: RankedProject[];
+  alert: RankedProject[];
+}
+
+const taskGpuUt = (p: ProjectRow, t: TaskType) =>
+  t === '학습' ? p.training_gpu_ut ?? p.inference_gpu_ut : p.inference_gpu_ut;
+
+function rankFor(t: TaskType): TaskRank {
+  const toRanked = (p: ProjectRow): RankedProject => ({
+    project_id: p.project_id,
+    project_name: p.project_name,
+    division: p.division,
+    is_critical: p.is_critical,
+    quota: p.quota,
+    slot_ut: p.slot_ut,
+    gpu_ut: taskGpuUt(p, t),
+    reason: `GPU Util ${taskGpuUt(p, t).toFixed(1)}%`,
+  });
+  const pool = projects.filter((p) => p.member_tasks.includes(t));
+  const good = pool.filter((p) => projectGrade(p.purpose, taskGpuUt(p, t), p.slot_ut) === '우수');
+  const alert = pool.filter((p) => projectGrade(p.purpose, taskGpuUt(p, t), p.slot_ut) === '저활용');
+  return {
+    good_count: good.length,
+    alert_count: alert.length,
+    good: good
+      .sort((a, b) => taskGpuUt(b, t) - taskGpuUt(a, t))
+      .slice(0, 10)
+      .map(toRanked),
+    alert: alert
+      .sort((a, b) => taskGpuUt(a, t) - taskGpuUt(b, t))
+      .slice(0, 12)
+      .map(toRanked),
+  };
+}
+
+export const rankByTask: Record<TaskType, TaskRank> = {
+  추론: rankFor('추론'),
+  학습: rankFor('학습'),
 };
 
 /* ---- GET /api/quota-by-env-gpu (all 9 GPU models across 4 envs; sums to exactly 2,941) ---- */

@@ -81,12 +81,12 @@ const LEAD_GROUPS: Array<{
   input: number; output: number; total: number; leads: string[];
 }> = [
   {
-    name: 'Solution 개발실 특화 AI 에이전트 플랫폼', division: 'VD사업부', count: 3,
+    name: 'Solution 개발실 특화 AI 에이전트 플랫폼', division: 'DX', count: 3,
     share: 8.3, input: 2_900_000, output: 1_700_000, total: 1_700_000,
     leads: ['Moderation Pro', 'Solution Advanced Agent', 'Moderation Pro'],
   },
   {
-    name: 'Contents Moderation SR Platform', division: 'SR연구소', count: 35,
+    name: 'Contents Moderation SR Platform', division: 'SAIT', count: 35,
     share: 29.2, input: 5_200_000, output: 2_000_000, total: 1_700_000, // I:O → '5.2:2'
     leads: [
       'Voice Clone Stream Development Lite', 'Moderation Pro',
@@ -94,7 +94,7 @@ const LEAD_GROUPS: Array<{
     ],
   },
   {
-    name: 'DS Health Assistant API', division: 'AI 센터', count: 41,
+    name: 'DS Health Assistant API', division: 'AI센터', count: 41,
     share: 12.5, input: 6_200_000, output: 6_000_000, total: 1_700_000, // I:O → '6.2:6'
     leads: [
       'Health Assistant Platform', 'Moderation Pro', 'API Solution Development',
@@ -102,7 +102,7 @@ const LEAD_GROUPS: Array<{
     ],
   },
   {
-    name: 'Solution 개발실 특화 AI 에이전트 플랫폼', division: 'VD사업부', count: 1,
+    name: 'Solution 개발실 특화 AI 에이전트 플랫폼', division: 'DX', count: 1,
     share: 8.3, input: 2_900_000, output: 1_700_000, total: 1_700_000,
     leads: ['Moderation Pro'],
   },
@@ -110,10 +110,10 @@ const LEAD_GROUPS: Array<{
 
 /** rng-seeded filler groups below the fold (KPI says 52 groups exist). */
 const FILLER_GROUPS = [
-  { name: 'MX Vision Inspection Platform', division: 'MX사업부' },
-  { name: 'Foundry Yield Insight API', division: 'DS 파운드리' },
-  { name: 'Global Contents Translation Suite', division: 'DX 플랫폼센터' },
-  { name: 'Voice Clone Studio Platform', division: 'SR연구소' },
+  { name: 'MX Vision Inspection Platform', division: '메모리' },
+  { name: 'Foundry Yield Insight API', division: '글로벌 제조&인프라총괄' },
+  { name: 'Global Contents Translation Suite', division: 'S.LSI' },
+  { name: 'Voice Clone Studio Platform', division: 'SAIT' },
 ];
 
 /* ---- GET /api/token/groups ---- */

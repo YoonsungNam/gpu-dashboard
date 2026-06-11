@@ -308,7 +308,7 @@ export default function ExpandedTaskDetail({
               columns and NO spacer, or the fixed layout collapses the Unit col. */}
           <colgroup>
             <col style={{ width: dense ? undefined : '35%' }} />
-            <col style={{ width: dense ? 90 : 120 }} />
+            {task !== '학습' && <col style={{ width: dense ? 90 : 120 }} />}
             <col style={{ width: dense ? 72 : 120 }} />
             {unitCols.map((c) => (
               <col key={c.key} style={{ width: dense ? 72 : 120 }} />
@@ -318,8 +318,8 @@ export default function ExpandedTaskDetail({
           <thead>
             <tr>
               <th style={th('left', true)}>Unit</th>
-              <th style={th('left')}>모델</th>
-              <th style={th('left')}>{dense ? '수량' : '수량(H100기준)'}</th>
+              {task !== '학습' && <th style={th('left')}>모델</th>}
+              <th style={th('left')}>{task === '학습' ? '수량(H100 기준)' : '수량'}</th>
               {unitCols.map((c) => (
                 <th key={c.key} style={th()}>
                   {c.label}
@@ -332,7 +332,7 @@ export default function ExpandedTaskDetail({
             {units.map((u) => (
               <tr key={u.unit_id}>
                 <td style={td('left', true)}>{u.unit_name}</td>
-                <td style={td('left')}>{u.gpu_model}</td>
+                {task !== '학습' && <td style={td('left')}>{u.gpu_model}</td>}
                 <td style={td('left')}>{u.gpu_num}</td>
                 {unitCols.map((c) => {
                   const v = utilOf(u, c.key);

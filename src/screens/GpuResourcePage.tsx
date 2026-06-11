@@ -145,7 +145,7 @@ export default function GpuResourcePage() {
       },
       {
         key: 'quota',
-        header: '수량(H100기준)',
+        header: '수량',
         width: 110,
         align: 'right',
         render: (r, _i, expanded) => <span style={{ color: cellColor(expanded) }}>{num(r.quota)}</span>,
@@ -227,7 +227,7 @@ export default function GpuResourcePage() {
                     ] as const);
               downloadCsv(
                 `GPU활용현황_${tab}`,
-                ['워크그룹', '사업부', '용도', '과제 구분', '담당자', '수량(H100기준)', ...utilCols.map(([h]) => h), '등급'],
+                ['워크그룹', '사업부', '용도', '과제 구분', '담당자', '수량', ...utilCols.map(([h]) => h), '등급'],
                 filtered.map((r) => [
                   r.project_name,
                   r.division,

@@ -20,7 +20,7 @@ import {
   gpuCountByTask,
   kpiByTask,
   quotaByEnvGpu,
-  topBottomProjects,
+  rankByTask,
   trendAvg,
   utilTrendByTask,
 } from '../mock/data';
@@ -82,14 +82,17 @@ function Section({
   id,
   title,
   caption,
+  defaultCollapsed = false,
   children,
 }: {
   id?: string;
   title: string;
   caption?: string;
+  /** 보유현황 starts collapsed per user feedback; others open. */
+  defaultCollapsed?: boolean;
   children: React.ReactNode;
 }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(defaultCollapsed);
   return (
     <section id={id} style={{ marginBottom: space.xxl + space.lg }}>
       <SectionHeader
@@ -544,7 +547,7 @@ const RANK_COLUMNS: DataTableColumn<RankedProject>[] = [
   },
   {
     key: 'quota',
-    header: '장 수(H100기준)',
+    header: '장 수',
     align: 'center',
     width: 120,
     render: (r, _i, expanded) => (
@@ -573,12 +576,30 @@ function RankTitle({ title, count, caption }: { title: string; count: number; ca
   );
 }
 
+/**
+ * ~5-row scroll viewport (5×49 + 30px header ≈ 275px) that RELEASES its
+ * maxHeight while any row is expanded, so the expanded detail is fully
+ * visible without fighting an inner scrollbar.
+ */
+function RankTableScroller({
+  children,
+}: {
+  children: (onExpandChange: (anyExpanded: boolean) => void) => React.ReactNode;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div style={expanded ? undefined : { maxHeight: 275, overflowY: 'auto' }}>
+      {children(setExpanded)}
+    </div>
+  );
+}
+
 function OccupancyColumn({ task }: { task: TaskType }) {
   const kind = taskKind(task);
   const projectCount = kpiByTask.find((k) => k.task === task)?.project_count ?? 0;
   const expandRow = (showReclaim: boolean) => (r: RankedProject) => (
     <ExpandedTaskDetail
-      data={getProjectUnits(r.project_id)}
+      data={getProjectUnits(r.project_id, task)}
       taskType={task}
       isStrategic={r.is_critical === 'Y'}
       bg="#F2F6F9"
@@ -592,21 +613,23 @@ function OccupancyColumn({ task }: { task: TaskType }) {
     first = false,
     showReclaim = false,
   ) => (
-    // Scroll viewport: ~5 rows visible (5×49px rows + 30px header ≈ 275px).
-    <div style={{ maxHeight: 275, overflowY: 'auto' }}>
-      <DataTable
-        columns={RANK_COLUMNS}
-        rows={rows}
-        rowKey={(r) => `${prefix}-${r.project_id}`}
-        vPad={13}
-        // 재검증: no line under the header band; table-top border on the FIRST table only.
-        headBorderBottom={false}
-        headBorderTop={first}
-        expandedContent={expandRow(showReclaim)}
-        rowStyle={(_r, _i, expanded) => (expanded ? { background: SELECTED.rowBg } : undefined)}
-        panelStyle={{ padding: 0, background: '#F2F6F9' }}
-      />
-    </div>
+    <RankTableScroller>
+      {(onExpandChange) => (
+        <DataTable
+          columns={RANK_COLUMNS}
+          rows={rows}
+          rowKey={(r) => `${prefix}-${r.project_id}`}
+          vPad={13}
+          // 재검증: no line under the header band; table-top border on the FIRST table only.
+          headBorderBottom={false}
+          headBorderTop={first}
+          expandedContent={expandRow(showReclaim)}
+          rowStyle={(_r, _i, expanded) => (expanded ? { background: SELECTED.rowBg } : undefined)}
+          panelStyle={{ padding: 0, background: '#F2F6F9' }}
+          onExpandChange={onExpandChange}
+        />
+      )}
+    </RankTableScroller>
   );
 
   return (
@@ -626,19 +649,19 @@ function OccupancyColumn({ task }: { task: TaskType }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: space.md }}>
           <RankTitle
             title="우수 활용 과제"
-            count={topBottomProjects.good.length}
+            count={rankByTask[task].good_count}
             caption={task === '학습' ? 'GPU Util ≥ 66% and Slot Util ≥ 80%' : 'GPU Util ≥ 66%'}
           />
-          {rankTable(topBottomProjects.good, 'good', true, false)}
+          {rankTable(rankByTask[task].good, 'good', true, false)}
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg }}>
           <RankTitle
             title="저활용 과제"
-            count={topBottomProjects.alert.length}
+            count={rankByTask[task].alert_count}
             caption="모델학습: GPU Util ≤ 30% and Slot Util ≤ 75%, 모델개발: GPU Util ≤ 5% and Slot Util ≤ 75%"
           />
-          {rankTable(topBottomProjects.alert, 'alert', false, true)}
+          {rankTable(rankByTask[task].alert, 'alert', false, true)}
         </div>
       </div>
     </Card>
@@ -767,7 +790,7 @@ export default function OverviewPage() {
         </TwoCol>
       </Section>
 
-      <Section id="sec-holdings" title="GPU 보유현황" caption="환경별 x 모델별 보유 장수">
+      <Section id="sec-holdings" title="GPU 보유현황" caption="환경별 x 모델별 보유 장수" defaultCollapsed>
         <HoldingsSection />
       </Section>
 
