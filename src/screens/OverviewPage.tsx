@@ -594,7 +594,34 @@ function RankTableScroller({
   );
 }
 
-function OccupancyColumn({ task }: { task: TaskType }) {
+/** Token-screen 더보기-style ghost row linking to the 활용 현황 grade filter. */
+function ShowAllRow({ count, onClick }: { count: number; onClick?: () => void }) {
+  if (!onClick) return null;
+  return (
+    <button
+      type="button"
+      className="gd-clickable"
+      onClick={onClick}
+      style={{
+        width: '100%',
+        height: 36,
+        border: 'none',
+        borderTop: '1px solid #EFF4F8',
+        background: 'transparent',
+        cursor: 'pointer',
+        ...text.caption,
+        color: color.textSecondary,
+        fontFamily: 'inherit',
+      }}
+    >
+      전체 {num(count)}건 보기 →
+    </button>
+  );
+}
+
+const RANK_PREVIEW = 10;
+
+function OccupancyColumn({ task, onShowAll }: { task: TaskType; onShowAll?: ShowAllHandler }) {
   const kind = taskKind(task);
   const projectCount = kpiByTask.find((k) => k.task === task)?.project_count ?? 0;
   const expandRow = (showReclaim: boolean) => (r: RankedProject) => (
@@ -652,7 +679,15 @@ function OccupancyColumn({ task }: { task: TaskType }) {
             count={rankByTask[task].good_count}
             caption={task === '학습' ? 'GPU Util ≥ 66% and Slot Util ≥ 80%' : 'GPU Util ≥ 66%'}
           />
-          {rankTable(rankByTask[task].good, 'good', true, false)}
+          {rankTable(rankByTask[task].good.slice(0, RANK_PREVIEW), 'good', true, false)}
+          <ShowAllRow
+            count={rankByTask[task].good_count}
+            onClick={
+              onShowAll && rankByTask[task].good_count > RANK_PREVIEW
+                ? () => onShowAll(task, '우수')
+                : undefined
+            }
+          />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg }}>
@@ -661,7 +696,15 @@ function OccupancyColumn({ task }: { task: TaskType }) {
             count={rankByTask[task].alert_count}
             caption="모델학습: GPU Util ≤ 30% and Slot Util ≤ 75%, 모델개발: GPU Util ≤ 5% and Slot Util ≤ 75%"
           />
-          {rankTable(rankByTask[task].alert, 'alert', false, true)}
+          {rankTable(rankByTask[task].alert.slice(0, RANK_PREVIEW), 'alert', false, true)}
+          <ShowAllRow
+            count={rankByTask[task].alert_count}
+            onClick={
+              onShowAll && rankByTask[task].alert_count > RANK_PREVIEW
+                ? () => onShowAll(task, '저활용')
+                : undefined
+            }
+          />
         </div>
       </div>
     </Card>
@@ -777,7 +820,11 @@ function TrendSection() {
 /* Page                                                                */
 /* ------------------------------------------------------------------ */
 
-export default function OverviewPage() {
+export interface ShowAllHandler {
+  (task: TaskType, grade: '우수' | '저활용'): void;
+}
+
+export default function OverviewPage({ onShowAll }: { onShowAll?: ShowAllHandler } = {}) {
   const inference = kpiByTask.find((k) => k.task === '추론') ?? kpiByTask[0];
   const training = kpiByTask.find((k) => k.task === '학습') ?? kpiByTask[1];
 
@@ -796,8 +843,8 @@ export default function OverviewPage() {
 
       <Section id="sec-occupancy" title="GPU 활용도 점검" caption="우수 저활용 과제 순위">
         <TwoCol>
-          <OccupancyColumn task="추론" />
-          <OccupancyColumn task="학습" />
+          <OccupancyColumn task="추론" onShowAll={onShowAll} />
+          <OccupancyColumn task="학습" onShowAll={onShowAll} />
         </TwoCol>
       </Section>
 

@@ -4,7 +4,7 @@ import type { NavKey } from './components/layout/Sidebar';
 import Gallery from './dev/Gallery';
 import OverlayCompare from './dev/OverlayCompare';
 import OverviewPage from './screens/OverviewPage';
-import GpuResourcePage from './screens/GpuResourcePage';
+import GpuResourcePage, { type ResourcePreset } from './screens/GpuResourcePage';
 import TokenUsagePage from './screens/TokenUsagePage';
 import { color, radius, semantic, space, text } from './tokens';
 import { InfoIcon } from './icons/FigureIcons';
@@ -184,6 +184,8 @@ function ResourceTopActions() {
 }
 
 export default function App() {
+  // Overview '전체 N건 보기 →' hands the 활용 현황 page a tab+grade preset.
+  const [resourcePreset, setResourcePreset] = useState<ResourcePreset | null>(null);
   const [nav, setNav] = useState<NavKey>(() => {
     // ?screen= lets the screenshot harness target a specific screen deterministically.
     const p = new URLSearchParams(window.location.search).get('screen') as NavKey | null;
@@ -204,8 +206,15 @@ export default function App() {
     >
       {nav === 'gallery' && <Gallery />}
       {nav === 'overlay' && <OverlayCompare />}
-      {nav === 'overview' && <OverviewPage />}
-      {nav === 'resource' && <GpuResourcePage />}
+      {nav === 'overview' && (
+        <OverviewPage
+          onShowAll={(task, grade) => {
+            setResourcePreset({ tab: task, grade });
+            setNav('resource');
+          }}
+        />
+      )}
+      {nav === 'resource' && <GpuResourcePage preset={resourcePreset} />}
       {nav === 'tokens' && <TokenUsagePage />}
     </AppShell>
   );

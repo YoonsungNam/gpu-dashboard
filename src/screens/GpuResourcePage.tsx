@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { color, radius, semantic, space, text } from '../tokens';
 import { num, projectGrade } from '../lib/util';
 import { downloadCsv } from '../lib/csv';
@@ -56,10 +56,23 @@ function rowGrade(r: ProjectRow, tab: TabKey) {
  * this page's toolbar is Tabs + count (left) and 등급 필터 + Search + 다운로드
  * (right).
  */
-export default function GpuResourcePage() {
-  const [tab, setTab] = useState<TabKey>('추론'); // 추론 default, no 전체
+export interface ResourcePreset {
+  tab: TabKey;
+  grade: GradeFilterValue;
+}
+
+export default function GpuResourcePage({ preset }: { preset?: ResourcePreset | null }) {
+  const [tab, setTab] = useState<TabKey>(preset?.tab ?? '추론'); // 추론 default, no 전체
   const [query, setQuery] = useState('');
-  const [grade, setGrade] = useState<GradeFilterValue>('전체');
+  const [grade, setGrade] = useState<GradeFilterValue>(preset?.grade ?? '전체');
+
+  // Overview '전체 N건 보기' lands here with the tab+grade pre-applied.
+  useEffect(() => {
+    if (!preset) return;
+    setTab(preset.tab);
+    setGrade(preset.grade);
+    setPage(1);
+  }, [preset]);
   const [page, setPage] = useState(1);
 
   const onTab = (k: TabKey) => {
