@@ -6,8 +6,7 @@ import ServiceCountKpis from '../components/compositions/ServiceCountKpis';
 import TokenGroupTable from '../components/compositions/TokenGroupTable';
 import ServiceListModal from '../components/compositions/ServiceListModal';
 import TokenTrendChart from '../components/charts/TokenTrendChart';
-import { getGroupSeries, getTokenView, pivotTokenSeries } from '../mock/tokens';
-import type { GlobalFilters } from '../mock/data';
+import { getGroupSeries, getTokenView, pivotTokenSeries, type GlobalFilters } from '../data';
 import { downloadCsv } from '../lib/csv';
 import { ioRatio } from '../lib/util';
 

@@ -24,7 +24,7 @@ import {
   getProjectUnits,
   quotaByEnvGpu,
   trendAvg,
-} from '../mock/data';
+} from '../data';
 
 /* ------------------------------------------------------------------ */
 /* Shared helpers                                                      */
@@ -633,7 +633,7 @@ function OccupancyColumn({
 }: {
   task: TaskType;
   onShowAll?: ShowAllHandler;
-  rank: import('../mock/data').TaskRank;
+  rank: import('../data').TaskRank;
   projectCount: number;
   filters: GlobalFilters;
 }) {

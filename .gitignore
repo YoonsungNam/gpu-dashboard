@@ -9,9 +9,13 @@ dist-ssr
 # never commit secrets
 .env
 .env.*
+!.env.example
 *.token
 .claude/settings.local.json
 .claude/
+
+# 사내 전용 배포 자산 — 사외 push 금지 (HANDOFF.md §0: 프록시 IP·CA 인증서·레지스트리)
+deploy/
 
 # tsc incremental build cache
 *.tsbuildinfo

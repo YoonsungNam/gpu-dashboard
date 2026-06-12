@@ -16,9 +16,9 @@ import TaskTypeBadge from '../components/primitives/TaskTypeBadge';
 import GradeBadge from '../components/primitives/GradeBadge';
 import GradeFilter, { type GradeFilterValue } from '../components/compositions/GradeFilter';
 import ResourceSummary from '../components/compositions/ResourceSummary';
-import { getKpiByTask, getRankByTask } from '../mock/data';
+import { getKpiByTask, getRankByTask } from '../data';
 import ExpandedTaskDetail from '../components/compositions/ExpandedTaskDetail';
-import { filterProjects, getProjectUnits, projectUtil, type GlobalFilters } from '../mock/data';
+import { filterProjects, getProjectUnits, projectUtil, type GlobalFilters } from '../data';
 
 const PAGE_SIZE = 15;
 
