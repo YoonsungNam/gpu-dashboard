@@ -16,38 +16,48 @@ import TaskTypeBadge from '../components/primitives/TaskTypeBadge';
 import GradeBadge from '../components/primitives/GradeBadge';
 import GradeFilter, { type GradeFilterValue } from '../components/compositions/GradeFilter';
 import ResourceSummary from '../components/compositions/ResourceSummary';
-import { getKpiByTask, getRankByTask } from '../data';
-import ExpandedTaskDetail from '../components/compositions/ExpandedTaskDetail';
-import { filterProjects, getProjectUnits, projectUtil, type GlobalFilters } from '../data';
+import ExpandedDetailLoader from '../components/compositions/ExpandedDetailLoader';
+import { getKpiByTask, getProjects, getRankByTask, useData, type GlobalFilters } from '../data';
 
 const PAGE_SIZE = 15;
+
+/** 로드 전 빈 풀 — 참조가 고정이라 useMemo deps를 흔들지 않는다. */
+const EMPTY_POOL: ProjectRow[] = [];
 
 type TabKey = TaskType; // '추론' | '학습'
 
 /** v2 selected-row text color (expanded rows tint #F0F7FC + #0077C8 text). */
 const SELECTED_TEXT = '#0077C8';
 
-/** Per-tab value getter — window means over the active 기간 (fact table). */
-function utilValue(r: ProjectRow, key: string, tab: TabKey, f: GlobalFilters): number {
-  const u = projectUtil(r, tab, f);
+/**
+ * Per-tab value getter — 행 필드에서 직접 읽는다. facade(getProjects)가 기간
+ * 창 평균을 행에 구워서 주므로(실 backend /projects와 같은 모양) 행 단위
+ * 추가 호출이 없다 (HANDOFF §1).
+ */
+function utilValue(r: ProjectRow, key: string, tab: TabKey): number {
   switch (key) {
-    case 'gpu_ut': return u.gpu;
-    case 'gpu_ut_working': return u.wh;
-    case 'gpu_ut_nonworking': return u.ah;
-    case 'slot_ut': return u.slot;
+    case 'gpu_ut': return (tab === '학습' ? r.training_gpu_ut : r.inference_gpu_ut) ?? 0;
+    case 'gpu_ut_working': return r.inference_gpu_ut_working ?? 0;
+    case 'gpu_ut_nonworking': return r.inference_gpu_ut_nonworking ?? 0;
+    case 'slot_ut': return r.slot_ut;
     default: return 0;
   }
 }
 
 /**
  * Grade shown on this page is derived from the ACTIVE TAB's values via the
- * shared purpose-aware rule (lib/util.ts projectGrade) — so a row whose
- * displayed GPU/Slot Util misses its 용도-specific threshold always carries
- * the matching 우수/저활용 chip, and the chip can differ between tabs.
+ * shared purpose-aware rule (lib/gradePolicy.ts) — so a row whose displayed
+ * GPU/Slot Util misses its 용도-specific threshold always carries the
+ * matching 우수/저활용 chip, and the chip can differ between tabs.
  */
-function rowGrade(r: ProjectRow, tab: TabKey, f: GlobalFilters) {
-  const u = projectUtil(r, tab, f);
-  return gradeOf(tab, r.purpose, u);
+function rowGrade(r: ProjectRow, tab: TabKey) {
+  const gpu = utilValue(r, 'gpu_ut', tab);
+  return gradeOf(tab, r.purpose, {
+    gpu,
+    // WH 미제공 행(실 API 일부)은 GPU Util로 폴백 — adapter(gradeValuesOf)와 동일 규칙.
+    wh: r.inference_gpu_ut_working ?? gpu,
+    slot: r.slot_ut,
+  });
 }
 
 /**
@@ -103,18 +113,28 @@ export default function GpuResourcePage({
     setPage(1);
   };
 
+  // 헤더 필터가 적용된 행(+창 평균) · KPI · 랭크를 일괄 로드 (HANDOFF §4-3).
+  // 재로드 중엔 직전 데이터를 유지하고, 최초 로드 전엔 빈 목록으로 렌더한다.
+  const { data: loaded } = useData(
+    () => Promise.all([getProjects(gf), getKpiByTask(gf), getRankByTask(gf)]),
+    [gf],
+  );
+  const pool = loaded?.[0] ?? EMPTY_POOL;
+  const kpis = loaded?.[1];
+  const ranks = loaded?.[2];
+
   // Client-side filtering: tab by member_tasks, search by project_name OR
   // user_id, grade via the 등급 필터 popover ('전체' clears).
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return filterProjects(gf).filter((p) => {
+    return pool.filter((p) => {
       if (!p.member_tasks.includes(tab)) return false;
       if (q && !p.project_name.toLowerCase().includes(q) && !p.user_id.toLowerCase().includes(q))
         return false;
-      if (grade !== '전체' && rowGrade(p, tab, gf) !== grade) return false;
+      if (grade !== '전체' && rowGrade(p, tab) !== grade) return false;
       return true;
     });
-  }, [tab, query, grade, gf]);
+  }, [pool, tab, query, grade]);
 
   const sorted = useMemo(() => {
     if (!sort) return filtered;
@@ -126,7 +146,7 @@ export default function GpuResourcePage({
         case 'is_critical': return r.is_critical === 'Y' ? '전략' : '일반';
         case 'user_id': return r.user_id;
         case 'quota': return r.quota;
-        default: return utilValue(r, sort.key, tab, gf);
+        default: return utilValue(r, sort.key, tab);
       }
     };
     return [...filtered].sort((a, b) => {
@@ -138,7 +158,7 @@ export default function GpuResourcePage({
           : String(va).localeCompare(String(vb), 'ko');
       return sort.dir === 'asc' ? c : -c;
     });
-  }, [filtered, sort, tab, gf]);
+  }, [filtered, sort, tab]);
 
   const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
@@ -158,7 +178,7 @@ export default function GpuResourcePage({
         render: (r, _i, expanded) => (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 16 /* Header,Box gap16.0 (7104:8604) */, minWidth: 0 }}>
             <span style={{ ...text.bodyM, color: cellColor(expanded) }}>{r.project_name}</span>
-            <GradeBadge grade={rowGrade(r, tab, gf)} />
+            <GradeBadge grade={rowGrade(r, tab)} />
           </span>
         ),
       },
@@ -217,35 +237,34 @@ export default function GpuResourcePage({
           width: 120,
           sortable: true,
           render: (r) => (
-            <UtilBadge value={utilValue(r, def.key, tab, gf)} metric={def.metric} task={tab} purpose={r.purpose} />
+            <UtilBadge value={utilValue(r, def.key, tab)} metric={def.metric} task={tab} purpose={r.purpose} />
           ),
         }),
       ),
     ];
-  }, [tab, gf]);
+  }, [tab]);
 
-  // Tab counts derived from the full project set.
-  const pool = useMemo(() => filterProjects(gf), [gf]);
+  // Tab counts derived from the loaded (header-filtered) project set.
   const inferenceCount = pool.filter((p) => p.member_tasks.includes('추론')).length;
   const trainingCount = pool.filter((p) => p.member_tasks.includes('학습')).length;
 
   // 상단 Summary (2026-06-11): 과제 수(우수·저활용) / 총 GPU 수량 / 평균 GPU·Slot Util
-  // — 동일 셀렉터에서 파생되므로 Overview·점검 수치와 항상 일치.
+  // — 동일 셀렉터(facade 일괄 로드)에서 파생되므로 Overview·점검 수치와 항상 일치.
   const summary = useMemo(() => {
     const tabPool = pool.filter((p) => p.member_tasks.includes(tab));
-    const rank = getRankByTask(gf)[tab];
-    const kpi = getKpiByTask(gf).find((k) => k.task === tab);
+    const rank = ranks?.[tab];
+    const kpi = kpis?.find((k) => k.task === tab);
     return {
       task: tab,
       projectCount: tabPool.length,
-      goodCount: rank.good_count,
-      alertCount: rank.alert_count,
+      goodCount: rank?.good_count ?? 0,
+      alertCount: rank?.alert_count ?? 0,
       // Overview 활용현황 카드의 'GPUs'와 같은 셀렉터 값 (kpi.gpu_total).
       totalQuota: kpi?.gpu_total ?? 0,
       avgGpuUt: kpi?.avg_gpu_ut ?? 0,
       avgSlotUt: kpi?.avg_slot_ut ?? 0,
     };
-  }, [pool, tab, gf]);
+  }, [pool, ranks, kpis, tab]);
   const tabs = [
     { key: '추론', label: '추론', count: inferenceCount },
     { key: '학습', label: '학습', count: trainingCount },
@@ -304,8 +323,8 @@ export default function GpuResourcePage({
                   r.is_critical === 'Y' ? '전략' : '일반',
                   r.user_id,
                   r.quota,
-                  ...utilCols.map(([, k]) => utilValue(r, k, tab, gf)),
-                  rowGrade(r, tab, gf) ?? '',
+                  ...utilCols.map(([, k]) => utilValue(r, k, tab)),
+                  rowGrade(r, tab) ?? '',
                 ]),
               );
             }}
@@ -339,13 +358,14 @@ export default function GpuResourcePage({
           // Full-bleed expand panel: the detail supplies its own bg/padding.
           panelStyle={{ padding: 0, background: '#F6F8FA' }}
           expandedContent={(r) => (
-            <ExpandedTaskDetail
+            <ExpandedDetailLoader
               // Task-scoped fetch: the expanded KPI/gauge values match the
               // gpu value displayed on the active tab's row.
-              data={getProjectUnits(r.project_id, tab, gf)}
-              taskType={tab}
+              projectId={r.project_id}
+              task={tab}
+              filters={gf}
               isStrategic={r.is_critical === 'Y'}
-              showReclaim={rowGrade(r, tab, gf) === '저활용'}
+              showReclaim={rowGrade(r, tab) === '저활용'}
             />
           )}
           emptyText="조건에 맞는 워크그룹이 없습니다"

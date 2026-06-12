@@ -1,4 +1,4 @@
-import type { TaskType } from '../mock/types';
+import type { ReclaimBasis, ReclaimEstimateItem, TaskType } from '../mock/types';
 
 /**
  * 과제 등급 운영 정책 — ★운영자가 수정하는 곳은 GRADE_POLICY 하나뿐★
@@ -206,6 +206,36 @@ export interface ReclaimCond extends GradeCond {
 export function reclaimConds(task: TaskType, purpose: string): ReclaimCond[] {
   const rule = GRADE_POLICY[task].reclaim[purpose] ?? GRADE_POLICY[task].reclaim['기타'];
   return rule ? rule.conds.map((c) => ({ ...c, label: METRIC_LABEL[c.metric] })) : [];
+}
+
+/** 게이지 1칸: 목표 달성 시 회수 0, 미달이면 quota × 부족비율의 H100 환산 추정. */
+function reclaimBasisOf(current: number, target: number, quota: number): ReclaimBasis {
+  const reclaim = current >= target ? 0 : Math.round(quota * (1 - current / target));
+  return {
+    current_pct: current,
+    target_pct: target,
+    reclaim_count: reclaim,
+    total_count: quota,
+    remaining_count: quota - reclaim,
+  };
+}
+
+/**
+ * '저활용 회수 예상량' 게이지 목록 — (태스크 × 용도) 저활용 규칙의 조건별로
+ * 1칸씩. mock(getProjectUnits)과 실 API adapter(adaptProjectUnits)가 이 한
+ * 구현을 공유한다 (HANDOFF §4-2: 중복 구현 금지).
+ */
+export function reclaimEstimate(
+  task: TaskType,
+  purpose: string,
+  v: GradeValues,
+  quota: number,
+): ReclaimEstimateItem[] {
+  return reclaimConds(task, purpose).map((c) => ({
+    metric: c.metric,
+    label: `${c.label} 기준`,
+    basis: reclaimBasisOf(v[c.metric], c.value, quota),
+  }));
 }
 
 /** 지표 정의 패널의 임계 기준 표 한 칸 — null이면 그 구간이 정의되지 않음('—'). */

@@ -8,7 +8,7 @@ import GpuResourcePage, { type ResourcePreset } from './screens/GpuResourcePage'
 import TokenUsagePage from './screens/TokenUsagePage';
 import { color, radius, semantic, space, text } from './tokens';
 import { InfoIcon } from './icons/FigureIcons';
-import { DEFAULT_FILTERS, filters, PERIOD_DAYS, type GlobalFilters } from './mock/data';
+import { DEFAULT_FILTERS, getFilters, PERIOD_DAYS, useData, type GlobalFilters } from './data';
 import MetricDefsModal from './components/compositions/MetricDefsModal';
 
 const TITLES: Record<NavKey, string> = {
@@ -90,9 +90,12 @@ function ToolbarSelect({
 function ResourceTopActions({
   value,
   onChange,
+  divisions,
 }: {
   value: GlobalFilters;
   onChange: (f: GlobalFilters) => void;
+  /** 사업부 옵션 — facade(getFilters)에서 로드 (실 API 모드는 /filters 응답). */
+  divisions: string[];
 }) {
   const [defsOpen, setDefsOpen] = useState(false);
   return (
@@ -141,7 +144,7 @@ function ResourceTopActions({
         label="사업부"
         value={value.division}
         onChange={(v) => onChange({ ...value, division: v })}
-        options={['전체', ...filters.divisions]}
+        options={['전체', ...divisions]}
       />
       <ToolbarSelect
         label="과제 구분"
@@ -189,6 +192,8 @@ function ResourceTopActions({
 export default function App() {
   // Global header filters (기간/사업부/과제 구분) — every page derives from these.
   const [globalFilters, setGlobalFilters] = useState<GlobalFilters>(DEFAULT_FILTERS);
+  // 헤더 셀렉트 옵션 (사업부 목록) — facade에서 1회 로드.
+  const { data: filterMeta } = useData(() => getFilters(), []);
   // Overview '전체 N건 보기 →' hands the 활용 현황 page a tab+grade preset.
   const [resourcePreset, setResourcePreset] = useState<ResourcePreset | null>(null);
   const [nav, setNav] = useState<NavKey>(() => {
@@ -205,7 +210,11 @@ export default function App() {
       subtitle={SUBTITLES[nav]}
       actions={
         nav === 'resource' || nav === 'overview' || nav === 'tokens' ? (
-          <ResourceTopActions value={globalFilters} onChange={setGlobalFilters} />
+          <ResourceTopActions
+            value={globalFilters}
+            onChange={setGlobalFilters}
+            divisions={filterMeta?.divisions ?? []}
+          />
         ) : undefined
       }
     >

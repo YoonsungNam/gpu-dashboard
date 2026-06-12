@@ -12,14 +12,13 @@ import type {
   ProjectUnitsResponse,
   QuotaByEnvGpu,
   RankedProject,
-  ReclaimBasis,
   ServiceSummary,
   ServiceTimeseriesPoint,
   TaskType,
   UtilTrendPoint,
   YN,
 } from './types';
-import { gradeOf, reclaimConds } from '../lib/gradePolicy';
+import { gradeOf, reclaimEstimate } from '../lib/gradePolicy';
 
 /* ---- tiny deterministic RNG (mulberry32) ---- */
 function rng(seed: number) {
@@ -228,18 +227,6 @@ export const gpuCountByTask: GpuCountByTask = Object.fromEntries(
   kpiByTask.map((k) => [k.task, k.gpu_total]),
 );
 
-/** v2: reclaim estimate for one basis — 0 reclaim when current meets target. */
-function reclaimBasis(current: number, target: number, quota: number): ReclaimBasis {
-  const reclaim = current >= target ? 0 : Math.round(quota * (1 - current / target));
-  return {
-    current_pct: current,
-    target_pct: target,
-    reclaim_count: reclaim,
-    total_count: quota,
-    remaining_count: quota - reclaim,
-  };
-}
-
 /* ---- GET /api/project/units?project_id=…&task=… ----
    task scopes info.gpu_ut (and the reclaim gauges) so the expanded values
    match the row that was clicked: 학습 → training_gpu_ut, 추론 (default) →
@@ -289,11 +276,8 @@ export function getProjectUnits(
       // 회수 게이지 = 이 과제 (태스크 × 용도)의 저활용 규칙 조건들. 목표값은
       // 각 조건의 경계값이라 지표 정의 패널의 임계 기준(빨강 구간)과 항상 일치
       // (생산시스템 연계 GPU 5% · 일반업무 등 GPU Util WH 30% · Slot 공통 75% 등).
-      reclaim_estimate: reclaimConds(task, p.purpose).map((c) => ({
-        metric: c.metric,
-        label: `${c.label} 기준`,
-        basis: reclaimBasis(u[c.metric], c.value, p.quota),
-      })),
+      // 구현은 lib/gradePolicy.reclaimEstimate — 실 API adapter와 공유.
+      reclaim_estimate: reclaimEstimate(task, p.purpose, u, p.quota),
     },
     units,
   };

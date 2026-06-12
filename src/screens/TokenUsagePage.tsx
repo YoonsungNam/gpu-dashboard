@@ -6,9 +6,22 @@ import ServiceCountKpis from '../components/compositions/ServiceCountKpis';
 import TokenGroupTable from '../components/compositions/TokenGroupTable';
 import ServiceListModal from '../components/compositions/ServiceListModal';
 import TokenTrendChart from '../components/charts/TokenTrendChart';
-import { getGroupSeries, getTokenView, pivotTokenSeries, type GlobalFilters } from '../data';
+import { getGroupSeries, getTokenView, pivotTokenSeries, useData, type GlobalFilters } from '../data';
+import type { TokenGroupSummary, TokenTotals } from '../mock/types';
 import { downloadCsv } from '../lib/csv';
 import { ioRatio } from '../lib/util';
+
+/** 로드 전 빈 상태 — 참조 고정으로 useMemo deps를 흔들지 않는다. */
+const EMPTY_GROUPS: TokenGroupSummary[] = [];
+const EMPTY_TOTALS: TokenTotals = { group_count: 0, service_count: 0, avg_total: 0, day_count: 0 };
+
+/** 그룹 확장 차트 패널 — 펼칠 때 facade에서 시리즈를 비동기 로드 (HANDOFF §4-3). */
+function GroupChartPanel({ groupId, filters: gf }: { groupId: string; filters: GlobalFilters }) {
+  const { data } = useData(() => getGroupSeries(groupId, gf), [groupId, gf]);
+  if (!data) return <div style={{ height: 390 }} />; // 차트 밴드 높이 자리 유지
+  const feed = pivotTokenSeries(data);
+  return <TokenTrendChart rows={feed.rows} series={feed.series} />;
+}
 
 /**
  * 토큰 활용 현황 page (v2 — Figma frames 7104:2731 collapse / ~7104:3480
@@ -17,8 +30,11 @@ import { ioRatio } from '../lib/util';
  * token table card. No pagination exists in this design.
  */
 export default function TokenUsagePage({ filters: gf }: { filters: GlobalFilters }) {
-  // The whole view (KPIs, groups, children, shares) derives from the header filters.
-  const view = useMemo(() => getTokenView(gf), [gf]);
+  // The whole view (KPIs, groups, children, shares) derives from the header
+  // filters — facade가 비동기라 useData로 로드, 재로드 중엔 직전 뷰 유지.
+  const { data: view } = useData(() => getTokenView(gf), [gf]);
+  const groups = view?.groups ?? EMPTY_GROUPS;
+  const totals = view?.totals ?? EMPTY_TOTALS;
   const [query, setQuery] = useState('');
   // Single-open accordion for the per-group chart panel.
   const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
@@ -27,16 +43,16 @@ export default function TokenUsagePage({ filters: gf }: { filters: GlobalFilters
   // Client-side search across group name OR child service names.
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return view.groups;
-    return view.groups.filter(
+    if (!q) return groups;
+    return groups.filter(
       (g) =>
         g.service_group_name.toLowerCase().includes(q) ||
         g.services.some((s) => s.service_name.toLowerCase().includes(q)),
     );
-  }, [query, view]);
+  }, [query, groups]);
 
   const modalGroup = modalGroupId
-    ? view.groups.find((g) => g.service_group_id === modalGroupId) ?? null
+    ? groups.find((g) => g.service_group_id === modalGroupId) ?? null
     : null;
 
   return (
@@ -52,7 +68,7 @@ export default function TokenUsagePage({ filters: gf }: { filters: GlobalFilters
           gap: space.xl,
         }}
       >
-        <ServiceCountKpis totals={view.totals} />
+        <ServiceCountKpis totals={totals} />
         <div style={{ display: 'flex', alignItems: 'center', gap: space.md, alignSelf: 'flex-end' }}>
           <SearchInput
             value={query}
@@ -102,17 +118,14 @@ export default function TokenUsagePage({ filters: gf }: { filters: GlobalFilters
           expandedGroupId={expandedGroupId}
           onToggleGroup={(id) => setExpandedGroupId((prev) => (prev === id ? null : id))}
           onMoreServices={setModalGroupId}
-          renderExpandedPanel={(g) => {
-            const feed = pivotTokenSeries(getGroupSeries(g.service_group_id, gf));
-            return <TokenTrendChart rows={feed.rows} series={feed.series} />;
-          }}
+          renderExpandedPanel={(g) => <GroupChartPanel groupId={g.service_group_id} filters={gf} />}
         />
       </div>
 
       {modalGroup && (
         <ServiceListModal
           group={modalGroup}
-          dayCount={view.totals.day_count}
+          dayCount={totals.day_count}
           onClose={() => setModalGroupId(null)}
         />
       )}

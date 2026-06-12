@@ -13,17 +13,17 @@ import { TaskIcon } from '../icons/FigureIcons';
 
 import StackedBar from '../components/charts/StackedBar';
 import TrendChart, { type TrendSeries } from '../components/charts/TrendChart';
-import ExpandedTaskDetail from '../components/compositions/ExpandedTaskDetail';
+import ExpandedDetailLoader from '../components/compositions/ExpandedDetailLoader';
 
-import type { KpiByTask, RankedProject, TaskType } from '../mock/types';
+import type { KpiByTask, QuotaByEnvGpu, RankedProject, TaskType } from '../mock/types';
 import {
   type GlobalFilters,
   getKpiByTask,
+  getQuotaByEnvGpu,
   getRankByTask,
   getUtilTrend,
-  getProjectUnits,
-  quotaByEnvGpu,
   trendAvg,
+  useData,
 } from '../data';
 
 /* ------------------------------------------------------------------ */
@@ -273,11 +273,11 @@ function UtilizationCard({ kpi }: { kpi: KpiByTask }) {
 /* §2 — GPU 보유현황                                                    */
 /* ------------------------------------------------------------------ */
 
-function HoldingsSection() {
+function HoldingsSection({ quotaRows }: { quotaRows: QuotaByEnvGpu[] }) {
   const { envRows, modelAggregates, total } = useMemo(() => {
     // Stable model ordering by first appearance.
     const models: string[] = [];
-    for (const q of quotaByEnvGpu) {
+    for (const q of quotaRows) {
       if (!models.includes(q.gpu_model)) models.push(q.gpu_model);
     }
     const modelColor: Record<string, string> = {};
@@ -288,7 +288,7 @@ function HoldingsSection() {
     // Group by environment -> one StackedBar row.
     const envOrder: string[] = [];
     const byEnv: Record<string, Record<string, number>> = {};
-    for (const q of quotaByEnvGpu) {
+    for (const q of quotaRows) {
       if (!byEnv[q.environment]) {
         byEnv[q.environment] = {};
         envOrder.push(q.environment);
@@ -299,7 +299,7 @@ function HoldingsSection() {
 
     // Per-model aggregate counts (also yields grand total).
     const counts: Record<string, number> = {};
-    for (const q of quotaByEnvGpu) {
+    for (const q of quotaRows) {
       counts[q.gpu_model] = (counts[q.gpu_model] ?? 0) + q.gpu_count;
     }
     const total = Object.values(counts).reduce((s, n) => s + n, 0);
@@ -324,7 +324,7 @@ function HoldingsSection() {
     }));
 
     return { envRows, modelAggregates, total };
-  }, []);
+  }, [quotaRows]);
 
   const legendItems = modelAggregates.map((m) => ({
     label: m.model,
@@ -639,10 +639,12 @@ function OccupancyColumn({
 }) {
   const kind = taskKind(task);
   const rankColumns = useMemo(() => rankColumnsFor(task), [task]);
+  // 펼침 상세는 행을 펼칠 때 로더가 facade에서 비동기로 가져온다 (HANDOFF §4-3).
   const expandRow = (showReclaim: boolean) => (r: RankedProject) => (
-    <ExpandedTaskDetail
-      data={getProjectUnits(r.project_id, task, filters)}
-      taskType={task}
+    <ExpandedDetailLoader
+      projectId={r.project_id}
+      task={task}
+      filters={filters}
       isStrategic={r.is_critical === 'Y'}
       bg="#F2F6F9"
       dense
@@ -847,9 +849,20 @@ export default function OverviewPage({
   filters: GlobalFilters;
 }) {
   // Every section derives from the SAME filtered window (기간/사업부/과제 구분).
-  const kpis = useMemo(() => getKpiByTask(filters), [filters]);
-  const rank = useMemo(() => getRankByTask(filters), [filters]);
-  const trend = useMemo(() => getUtilTrend(filters), [filters]);
+  // facade가 비동기(실 API 모드)라 useData로 일괄 로드 — 재로드 중엔 직전
+  // 데이터를 유지하므로 필터 변경 시 화면이 비지 않는다.
+  const { data } = useData(
+    () =>
+      Promise.all([
+        getKpiByTask(filters),
+        getRankByTask(filters),
+        getUtilTrend(filters),
+        getQuotaByEnvGpu(),
+      ]),
+    [filters],
+  );
+  if (!data) return null; // 최초 로드 1프레임 (mock은 즉시 resolve)
+  const [kpis, rank, trend, quotaRows] = data;
   const inference = kpis.find((k) => k.task === '추론') ?? kpis[0];
   const training = kpis.find((k) => k.task === '학습') ?? kpis[1];
 
@@ -863,7 +876,7 @@ export default function OverviewPage({
       </Section>
 
       <Section id="sec-holdings" title="GPU 보유현황" caption="환경별 x 모델별 보유 장수" defaultCollapsed>
-        <HoldingsSection />
+        <HoldingsSection quotaRows={quotaRows} />
       </Section>
 
       <Section id="sec-occupancy" title="GPU 활용도 점검" caption="우수 저활용 과제 순위">
