@@ -1,43 +1,31 @@
-import { color, text } from '../../tokens';
-import { ServiceGroupIcon, ServiceIcon, TokenSumIcon } from '../../icons/FigureIcons';
-import { fmtTokens } from '../../lib/util';
+import { fmtTokens, num } from '../../lib/util';
 import type { TokenTotals } from '../../mock/types';
+import SummaryCard, { type SummaryCell } from './SummaryCard';
 
 /**
- * 토큰 활용 현황 KPI strip (node 'ServiceCount' 7104:3444, 526x28):
- * 서비스 그룹 52 · 서비스 42112 · 일평균 토큰 합계 402M.
- * Each item = 20px glyph + 6px gap + label (400/14 #3C444B) + 10px gap +
- * value (600/24/28 #3C444B); items separated by 1x12 #2F363C sticks
- * (Icon/Icon12-Divider 7104:3456/3466, 31px total width).
+ * 토큰 활용 현황 상단 Summary (2026-06-16 design, node 7198:16295):
+ * 단일 카드 3셀 — [서비스 그룹 / N개] | [서비스 / N개] |
+ * [일평균 토큰 합계 / N(M·B) / Input N · Output N]. 아이콘 없음(06-16 재디자인).
  */
-export default function ServiceCountKpis({ totals }: { totals: TokenTotals }) {
-  const items = [
-    { icon: <ServiceGroupIcon />, label: '서비스 그룹', value: String(totals.group_count) },
-    // Design renders 42112 without a thousands comma (node 7104:3465).
-    { icon: <ServiceIcon />, label: '서비스', value: String(totals.service_count) },
-    { icon: <TokenSumIcon />, label: '일평균 토큰 합계', value: fmtTokens(totals.avg_total) },
-  ];
 
-  return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      {items.map((it, i) => (
-        <div key={it.label} style={{ display: 'flex', alignItems: 'center' }}>
-          {i > 0 && (
-            <span
-              aria-hidden
-              // 1x12 stick centered in the 31px-wide divider frame.
-              style={{ width: 1, height: 12, background: color.textTertiary /* #767D84 (7164:6724) */, margin: '0 15px' }}
-            />
-          )}
-          <span style={{ display: 'inline-flex', flexShrink: 0 }}>{it.icon}</span>
-          <span style={{ ...text.body, lineHeight: '22px', color: color.textTitle, marginLeft: 6 }}>
-            {it.label}
-          </span>
-          <span style={{ ...text.metricLg, color: color.textTitle, marginLeft: 10 }}>
-            {it.value}
-          </span>
-        </div>
-      ))}
-    </div>
-  );
+/** '402M' / '2.4B' / '593K' → { value:'402', unit:'M' } (숫자 30px · 단위 16px). */
+function splitTokens(n: number): { value: string; unit?: string } {
+  const s = fmtTokens(n);
+  const m = s.match(/^([\d.,]+)([KMB])?$/);
+  return m ? { value: m[1], unit: m[2] } : { value: s };
+}
+
+export default function ServiceCountKpis({ totals }: { totals: TokenTotals }) {
+  const sum = splitTokens(totals.avg_total);
+  const cells: SummaryCell[] = [
+    { label: '서비스 그룹', value: num(totals.group_count), unit: '개' },
+    { label: '서비스', value: num(totals.service_count), unit: '개' },
+    {
+      label: '일평균 토큰 합계',
+      value: sum.value,
+      unit: sum.unit,
+      sub: `Input ${fmtTokens(totals.avg_input)} · Output ${fmtTokens(totals.avg_output)}`,
+    },
+  ];
+  return <SummaryCard cells={cells} />;
 }

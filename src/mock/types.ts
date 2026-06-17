@@ -187,6 +187,9 @@ export interface TokenTotals {
   group_count: number;
   service_count: number;
   avg_total: number;
+  /** 일평균 토큰 합계의 입력/출력 분해 (Summary 서브라인 'Input N · Output N'). */
+  avg_input: number;
+  avg_output: number;
   day_count: number;
 }
 

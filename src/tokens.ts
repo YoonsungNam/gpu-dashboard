@@ -50,7 +50,7 @@ export const color = {
 
 /**
  * Semantic colors driven by GPU UTIL / SLOT UTIL thresholds and task type.
- * Source: Figma "Badge Color" guide (node 7001:51337).
+ * Source: Figma "Badge Color" guide (2026-06-17, node 7221:6328).
  */
 export const semantic = {
   // Utilization threshold pills (e.g. 90.0% green, 78.7% amber, 12.4% red)
@@ -59,11 +59,11 @@ export const semantic = {
     warn: { bg: '#FFE1B5', border: '#FFD390', text: '#6B4915' },
     bad: { bg: '#FFD9D7', border: '#FFC7C3', text: '#A52921' },
   },
-  // Task-type pills (v2: darker text, weight 400, 1px borders — nodes I7104:9794/9795)
+  // Task-type pills (1px borders — Badge Color guide 7221:6328)
   taskType: {
     inference: { bg: '#CCF0F9', text: '#004457', border: '#99E1F3' }, // 추론
-    training: { bg: '#E0D9FF', text: '#1E1251', border: '#CFC2FF' }, // 학습
-    core: { bg: '#E9EEF2', text: '#3C444B', border: '#DADFE4' }, // 전략 (was 핵심)
+    training: { bg: '#E0D9FF', text: '#1E1251', border: '#CABEFF' }, // 학습 (border 06-17 갱신)
+    core: { bg: '#ECF1F5', text: '#3C444B', border: '#DADFE4' }, // 전략 (bg 06-17 갱신)
   },
   // Trend deltas
   delta: { up: '#239B2F', down: '#FF4337' },

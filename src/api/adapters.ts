@@ -314,6 +314,8 @@ export function rollupTokenView(raw: RawServiceSummary, fallbackDayCount: number
       group_count: groups.length,
       service_count: groups.reduce((t, g) => t + g.service_count, 0),
       avg_total: grand,
+      avg_input: groups.reduce((t, g) => t + g.avg_input, 0),
+      avg_output: groups.reduce((t, g) => t + g.avg_output, 0),
       day_count: raw.day_count ?? fallbackDayCount,
     },
     groups,

@@ -282,7 +282,11 @@ export default function GpuResourcePage({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg /* v2: 12px toolbar→card */ }}>
-      {/* 2026-06-11 layout — row 1: Summary 수치 · 우측 컨트롤; row 2: Tabs + count */}
+      {/* 2026-06-16 layout — row 0: Summary 카드(단독); row 1: Tabs + count(좌) · 컨트롤(우) */}
+      <div id="res-summary">
+        <ResourceSummary data={summary} />
+      </div>
+
       <div
         id="res-toolbar"
         style={{
@@ -293,7 +297,14 @@ export default function GpuResourcePage({
           flexWrap: 'wrap',
         }}
       >
-        <ResourceSummary data={summary} />
+        {/* Tabs + page count */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Tabs tabs={tabs} active={tab} onChange={(k) => onTab(k as TabKey)} />
+          <span style={text.body}>
+            <span style={{ color: color.textSecondary }}>{pageRows.length}</span>
+            <span style={{ color: color.textTertiary }}>/{sorted.length}</span>
+          </span>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: space.md }}>
           <GradeFilter value={grade} onChange={onGrade} />
           <SearchInput
@@ -330,15 +341,6 @@ export default function GpuResourcePage({
             }}
           />
         </div>
-      </div>
-
-      {/* Row 2 — tabs + page count */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <Tabs tabs={tabs} active={tab} onChange={(k) => onTab(k as TabKey)} />
-        <span style={text.body}>
-          <span style={{ color: color.textSecondary }}>{pageRows.length}</span>
-          <span style={{ color: color.textTertiary }}>/{sorted.length}</span>
-        </span>
       </div>
 
       {/* Main expandable data table. */}

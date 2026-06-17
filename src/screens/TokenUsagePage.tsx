@@ -13,7 +13,7 @@ import { ioRatio } from '../lib/util';
 
 /** 로드 전 빈 상태 — 참조 고정으로 useMemo deps를 흔들지 않는다. */
 const EMPTY_GROUPS: TokenGroupSummary[] = [];
-const EMPTY_TOTALS: TokenTotals = { group_count: 0, service_count: 0, avg_total: 0, day_count: 0 };
+const EMPTY_TOTALS: TokenTotals = { group_count: 0, service_count: 0, avg_total: 0, avg_input: 0, avg_output: 0, day_count: 0 };
 
 /** 그룹 확장 차트 패널 — 펼칠 때 facade에서 시리즈를 비동기 로드 (HANDOFF §4-3). */
 function GroupChartPanel({ groupId, filters: gf }: { groupId: string; filters: GlobalFilters }) {
@@ -57,26 +57,27 @@ export default function TokenUsagePage({ filters: gf }: { filters: GlobalFilters
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: space.lg }}>
-      {/* KPI/toolbar row (56px, no card): KPI strip left · search + 다운로드 right */}
+      {/* 2026-06-16 layout — Summary 카드(단독) 위, 검색·다운로드는 우측 정렬 행으로 분리 */}
+      <div id="tok-summary">
+        <ServiceCountKpis totals={totals} />
+      </div>
+
       <div
         id="tok-toolbar"
         style={{
-          height: 56,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: space.xl,
+          justifyContent: 'flex-end',
+          gap: space.md,
         }}
       >
-        <ServiceCountKpis totals={totals} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: space.md, alignSelf: 'flex-end' }}>
-          <SearchInput
-            value={query}
-            onChange={setQuery}
-            placeholder="과제명/담당자 검색"
-            width={200}
-          />
-          <DownloadButton
+        <SearchInput
+          value={query}
+          onChange={setQuery}
+          placeholder="과제명/담당자 검색"
+          width={200}
+        />
+        <DownloadButton
             onClick={() =>
               downloadCsv(
                 '토큰활용현황',
@@ -90,8 +91,7 @@ export default function TokenUsagePage({ filters: gf }: { filters: GlobalFilters
                 ]),
               )
             }
-          />
-        </div>
+        />
       </div>
 
       {/* Grouped token table card (Frame 26096792, white r6). The card itself

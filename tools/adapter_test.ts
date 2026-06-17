@@ -91,6 +91,7 @@ eq('trend: task 분리', adaptUtilTrend(FIX_TREND_FLAT)['추론'].length, 2);
 const view = rollupTokenView(FIX_SERVICE_SUMMARY, 28);
 eq('token: 그룹/서비스 수', [view.totals.group_count, view.totals.service_count], [2, 3]);
 eq('token: 일평균 합계 = Σ(그룹) = Σ(서비스 입력+출력)', view.totals.avg_total, 100_000_000);
+eq('token: 합계 입력/출력 분해 (Summary 서브라인)', [view.totals.avg_input, view.totals.avg_output], [60_000_000, 40_000_000]);
 eq('token: 그룹 점유율 (70M/30M → 70%/30%)', view.groups.map((g) => g.share_pct), [70, 30]);
 eq('token: 그룹 내 서비스 점유율 합 ≈ 100',
   Math.round(view.groups[0].services.reduce((s, x) => s + x.share_pct, 0)), 100);
